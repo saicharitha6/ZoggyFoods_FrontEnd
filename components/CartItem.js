@@ -54,11 +54,11 @@ export default function CartItem({ item, cartId, onChangeCart }) {
           <View>
             <Text style={styles.title}>{product.title}</Text>
             <Text style={styles.description}>
-              {product.description} • ${product.unit_price / 100}
+              {product.description} • ₹{product.unit_price / 100}
             </Text>
           </View>
           <View style={styles.footer}>
-            <Text style={styles.price}>${product.total / 100}</Text>
+            <Text style={styles.price}>₹{product.total / 100}</Text>
             <AntDesign
               key={product.id}
               name="minussquareo"

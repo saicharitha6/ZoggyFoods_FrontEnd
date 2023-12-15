@@ -16,11 +16,11 @@ export default function ProductCard({ key, product }) {
       <Text style={styles.category}>{product.handle}</Text>
       <View style={styles.priceContainer}>
         <Text style={styles.price}>
-          ${product.variants[0].prices[1]?.amount?product.variants[0].prices[1]?.amount / 100 : 50}
+          ₹{product.variants[0].prices[1]?.amount?product.variants[0].prices[1]?.amount / 100 : 50}
         </Text>
 
-        <Button
-          title="BUY"/>
+        {/* <Button
+          title="BUY"/> */}
       </View>
     </View>
   );

@@ -135,7 +135,7 @@ export default function Checkout({ cart }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Header title="Checkout" />
+        <Header title="Checkout" isVisible={false} />
         <View style={styles.address}>
           <Text style={styles.title}>Shipping Address</Text>
           <ShippingAddress onChange={handleAddressInputChange} />

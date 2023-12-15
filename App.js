@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import baseURL from "./constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SignIn from "./screens/SignIn";
 
 export default function App() {
   const getCartId = () => {
@@ -30,6 +31,7 @@ export default function App() {
     <PaperProvider>
       <Router>
         <Stack key="root">
+          <Scene key="SignIn" component={SignIn} hideNavBar />
           <Scene key="products" component={Products} hideNavBar />
           <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
           <Scene key="cart" component={Cart} hideNavBar />

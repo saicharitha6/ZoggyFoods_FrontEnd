@@ -35,3 +35,6 @@ yarn.lock
 
 # typescript
 *.tsbuildinfo
+
+# Android-Build
+eas.json

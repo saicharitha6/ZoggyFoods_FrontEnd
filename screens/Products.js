@@ -1,5 +1,12 @@
-import { ScrollView, StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  TextInput,
+  RefreshControl,
+} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import ProductCard from "../components/ProductCard";
 import { widthToDp } from "rn-responsive-screen";
 import axios from "axios";
@@ -7,10 +14,13 @@ import Header from "../components/Header";
 import { Actions } from "react-native-router-flux";
 import baseURL from "../constants/url";
 import { Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
+  const [cart, setCart] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   function fetchProducts() {
     axios.get(`${baseURL}/store/products`).then((res) => {
@@ -18,32 +28,49 @@ export default function Products() {
     });
   }
 
+  const fetchCart = async () => {
+    // Get the cart id from the device storage
+    const cartId = await AsyncStorage.getItem("cart_id");
+    // Fetch the products from the cart API using the cart id
+    axios.get(`${baseURL}/store/carts/${cartId}`).then(({ data }) => {
+      // Set the cart state to the products in the cart
+      setCart(data.cart.items);
+    });
+  };
+
   function searchFilterFunction(text) {
     let searchQuery = {
-      "q" : text
-     };
-     setSearch(text);
+      q: text,
+    };
+    setSearch(text);
     axios({
-      method: 'post',
+      method: "post",
       url: `${baseURL}/store/products/search`,
-      data: searchQuery, 
+      data: searchQuery,
       headers: {
-      'Content-Type': 'application/json'
-      }, 
+        "Content-Type": "application/json",
+      },
     }).then((res) => {
       setProducts(res.data.hits);
-    }); 
+    });
   }
-
   useEffect(() => {
     fetchProducts();
+    fetchCart();
   }, []);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchProducts();
+    fetchCart();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Header title="Medusa's Store" />
-      <View
-        style={styles.searchBar}
-      >
+      <Header title="UniStock" isHome={true} count={cart.length} />
+      <View style={styles.searchBar}>
         {/* search Icon */}
         <Feather
           name="search"
@@ -59,7 +86,11 @@ export default function Products() {
           onChangeText={(text) => searchFilterFunction(text)}
         />
       </View>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.products}>
           {products.map((product) => (
             <TouchableOpacity
@@ -71,14 +102,14 @@ export default function Products() {
           ))}
         </View>
       </ScrollView>
-      <View style={styles.addToCart}>
+      {/* <View style={styles.addToCart}>
         <Feather
           name="shopping-cart"
           size={24}
           color="white"
           onPress={() => Actions.cart()}
         />
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -111,7 +142,7 @@ const styles = StyleSheet.create({
     padding: widthToDp(2),
     justifyContent: "center",
   },
-  searchBar:{
+  searchBar: {
     margin: 15,
     justifyContent: "flex-start",
     alignItems: "center",
@@ -129,5 +160,5 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 10,
     backgroundColor: "#fff",
-  }
+  },
 });

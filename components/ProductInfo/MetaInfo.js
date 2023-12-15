@@ -6,9 +6,11 @@ import Button from "../Button";
 import axios from "axios";
 import baseURL from "../../constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Actions } from "react-native-router-flux";
 
 export default function MetaInfo({ product }) {
   const [activeSize, setActiveSize] = useState(0);
+  const [isCart, setCart] = useState(false);
 
   const addToCart = async () => {
     const cartId = await AsyncStorage.getItem("cart_id");
@@ -19,10 +21,15 @@ export default function MetaInfo({ product }) {
       })
       .then(({ data }) => {
         alert(`Item ${product.title} added to cart`);
+        setCart(true);
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+  const goToCart = () => {
+    Actions.cart();
+    setCart(false);
   };
 
   return (
@@ -31,12 +38,12 @@ export default function MetaInfo({ product }) {
         <Text style={styles.title}>{product.title}</Text>
         <View>
           <Text style={styles.price}>
-            ${product.variants[0].prices[1].amount / 100}
+          ₹{product.variants[0].prices[1].amount / 100}
           </Text>
           <Text style={styles.star}>⭐⭐⭐</Text>
         </View>
       </View>
-      <Text style={styles.heading}>Available Sizes</Text>
+      {/* <Text style={styles.heading}>Available Sizes</Text> */}
       <View style={styles.row}>
         {product.options[0].values.map((size, index) => (
           <TouchableOpacity onPress={() => setActiveSize(index)}>
@@ -55,7 +62,11 @@ export default function MetaInfo({ product }) {
       </View>
       <Text style={styles.heading}>Description</Text>
       <Text style={styles.description}>{product.description}</Text>
-      <Button onPress={addToCart} title="Add to Cart" large={true} />
+      {isCart ? (
+        <Button onPress={goToCart} title="Go to Cart" large={true} />
+      ) : (
+        <Button onPress={addToCart} title="Add to Cart" large={true} />
+      )}
     </View>
   );
 }

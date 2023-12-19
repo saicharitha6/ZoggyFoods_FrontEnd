@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import Button from "../Button";
 import useInput from "../../hooks/use-Input";
 import WelcomeText from "./WelcomeText";
@@ -11,6 +18,7 @@ import ErrMessage from "../ErrorMessage";
 
 const SignInForm = () => {
   const [errMessage, setErrMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const {
     value: enteredEmail,
@@ -51,33 +59,55 @@ const SignInForm = () => {
     setErrMessage("");
   }
 
+  function resetAll() {
+    passwordReset();
+    emailReset();
+  }
+
   const handleSubmit = () => {
+    setLoading(true); // Set loading to true before making the request
+
     if (emailIsValid && passwordIsValid) {
-      emailReset();
-      passwordReset();
       authenticationHandler({
         email: enteredEmail,
         password: enteredPassword,
       })
         .then((res) => {
+          setLoading(false); // Set loading to false after successful request
+
           if (res.data !== undefined) {
             Actions.products();
           } else {
             setErrMessage("Unexpected response structure");
+            resetAll();
           }
         })
         .catch((err) => {
+          setLoading(false); // Set loading to false after failed request
+
           const statusCode = err.response.status;
-          console.log("status", statusCode);
-          console.log("status", err.response.data);
+
           if (statusCode === 401) {
-            setErrMessage("Wrong password");
+            setLoading(true);
+            axios.get(`${baseURL}/store/auth/${enteredEmail}`).then((res) => {
+              setLoading(false);
+              if (res.data.exists) {
+                passwordReset();
+                setErrMessage("Incorrect password");
+              } else {
+                resetAll();
+                setErrMessage("Invalid credentials.");
+              }
+            });
           } else if (statusCode === 400) {
-            setErrMessage("Email not found");
+            setErrMessage("Invalid data");
+            resetAll();
           }
         });
     } else {
+      setLoading(false); // Set loading to false if validation fails
       setErrMessage("Invalid data");
+      resetAll();
     }
   };
 
@@ -107,19 +137,20 @@ const SignInForm = () => {
         onBlur={validatePasswordHandler}
         onFocus={passwordFocusHandler}
       />
-      <Text>{ErrMessage}</Text>
+      {loading && <ActivityIndicator size="small" color="#0000ff" />}
       <View style={styles.forgetPasswordContainer}>
         <Text style={styles.forgetPassword}>Forget password</Text>
       </View>
-      <Button
-        title="Login"
-        onPress={handleSubmit}
-        textSize={18}
-        style={styles.button}
-      />
+      <TouchableOpacity style={styles.touchableOpacity} onPress={handleSubmit}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </View>
+      </TouchableOpacity>
       <View style={styles.signUpText}>
         <Text>Don't have an account? </Text>
-        <Text style={styles.link}>Sign Up</Text>
+        <Text style={styles.link} onPress={() => Actions.SignUp()}>
+          Sign Up
+        </Text>
       </View>
       <ErrMessage type="authentication" text={errMessage} onEnd={endMessage} />
     </View>
@@ -141,14 +172,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 30,
   },
-  // input: {
-  //   width: "100%",
-  //   padding: 10,
-  //   borderRadius: 5,
-  //   borderWidth: 1,
-  //   borderColor: "#ccc",
-  //   marginBottom: 10,
-  // },
+
   button: {
     width: "100%",
     backgroundColor: "#007bff",
@@ -161,6 +185,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    padding: 10,
+    textAlign: "center",
+  },
+  touchableOpacity: {
+    width: "100%",
   },
   link: {
     // marginTop: 20,

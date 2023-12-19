@@ -15,6 +15,7 @@ import { Actions } from "react-native-router-flux";
 import baseURL from "../constants/url";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -68,56 +69,53 @@ export default function Products() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Header title="UniStock" isHome={true} count={cart.length} />
-      <View style={styles.searchBar}>
-        {/* search Icon */}
-        <Feather
-          name="search"
-          size={20}
-          color="black"
-          style={{ marginLeft: 1 }}
-        />
-        {/* Input field */}
-        <TextInput
-          style={styles.input}
-          placeholder="Search"
-          value={search}
-          onChangeText={(text) => searchFilterFunction(text)}
-        />
-      </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        <View style={styles.products}>
-          {products.map((product) => (
-            <TouchableOpacity
-              key={product.id}
-              onPress={() => Actions.ProductInfo({ productId: product.id })}
-            >
-              <ProductCard product={product} />
-            </TouchableOpacity>
-          ))}
+    <SafeAreaView style={[styles.safeContainer]}>
+      <View style={styles.container}>
+        <Header title="Zoggy" isHome={true} count={cart.length} />
+        <View style={styles.searchBar}>
+          {/* search Icon */}
+          <Feather
+            name="search"
+            size={20}
+            color="black"
+            style={{ marginLeft: 1 }}
+          />
+          {/* Input field */}
+          <TextInput
+            style={styles.input}
+            placeholder="Search"
+            value={search}
+            onChangeText={(text) => searchFilterFunction(text)}
+          />
         </View>
-      </ScrollView>
-      {/* <View style={styles.addToCart}>
-        <Feather
-          name="shopping-cart"
-          size={24}
-          color="white"
-          onPress={() => Actions.cart()}
-        />
-      </View> */}
-    </View>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <View style={styles.products}>
+            {products.map((product) => (
+              <TouchableOpacity
+                key={product.id}
+                onPress={() => Actions.ProductInfo({ productId: product.id })}
+              >
+                <ProductCard product={product} />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
-    paddingTop: 50,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",

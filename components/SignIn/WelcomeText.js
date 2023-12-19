@@ -1,13 +1,13 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import uniStockIcon from "../../assets/USIcon.png";
+import zoggy from "../../assets/zoggy.png";
 
 export default function WelcomeText() {
   return (
     <View style={styles.container}>
-      <Image source={uniStockIcon} style={styles.icon} />
-      <Text style={styles.welcomeText}>Welcome to UniStock :)</Text>
-      <Text style={styles.line}>line</Text>
+      <Image source={zoggy} style={styles.icon} />
+      {/* <Text style={styles.welcomeText}>Welcome to UniStock :)</Text> */}
+      {/* <Text style={styles.line}>line</Text> */}
     </View>
   );
 }
@@ -18,10 +18,9 @@ const styles = StyleSheet.create({
   },
   line: {
     width: 200,
-    height: 3,
+    height: 2,
     backgroundColor: "black",
-    marginVertical: 10,
-    marginBottom: 30,
+    marginBottom: 15,
   },
 
   welcomeText: {
@@ -31,8 +30,8 @@ const styles = StyleSheet.create({
     // borderBottom: "1px solid black",
   },
   icon: {
-    width: 70,
-    height: 70,
+    width: 150,
+    height: 150,
     resizeMode: "contain",
   },
 });

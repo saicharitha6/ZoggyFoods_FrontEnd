@@ -7,11 +7,14 @@ import axios from "axios";
 import baseURL from "../../constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Actions } from "react-native-router-flux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MetaInfo({ product }) {
   const [activeSize, setActiveSize] = useState(0);
   const [isCart, setCart] = useState(false);
-
+  const [price, setPrice] = useState(
+    product.variants[0]?.prices[1]?.amount / 100
+  );
   const addToCart = async () => {
     const cartId = await AsyncStorage.getItem("cart_id");
     axios
@@ -20,7 +23,7 @@ export default function MetaInfo({ product }) {
         quantity: 1,
       })
       .then(({ data }) => {
-        alert(`Item ${product.title} added to cart`);
+        // alert(`Item ${product.title} added to cart`);
         setCart(true);
       })
       .catch((err) => {
@@ -32,51 +35,63 @@ export default function MetaInfo({ product }) {
     setCart(false);
   };
 
+  function setAmount(index) {
+    setPrice(product.variants[index]?.prices[1]?.amount / 100);
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.row}>
-        <Text style={styles.title}>{product.title}</Text>
-        <View>
-          <Text style={styles.price}>
-          ₹{product.variants[0].prices[1].amount / 100}
-          </Text>
-          <Text style={styles.star}>⭐⭐⭐</Text>
+    <SafeAreaView style={[styles.safeContainer]}>
+      <View style={styles.container}>
+        <View style={styles.row}>
+          <Text style={styles.title}>{product.title}</Text>
+          <View>
+            <Text style={styles.price}>₹{price}</Text>
+            <Text style={styles.star}>⭐⭐⭐</Text>
+          </View>
         </View>
-      </View>
-      {/* <Text style={styles.heading}>Available Sizes</Text> */}
-      <View style={styles.row}>
-        {product.options[0].values.map((size, index) => (
-          <TouchableOpacity onPress={() => setActiveSize(index)}>
-            <Text
-              style={[
-                styles.sizeTag,
-                {
-                  borderWidth: activeSize === index ? 3 : 0,
-                },
-              ]}
+        {/* <Text style={styles.heading}>Available Sizes</Text> */}
+        <View style={styles.row}>
+          {product.options[0].values.map((size, index) => (
+            <TouchableOpacity
+              onPress={() => {
+                setActiveSize(index);
+                setAmount(index);
+              }}
             >
-              {size.value}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.sizeTag,
+                  {
+                    borderWidth: activeSize === index ? 3 : 0,
+                  },
+                ]}
+              >
+                {size.value}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <Text style={styles.heading}>Description</Text>
+        <Text style={styles.description}>{product.description}</Text>
+        {isCart ? (
+          <Button onPress={goToCart} title="Go to Cart" large={true} />
+        ) : (
+          <Button onPress={addToCart} title="Add to Cart" large={true} />
+        )}
       </View>
-      <Text style={styles.heading}>Description</Text>
-      <Text style={styles.description}>{product.description}</Text>
-      {isCart ? (
-        <Button onPress={goToCart} title="Go to Cart" large={true} />
-      ) : (
-        <Button onPress={addToCart} title="Add to Cart" large={true} />
-      )}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: heightToDp(-5),
+  safeContainer: {
+    flex: 1,
     backgroundColor: "#fff",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+  },
+  container: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     padding: heightToDp(5),
   },
   title: {

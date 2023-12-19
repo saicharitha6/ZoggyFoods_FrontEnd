@@ -14,6 +14,7 @@ import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseURL from "../constants/url";
 import axios from "axios";
+import zoggy from "../assets/zoggy.png";
 
 export default function Header({
   title,
@@ -41,7 +42,6 @@ export default function Header({
 
   const handleOrders = () => {
     // Implement your logic to navigate to orders screen
-    console.log("View Orders");
     setIsDropdownVisible(false);
   };
   return (
@@ -49,12 +49,10 @@ export default function Header({
       {isHome ? (
         <View style={styles.header}>
           <Image
-            source={{
-              uri: "https://user-images.githubusercontent.com/7554214/153162406-bf8fd16f-aa98-4604-b87b-e13ab4baf604.png",
-            }}
+            source={zoggy}
             style={styles.logo}
           />
-          <Text style={styles.title}>{title}</Text>
+          {/* <Text style={styles.title}>{title}</Text> */}
         </View>
       ) : (
         <TouchableOpacity onPress={() => Actions.pop()}>
@@ -118,9 +116,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     width: widthToDp(100),
-    backgroundColor: "#C37AFF",
+    backgroundColor: "#e67300",
     alignItems: "center",
-    alignContent: "space-between",
     // paddingHorizontal: widthToDp(2),
   },
   buttons: {
@@ -132,7 +129,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     width: widthToDp(50),
-    marginBottom: 10,
+    // marginBottom: 3,
   },
   title: {
     fontSize: 20,
@@ -145,7 +142,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   logo: {
-    width: 50,
+    width: 70,
     height: 50,
   },
 

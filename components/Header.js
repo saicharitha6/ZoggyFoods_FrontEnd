@@ -94,7 +94,7 @@ export default function Header({
                   {/* <TouchableOpacity onPress={handleCart}>
                   <Text style={styles.dropdownElements}>View Cart</Text>
                 </TouchableOpacity> */}
-                  <TouchableOpacity onPress={handleOrders}>
+                  <TouchableOpacity onPress={() => Actions.orders()}>
                     <Text style={styles.dropdownElements}>View Orders</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={handleLogout}>

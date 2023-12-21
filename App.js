@@ -10,16 +10,35 @@ import baseURL from "./constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./screens/SignIn";
 import SignUp from "./screens/SignUp";
+import PlaceOrder from "./screens/PlaceOrder";
+import Orders from "./components/Orders/Orders";
 
 export default function App() {
-  const getCartId = () => {
-    axios.post(`${baseURL}/store/carts`).then((res) => {
+  const getCartId = async () => {
+    await axios.post(`${baseURL}/store/carts`).then((res) => {
       AsyncStorage.setItem("cart_id", res.data.cart.id);
     });
   };
   const checkCartId = async () => {
     // await AsyncStorage.removeItem("cart_id");
     const cartId = await AsyncStorage.getItem("cart_id");
+
+    if(cartId){
+      await axios.post(`${baseURL}/store/carts/${cartId}`).then((res) => {
+        if(res.data.cart.completed_at){
+          AsyncStorage.removeItem("cart_id");
+          getCartId();
+        } else {
+          AsyncStorage.setItem("cart_id", res.data.cart.id);
+        }
+      }).catch((error) => {
+        console.error('Error:', error);
+        if(error.response.status == 500){
+          AsyncStorage.removeItem("cart_id");
+          getCartId();
+        }
+      });
+    }
     if (!cartId) {
       getCartId();
     }
@@ -38,6 +57,8 @@ export default function App() {
           <Scene key="products" component={Products} hideNavBar />
           <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
           <Scene key="cart" component={Cart} hideNavBar />
+          <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
+          <Scene key="orders" component={Orders} hideNavBar />
           {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
         </Stack>
       </Router>

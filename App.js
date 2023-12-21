@@ -12,7 +12,6 @@ import SignIn from "./screens/SignIn";
 import SignUp from "./screens/SignUp";
 import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
-import Payments from "./screens/Payments";
 
 export default function App() {
   const getCartId = async () => {
@@ -55,14 +54,13 @@ export default function App() {
     <PaperProvider>
       <Router>
         <Stack key="root">
-          {/* <Scene key="SignIn" component={SignIn} hideNavBar />
+          <Scene key="SignIn" component={SignIn} hideNavBar />
           <Scene key="SignUp" component={SignUp} hideNavBar />
           <Scene key="products" component={Products} hideNavBar />
           <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
           <Scene key="cart" component={Cart} hideNavBar />
-          <Scene key="orders" component={Orders} hideNavBar /> */}
-          <Scene key="payments" component={Payments} hideNavBar />
           <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
+          <Scene key="orders" component={Orders} hideNavBar />
           {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
         </Stack>
       </Router>

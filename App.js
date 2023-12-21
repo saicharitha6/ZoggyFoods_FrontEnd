@@ -13,6 +13,7 @@ import SignUp from "./screens/SignUp";
 import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
 import Address from "./screens/Address";
+import Payments from "./screens/Payments";
 
 export default function App() {
   const getCartId = async () => {
@@ -60,10 +61,11 @@ export default function App() {
           <Scene key="products" component={Products} hideNavBar />
           <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
           <Scene key="cart" component={Cart} hideNavBar />
+          <Scene key="address" component={Address} hideNavBar />
+          <Scene key="payments" component={Payments} hideNavBar />
           <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
           <Scene key="orders" component={Orders} hideNavBar />
-          {/*<Scene key="checkout" component={Checkout} hideNavBar />*/}
-          <Scene key="Address" component={Address} hideNavBar />
+          {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
         </Stack>
       </Router>
     </PaperProvider>

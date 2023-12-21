@@ -1,44 +1,57 @@
-import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import axios from "axios";
-import baseURL from "../constants/url";
+import { View, Text, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { heightToDp, widthToDp } from "rn-responsive-screen";
-import Button from "../components/Button";
-import AddressForm from "../components/AddressForm"; // Changed import here
-import RadioButton from "../components/RadioButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { heightToDp, widthToDp } from "rn-responsive-screen";
+import Header from "../components/Header";
+import Button from "../components/Button";
+import AddressForm from "../components/AddressForm";
+import RadioButton from "../components/RadioButton";
+
+import baseURL from "../constants/url";
 import { Actions } from "react-native-router-flux";
 
-export default function Address({ cart }) {
-  // Changed component name here
+const Address = ({ cart }) => {
   const [shippingAddress, setShippingAddress] = useState({});
   const [shippingOptions, setShippingOptions] = useState([]);
   const [selectedShippingOption, setSelectedShippingOption] = useState("");
-  const [paymentSession, setPaymentSession] = useState({});
 
   const handleAddressInputChange = (address) => {
     setShippingAddress(address);
   };
 
   const placeOrder = async () => {
-    let cart_id = await AsyncStorage.getItem("cart_id");
+    try {
+      // let cart_id = await AsyncStorage.getItem("cart_id");
+      console.log(shippingAddress);
+      const response = await axios.post(
+        `${baseURL}/store/customers/me/addresses`,
+        {
+          address: {
+            ...shippingAddress,
+            company: "Wyman LLC", // Add your company value here
+            province: "Georgia", // Add your province value here
+            country_code: "US", // Add your country code here
+          },
+        }
+      );
 
-    axios
-      .post(`${baseURL}/store/carts/${cart_id}`, {
-        shipping_address: shippingAddress,
-      })
-      .then(({ data }) => {
-        axios
-          .post(`${baseURL}/store/carts/${cart_id}/shipping-methods`, {
-            option_id: selectedShippingOption,
-          })
-          .then(({ data }) => {
-            console.log("success");
-          });
-      });
+      if (response.status === 200) {
+        console.log("Address added successfully");
+        Actions.payments();
+        // Optionally, you can proceed to add shipping methods or other actions
+      } else {
+        console.error(
+          "Failed to add address. Unexpected status code:",
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error("Error adding address:", error);
+      console.error("Detailed error response:", error.response);
+    }
   };
 
   const fetchShippingOptions = async () => {
@@ -82,12 +95,12 @@ export default function Address({ cart }) {
               />
             </View>
           ))}
-          <Button onPress={placeOrder} large title="Place Order" />
+          <Button onPress={placeOrder} large title="Add Address" />
         </View>
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -107,3 +120,5 @@ const styles = StyleSheet.create({
     marginTop: heightToDp(2),
   },
 });
+
+export default Address;

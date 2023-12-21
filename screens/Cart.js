@@ -102,12 +102,8 @@ export default function Cart() {
           {/* A button to navigate to PlaceOrder screen */}
           <Button
             large={true}
-            onPress={() => {
-              Actions.Address({
-                cart,
-              });
-            }}
-            title={"Go to Address"}
+            onPress={() => Actions.address()}
+            title={cart?.items?.length > 0 ? "Place Order" : "Empty Cart"}
           />
         </View>
       </View>

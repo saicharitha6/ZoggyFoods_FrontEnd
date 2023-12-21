@@ -8,7 +8,7 @@ export default function AddressForm({ onChange }) {
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
+  const [country_code, setCountry_code] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -19,7 +19,7 @@ export default function AddressForm({ onChange }) {
       address_1: addressLine1,
       address_2: addressLine2,
       city,
-      country,
+      country_code,
       postal_code: postalCode,
       phone,
     };
@@ -65,10 +65,10 @@ export default function AddressForm({ onChange }) {
       />
       <TextInput
         onChangeText={(e) => {
-          setCountry(e);
+          setCountry_code(e);
           handleChange();
         }}
-        placeholder="Country"
+        placeholder="Country Code"
         style={styles.input}
       />
       <TextInput

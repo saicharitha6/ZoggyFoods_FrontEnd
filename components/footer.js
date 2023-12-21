@@ -6,6 +6,7 @@ import {
   MaterialCommunityIcons,
   Entypo,
 } from "@expo/vector-icons";
+import { Actions } from "react-native-router-flux";
 
 const Footer = () => {
   return (
@@ -28,7 +29,7 @@ const Footer = () => {
       {/* Centered Floating Home Button */}
       <TouchableOpacity
         style={styles.floatingButton}
-        onPress={() => console.log("Floating Home button pressed")}
+        onPress={() => Actions.products()}
       >
         <FontAwesome5 name="store" size={24} color="#fff" />
       </TouchableOpacity>

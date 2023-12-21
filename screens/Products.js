@@ -16,7 +16,7 @@ import baseURL from "../constants/url";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Footer from "../components/footer";
+import Footer from "../components/Footer";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -40,22 +40,6 @@ export default function Products() {
     });
   };
 
-  function searchFilterFunction(text) {
-    let searchQuery = {
-      q: text,
-    };
-    setSearch(text);
-    axios({
-      method: "post",
-      url: `${baseURL}/store/products/search`,
-      data: searchQuery,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => {
-      setProducts(res.data.hits);
-    });
-  }
   useEffect(() => {
     fetchProducts();
     fetchCart();
@@ -73,22 +57,6 @@ export default function Products() {
     <SafeAreaView style={[styles.safeContainer]}>
       <View style={styles.container}>
         <Header title="Zoggy" isHome={true} count={cart.length} />
-        <View style={styles.searchBar}>
-          {/* search Icon */}
-          <Feather
-            name="search"
-            size={20}
-            color="black"
-            style={{ marginLeft: 1 }}
-          />
-          {/* Input field */}
-          <TextInput
-            style={styles.input}
-            placeholder="Search"
-            value={search}
-            onChangeText={(text) => searchFilterFunction(text)}
-          />
-        </View>
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -162,3 +130,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
 });
+

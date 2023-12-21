@@ -66,12 +66,18 @@ export default function Header({
             color="black"
           />
         </TouchableOpacity>
+        
       )}
       <View style={styles.sideBar}>
         {isVisible ? (
           <>
             <View>
-              <EvilIcons name="search" size={35} color="white" />
+              <EvilIcons
+                name="search"
+                size={35}
+                color="white"
+                onPress={() => Actions.search()}
+              />
             </View>
             <View style={styles.addToCart}>
               <Text style={styles.cart_count}>{count > 0 ? count : ""}</Text>

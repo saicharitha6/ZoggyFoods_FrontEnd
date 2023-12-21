@@ -26,8 +26,6 @@ export default function Cart() {
     });
   };
 
- 
-
   const onChangeCart = (data) => {
     setCart(data.cart);
   };
@@ -104,8 +102,8 @@ export default function Cart() {
           {/* A button to navigate to PlaceOrder screen */}
           <Button
             large={true}
-            onPress={() => Actions.PlaceOrder()}
-            title={cart?.items?.length > 0 ? "Place Order" : "Empty Cart"}
+            onPress={() => Actions.address()}
+            title={cart?.items?.length > 0 ? "Go to Address" : "Empty Cart"}
           />
         </View>
       </View>

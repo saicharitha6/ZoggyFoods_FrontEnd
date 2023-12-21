@@ -20,6 +20,7 @@ export default function Header({
   title,
   isHome = false,
   isVisible = true,
+  isOrder = false,
   count = 0,
 }) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -107,6 +108,15 @@ export default function Header({
         ) : (
           <View></View>
         )}
+         {isOrder ? (
+          <>
+            <View style={styles.addToCart}>
+              <Text style={styles.myOrder}>My Order</Text>
+            </View>
+          </>
+        ) : (
+          <View></View>
+        )}
       </View>
     </View>
   );
@@ -158,6 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   icon: {
+    color: "#ffffff",
     marginLeft: 10,
     marginTop: 20,
     marginBottom: 20,
@@ -198,5 +209,14 @@ const styles = StyleSheet.create({
     padding: 10,
     // paddingLeft: 5,
     textAlign: "center",
+  },
+  myOrder: {
+    color: "#ffffff",
+    fontSize: 24,
+    fontWeight:"bold",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: widthToDp(110),
   },
 });

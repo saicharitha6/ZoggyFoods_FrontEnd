@@ -25,6 +25,7 @@ export default function Cart() {
       setCart(data.cart);
     });
   };
+
   const onChangeCart = (data) => {
     setCart(data.cart);
   };
@@ -32,6 +33,7 @@ export default function Cart() {
   useEffect(() => {
     // Calling the fetchCart function when the component mounts
     fetchCart();
+    //setPaymentSession();
   }, []);
   return (
     // SafeAreaView is used to avoid the notch on the phone
@@ -97,7 +99,7 @@ export default function Cart() {
           </Text>
         </View>
         <View>
-          {/* A button to navigate to checkout screen */}
+          {/* A button to navigate to PlaceOrder screen */}
           <Button
             large={true}
             onPress={() => {

@@ -25,7 +25,6 @@ const Address = ({ cart }) => {
   const placeOrder = async () => {
     try {
       // let cart_id = await AsyncStorage.getItem("cart_id");
-      console.log(shippingAddress);
       const response = await axios.post(
         `${baseURL}/store/customers/me/addresses`,
         {
@@ -39,7 +38,6 @@ const Address = ({ cart }) => {
       );
 
       if (response.status === 200) {
-        console.log("Address added successfully");
         Actions.payments();
         // Optionally, you can proceed to add shipping methods or other actions
       } else {

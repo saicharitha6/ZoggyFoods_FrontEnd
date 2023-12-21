@@ -16,6 +16,7 @@ import baseURL from "../constants/url";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Footer from "../components/footer";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -105,6 +106,7 @@ export default function Products() {
           </View>
         </ScrollView>
       </View>
+      <Footer />
     </SafeAreaView>
   );
 }

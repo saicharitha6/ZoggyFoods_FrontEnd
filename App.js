@@ -18,6 +18,7 @@ export default function App() {
     });
   };
   const checkCartId = async () => {
+    // await AsyncStorage.removeItem("cart_id");
     const cartId = await AsyncStorage.getItem("cart_id");
     if (!cartId) {
       getCartId();

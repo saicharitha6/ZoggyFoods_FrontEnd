@@ -1,2 +1,2 @@
-const baseURL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:9000";
+const baseURL = "https://zoggy-foods.plts-dev.com";
 export default baseURL;

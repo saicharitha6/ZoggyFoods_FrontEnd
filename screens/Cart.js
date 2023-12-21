@@ -101,11 +101,11 @@ export default function Cart() {
           <Button
             large={true}
             onPress={() => {
-              Actions.checkout({
+              Actions.Address({
                 cart,
               });
             }}
-            title={cart?.items?.length > 0 ? "Checkout" : "Empty Cart"}
+            title={"Go to Address"}
           />
         </View>
       </View>

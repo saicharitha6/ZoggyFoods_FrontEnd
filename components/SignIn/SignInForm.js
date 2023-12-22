@@ -66,7 +66,6 @@ const SignInForm = () => {
 
   const handleSubmit = () => {
     setLoading(true); // Set loading to true before making the request
-    console.log(enteredEmail, enteredPassword, emailIsValid, passwordIsValid);
 
     if (emailIsValid && passwordIsValid) {
       authenticationHandler({

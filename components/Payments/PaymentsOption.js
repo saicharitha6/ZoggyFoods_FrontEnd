@@ -16,7 +16,6 @@ const PaymentsOptions = () => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleProceed = () => {
-    console.log("Proceeding with payment:", selectedOption);
     Actions.PlaceOrder();
     // Add your logic to proceed with the selected payment option
   };

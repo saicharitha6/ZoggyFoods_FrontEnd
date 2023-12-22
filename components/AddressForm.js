@@ -63,14 +63,7 @@ export default function AddressForm({ onChange }) {
         placeholder="City"
         style={styles.input}
       />
-      <TextInput
-        onChangeText={(e) => {
-          setCountry_code(e);
-          handleChange();
-        }}
-        placeholder="Country Code"
-        style={styles.input}
-      />
+
       <TextInput
         onChangeText={(e) => {
           setPostalCode(e);

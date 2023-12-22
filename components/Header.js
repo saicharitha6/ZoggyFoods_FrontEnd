@@ -48,10 +48,7 @@ export default function Header({
     <View style={styles.container}>
       {isHome ? (
         <View style={styles.header}>
-          <Image
-            source={zoggy}
-            style={styles.logo}
-          />
+          <Image source={zoggy} style={styles.logo} />
           {/* <Text style={styles.title}>{title}</Text> */}
         </View>
       ) : (

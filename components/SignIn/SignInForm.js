@@ -74,7 +74,6 @@ const SignInForm = () => {
       })
         .then((res) => {
           setLoading(false); // Set loading to false after successful request
-
           if (res.data !== undefined) {
             Actions.products();
           } else {

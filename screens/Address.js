@@ -8,7 +8,6 @@ import { heightToDp, widthToDp } from "rn-responsive-screen";
 import Header from "../components/Header";
 import Button from "../components/Button";
 import AddressForm from "../components/AddressForm";
-import RadioButton from "../components/RadioButton";
 
 import baseURL from "../constants/url";
 import { Actions } from "react-native-router-flux";
@@ -16,7 +15,6 @@ import { Actions } from "react-native-router-flux";
 const Address = ({ cart }) => {
   const [shippingAddress, setShippingAddress] = useState({});
   const [shippingOptions, setShippingOptions] = useState([]);
-  const [selectedShippingOption, setSelectedShippingOption] = useState("");
 
   const handleAddressInputChange = (address) => {
     setShippingAddress(address);
@@ -24,30 +22,50 @@ const Address = ({ cart }) => {
 
   const placeOrder = async () => {
     try {
-      // let cart_id = await AsyncStorage.getItem("cart_id");
-      const response = await axios.post(
+      let cart_id = await AsyncStorage.getItem("cart_id");
+
+      const addressResponse = await axios.post(
         `${baseURL}/store/customers/me/addresses`,
         {
           address: {
             ...shippingAddress,
-            company: "Wyman LLC", // Add your company value here
-            province: "Georgia", // Add your province value here
-            country_code: "US", // Add your country code here
+            company: "Wyman LLC",
+            province: "Georgia",
+            country_code: "US",
           },
         }
       );
 
-      if (response.status === 200) {
-        Actions.payments();
-        // Optionally, you can proceed to add shipping methods or other actions
+      if (addressResponse.status === 200) {
+        const firstShippingOption = shippingOptions[0];
+
+        if (firstShippingOption) {
+          const shippingResponse = await axios.post(
+            `${baseURL}/store/carts/${cart_id}/shipping-methods`,
+            {
+              option_id: firstShippingOption.id,
+            }
+          );
+
+          if (shippingResponse.status === 200) {
+            Actions.payments();
+          } else {
+            console.error(
+              "Failed to add shipping method. Unexpected status code:",
+              shippingResponse.status
+            );
+          }
+        } else {
+          console.error("No shipping options available.");
+        }
       } else {
         console.error(
           "Failed to add address. Unexpected status code:",
-          response.status
+          addressResponse.status
         );
       }
     } catch (error) {
-      console.error("Error adding address:", error);
+      console.error("Error placing order:", error);
       console.error("Detailed error response:", error.response);
     }
   };
@@ -83,15 +101,8 @@ const Address = ({ cart }) => {
         </View>
 
         <View style={styles.shipping}>
-          <Text style={styles.title}>Shipping Options</Text>
           {shippingOptions.map((option) => (
-            <View style={styles.shippingOption} key={option.id}>
-              <RadioButton
-                onPress={() => setSelectedShippingOption(option.id)}
-                selected={selectedShippingOption === option.id}
-                children={option.name}
-              />
-            </View>
+            <View style={styles.shippingOption} key={option.id}></View>
           ))}
           <Button onPress={placeOrder} large title="Add Address" />
         </View>

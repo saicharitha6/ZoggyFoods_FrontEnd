@@ -22,8 +22,7 @@ const PaymentsOptions = () => {
 
   return (
     <View style={styles.container}>
-      <Header />
-      <Text style={styles.title}>Select your Payments Method</Text>
+      <Header title="Choose payment Method" isHome={false} isVisible={false} />
       <TouchableOpacity
         style={[
           styles.paymentOption,
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   proceedButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#C37AFF",
     borderRadius: 5,
     padding: 10,
     marginTop: 20,

@@ -35,21 +35,12 @@ export default function Header({
     setIsDropdownVisible(false);
   };
 
-  // const handleCart = () => {
-  //   Actions.cart();
-  //   setIsDropdownVisible(false);
-  // };
-
-  const handleOrders = () => {
-    // Implement your logic to navigate to orders screen
-    setIsDropdownVisible(false);
-  };
   return (
     <View style={styles.container}>
       {isHome ? (
         <View style={styles.header}>
           <Image source={zoggy} style={styles.logo} />
-          {/* <Text style={styles.title}>{title}</Text> */}
+          <Text style={styles.title}>{title}</Text>
         </View>
       ) : (
         <TouchableOpacity onPress={() => Actions.pop()}>
@@ -59,6 +50,7 @@ export default function Header({
             size={24}
             color="black"
           />
+          <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
       )}
       <View style={styles.sideBar}>
@@ -88,9 +80,6 @@ export default function Header({
                   <View style={styles.overlay} />
                 </TouchableWithoutFeedback>
                 <View style={styles.dropdown}>
-                  {/* <TouchableOpacity onPress={handleCart}>
-                  <Text style={styles.dropdownElements}>View Cart</Text>
-                </TouchableOpacity> */}
                   <TouchableOpacity onPress={() => Actions.orders()}>
                     <Text style={styles.dropdownElements}>View Orders</Text>
                   </TouchableOpacity>
@@ -108,7 +97,6 @@ export default function Header({
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
@@ -131,6 +119,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "500",
+    marginLeft: 10,
+    flexDirection: "row",
   },
   cart_count: {
     fontSize: 20,

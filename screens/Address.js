@@ -94,9 +94,9 @@ const Address = ({ cart }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Header title="Checkout" isVisible={false} />
+        <Header title="Add Address" isVisible={false} />
         <View style={styles.address}>
-          <Text style={styles.title}>Shipping Address</Text>
+          <Text style={styles.title}>Please fill in the details</Text>
           <AddressForm onChange={handleAddressInputChange} />
         </View>
 
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginHorizontal: widthToDp(5),
   },
   title: {
-    fontSize: widthToDp(4.5),
+    fontSize: widthToDp(4.0),
   },
   shippingOption: {
     marginTop: heightToDp(2),

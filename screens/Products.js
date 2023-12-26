@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   RefreshControl,
+  Text,
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import ProductCard from "../components/ProductCard";
@@ -16,12 +17,14 @@ import baseURL from "../constants/url";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ProductCategories from "../components/Products/Categories";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [collections, setCollections] = useState([]);
 
   function fetchProducts() {
     axios.get(`${baseURL}/store/products`).then((res) => {
@@ -38,6 +41,13 @@ export default function Products() {
       setCart(data.cart.items);
     });
   };
+
+  function fetchCollections() {
+    axios.get(`${baseURL}/store/collections`).then(({ data }) => {
+      // console.log("Here", data.collections);
+      setCollections(data.collections);
+    });
+  }
 
   function searchFilterFunction(text) {
     let searchQuery = {
@@ -58,11 +68,14 @@ export default function Products() {
   useEffect(() => {
     fetchProducts();
     fetchCart();
+    fetchCollections();
   }, []);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchProducts();
     fetchCart();
+    fetchCollections();
+
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -88,6 +101,12 @@ export default function Products() {
             onChangeText={(text) => searchFilterFunction(text)}
           />
         </View>
+        <ProductCategories
+          categories={collections}
+          getCategorizedProducts={searchFilterFunction}
+        />
+        <Text style={styles.line}>line</Text>
+
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -158,5 +177,11 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 10,
     backgroundColor: "#fff",
+  },
+  line: {
+    width: "90%",
+    height: 1,
+    backgroundColor: "#d7d5d5",
+    marginBottom: 20,
   },
 });

@@ -3,6 +3,7 @@ import Products from "./screens/Products";
 import ProductInfo from "./screens/ProductInfo";
 import Cart from "./screens/Cart";
 import Checkout from "./screens/Checkout";
+import { CartProvider } from './components/CartContext';
 import { Provider as PaperProvider } from "react-native-paper";
 import { useEffect } from "react";
 import axios from "axios";
@@ -54,20 +55,23 @@ export default function App() {
 
   return (
     <PaperProvider>
-      <Router>
-        <Stack key="root">
-          <Scene key="SignIn" component={SignIn} hideNavBar />
-          <Scene key="SignUp" component={SignUp} hideNavBar />
-          <Scene key="products" component={Products} hideNavBar />
-          <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
-          <Scene key="cart" component={Cart} hideNavBar />
-          <Scene key="address" component={Address} hideNavBar />
-          <Scene key="payments" component={Payments} hideNavBar />
-          <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
-          <Scene key="orders" component={Orders} hideNavBar />
-          {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
-        </Stack>
-      </Router>
+      {/* Wrap the entire component tree with CartProvider */}
+      <CartProvider>
+        <Router>
+          <Stack key="root">
+            <Scene key="SignIn" component={SignIn} hideNavBar />
+            <Scene key="SignUp" component={SignUp} hideNavBar />
+            <Scene key="products" component={Products} hideNavBar />
+            <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
+            <Scene key="cart" component={Cart} hideNavBar />
+            <Scene key="address" component={Address} hideNavBar />
+            <Scene key="payments" component={Payments} hideNavBar />
+            <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
+            <Scene key="orders" component={Orders} hideNavBar />
+            {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
+          </Stack>
+        </Router>
+      </CartProvider>
     </PaperProvider>
   );
 }

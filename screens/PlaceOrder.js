@@ -16,8 +16,10 @@ import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import baseURL from "../constants/url";
+import { useCartContext } from '../components/CartContext';
 
 const PlaceOrder = () => {
+  const { cartTotal } = useCartContext();
   const getDeliveryDate = () => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -114,8 +116,8 @@ const PlaceOrder = () => {
             </View>
             {/* Second Column */}
             <View style={styles.column}>
-              <Text style={styles.amount}>₹ 0.00</Text>
-              <Text style={styles.amount1}>₹ 0.00</Text>
+              <Text style={styles.amount}>₹{cartTotal}</Text>
+              <Text style={styles.amount1}>₹{cartTotal}</Text>
             </View>
           </View>
         </View>

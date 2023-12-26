@@ -10,11 +10,12 @@ import { width, widthToDp } from "rn-responsive-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import { Actions } from "react-native-router-flux";
+import { useCartContext } from '../components/CartContext';
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
   const [cart_id, setCartId] = useState(null);
-
+  const { setTotal } = useCartContext();
   const fetchCart = async () => {
     // Get the cart id from the device storage
     const cartId = await AsyncStorage.getItem("cart_id");
@@ -24,6 +25,13 @@ export default function Cart() {
       // Set the cart state to the products in the cart
       setCart(data.cart);
     });
+  };
+
+  const calculateTotal = () => {
+    const itemTotal = cart?.total / 100;
+    const discountTotal = cart?.discount_total / 100;
+    const total = itemTotal - discountTotal;
+    return total.toFixed(2); // Format the total to two decimal places
   };
 
   const onChangeCart = (data) => {
@@ -94,15 +102,15 @@ export default function Cart() {
               },
             ]}
           >
-            {/* Calculating the total */}₹
-            {cart?.total / 100 - cart?.discount_total / 100}
+            {/* Calculating the total */}
+            ₹{calculateTotal()}
           </Text>
         </View>
         <View>
           {/* A button to navigate to PlaceOrder screen */}
           <Button
             large={true}
-            onPress={() => Actions.address()}
+            onPress={() => {setTotal(calculateTotal());Actions.address()}}
             title={cart?.items?.length > 0 ? "Place Order" : "Empty Cart"}
           />
         </View>

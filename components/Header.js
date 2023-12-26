@@ -35,6 +35,11 @@ export default function Header({
     setIsDropdownVisible(false);
   };
 
+  const handleOrders = () => {
+    // Implement your logic to navigate to orders screen
+    setIsDropdownVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       {isHome ? (
@@ -43,13 +48,11 @@ export default function Header({
           <Text style={styles.title}>{title}</Text>
         </View>
       ) : (
-        <TouchableOpacity onPress={() => Actions.pop()}>
-          <Ionicons
-            style={styles.icon}
-            name="arrow-back-outline"
-            size={24}
-            color="black"
-          />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => Actions.pop()}
+        >
+          <Ionicons name="arrow-back-outline" size={24} color="black" />
           <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
       )}
@@ -97,30 +100,30 @@ export default function Header({
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     width: widthToDp(100),
     backgroundColor: "#e67300",
     alignItems: "center",
-    // paddingHorizontal: widthToDp(2),
+    height: 60,
+    paddingHorizontal: widthToDp(2),
   },
-  buttons: {
+  backButton: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    alignItems: "center",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
     width: widthToDp(50),
-    // marginBottom: 3,
   },
   title: {
     fontSize: 20,
     fontWeight: "500",
     marginLeft: 10,
-    flexDirection: "row",
   },
   cart_count: {
     fontSize: 20,
@@ -132,22 +135,13 @@ const styles = StyleSheet.create({
     width: 70,
     height: 50,
   },
-
   addToCart: {
     flexDirection: "row-reverse",
-    // position: "absolute",
-    // bottom: 10,
-    // right: 100,
     width: widthToDp(12),
     height: widthToDp(12),
     alignItems: "center",
     padding: widthToDp(1),
     justifyContent: "center",
-  },
-  icon: {
-    marginLeft: 10,
-    marginTop: 20,
-    marginBottom: 20,
   },
   sideBar: {
     width: widthToDp(50),
@@ -158,32 +152,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingRight: 5,
   },
-
   topBar: {
     flexDirection: "row",
-    // position: "absolute",
-    // top: 10,
-    // right: 10,
   },
   overlay: {
     flex: 1,
-    // backgroundColor: "rgba(0,0,0,0.5)",
   },
   dropdown: {
     position: "absolute",
     top: 40,
     right: 10,
     backgroundColor: "#fff",
-    // padding: 10,
-    // paddingLeft: 0,
     borderRadius: 5,
     elevation: 5,
   },
   dropdownElements: {
-    borderBottomWidth: 1, // Add a bottom border
+    borderBottomWidth: 1,
     borderBottomColor: "#DCDCDC",
     padding: 10,
-    // paddingLeft: 5,
     textAlign: "center",
   },
 });

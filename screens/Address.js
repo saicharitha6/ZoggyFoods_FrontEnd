@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: widthToDp(4.0),
+    paddingTop: 10,
   },
   shippingOption: {
     marginTop: heightToDp(2),

@@ -100,7 +100,6 @@ export default function Header({
          {isOrder ? (
           <>
             <View style={styles.addToCart}>
-              <Text style={styles.myOrder}>My Order</Text>
             </View>
           </>
         ) : (

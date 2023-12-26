@@ -23,12 +23,13 @@ export default function Button({ title, onPress, style, textSize, large }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#C37AFF",
+    backgroundColor: "#e67300",
     padding: 5,
     width: widthToDp(20),
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 59,
+    margin:5
   },
   large: {
     width: "100%",

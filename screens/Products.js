@@ -85,7 +85,7 @@ export default function Products() {
   return (
     <SafeAreaView style={[styles.safeContainer]}>
       <View style={styles.container}>
-        <Header title="Zoggy" isHome={true} count={cart.length} />
+        <Header isHome={true} count={cart.length} />
         <View style={styles.searchBar}>
           {/* search Icon */}
           <Feather

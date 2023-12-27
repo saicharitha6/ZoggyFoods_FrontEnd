@@ -13,8 +13,10 @@ import SignIn from "./screens/SignIn";
 import SignUp from "./screens/SignUp";
 import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
+import Search from "./components/Search/Search";
 import Address from "./screens/Address";
 import Payments from "./screens/Payments";
+import Wallet from "./components/Wallet/Wallet";
 
 export default function App() {
   const getCartId = async () => {
@@ -23,6 +25,7 @@ export default function App() {
     });
   };
   const checkCartId = async () => {
+    // await AsyncStorage.removeItem("cart_id");
     const cartId = await AsyncStorage.getItem("cart_id");
 
     if (cartId) {
@@ -68,6 +71,8 @@ export default function App() {
             <Scene key="payments" component={Payments} hideNavBar />
             <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
             <Scene key="orders" component={Orders} hideNavBar />
+            <Scene key="search" component={Search} hideNavBar />
+            <Scene key="Wallet" component={Wallet} hideNavBar />
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

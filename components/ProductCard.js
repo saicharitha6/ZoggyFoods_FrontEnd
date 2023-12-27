@@ -6,16 +6,22 @@ import axios from "axios";
 import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseURL from "../constants/url";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function ProductCard({ key, product }) {
   const [isCart, setCart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+
+  const resetQuantity = () => {
+    setQuantity(1); // Update the state value when the button is clicked
+  };
 
   const addToCart = async () => {
     const cartId = await AsyncStorage.getItem("cart_id");
     axios
       .post(baseURL + "/store/carts/" + cartId + "/line-items", {
         variant_id: product.variants[0].id,
-        quantity: 1,
+        quantity: quantity,
       })
       .then(({ data }) => {
         // alert(`Item ${product.title} added to cart`);
@@ -24,6 +30,7 @@ export default function ProductCard({ key, product }) {
       .catch((err) => {
         console.log(err);
       });
+      resetQuantity();
   };
   const goToCart = () => {
     Actions.cart();
@@ -40,11 +47,36 @@ export default function ProductCard({ key, product }) {
       />
       <Text style={styles.title}>{product.title}</Text>
       <Text style={styles.category}>{product.handle}</Text>
+      <View style={styles.quantityBtnContainer}>
+            <AntDesign
+              key={product.id}
+              name="minussquareo"
+              style={styles.quantityButton}
+              size={24}
+              color="orange"
+              onPress={() => {
+                setQuantity(quantity-1);
+              }}
+              disabled={quantity === 1}
+            />
+            <Text style={styles.quantityButton}>x{quantity}</Text>
+            <AntDesign
+              key={product.id}
+              name="plussquareo"
+              style={styles.quantityButton}
+              size={24}
+              color="orange"
+              onPress={() => {
+                setQuantity(quantity+1);
+              }}
+              disabled={quantity === 3}
+            />
+          </View>
       <View style={styles.priceContainer}>
         <Text style={styles.price}>
           ₹
-          {product.variants[0].prices[1]?.amount
-            ? product.variants[0].prices[1]?.amount / 100
+          {product.variants[0]?.prices[1]?.amount
+            ? product.variants[0]?.prices[1]?.amount / 100
             : 50}
         </Text>
 
@@ -58,7 +90,7 @@ export default function ProductCard({ key, product }) {
         ) : (
           <Button
             onPress={addToCart}
-            title="Add to Cart"
+            title="Add"
             // large={true}
             style={styles.button}
           />
@@ -97,7 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: heightToDp(3),
+    marginTop: heightToDp(1),
   },
   category: {
     fontSize: widthToDp(3.4),
@@ -111,4 +143,10 @@ const styles = StyleSheet.create({
   button: {
     width: 100,
   },
+  quantityBtnContainer: {
+    flexDirection: "row",
+  },
+  quantityButton:{
+    margin:5
+  }
 });

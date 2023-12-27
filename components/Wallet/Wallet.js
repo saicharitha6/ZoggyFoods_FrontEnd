@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    backgroundColor: "#3498db",
+    backgroundColor: "yellow",
     padding: 10,
     borderRadius: 5,
     flex: 1,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: "green",
   },
   buttonText: {
-    color: "#fff",
+    color: "#000",
     textAlign: "center",
   },
   input: {

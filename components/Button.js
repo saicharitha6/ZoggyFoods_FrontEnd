@@ -23,7 +23,7 @@ export default function Button({ title, onPress, style, textSize, large }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "green",
+    backgroundColor: "darkgreen",
     padding: 5,
     width: widthToDp(20),
     alignItems: "center",

@@ -115,11 +115,6 @@ export default function Products() {
             onChangeText={(text) => searchFilterFunction(text)}
           />
         </View>
-        <ProductCategories
-          categories={collections}
-          getCategorizedProducts={searchFilterFunction}
-        />
-        <Text style={styles.line}>line</Text>
 
         <ScrollView
           refreshControl={
@@ -136,11 +131,29 @@ export default function Products() {
             activeDotStyle={styles.activePaginationDot} // Customize active pagination dot style
             containerStyle={styles.swiperContainer}
           >
-            <Image source={require("../assets/img2.png")} style={styles.image} />
-            <Image source={require("../assets/img1.png")} style={styles.image} />
-            <Image source={require("../assets/img6.png")} style={styles.image} />
-            <Image source={require("../assets/img3.png")} style={styles.image} />
+            <Image
+              source={require("../assets/img2.png")}
+              style={styles.image}
+            />
+            <Image
+              source={require("../assets/img1.png")}
+              style={styles.image}
+            />
+            <Image
+              source={require("../assets/img6.png")}
+              style={styles.image}
+            />
+            <Image
+              source={require("../assets/img3.png")}
+              style={styles.image}
+            />
           </Swiper>
+
+          <ProductCategories
+            categories={collections}
+            getCategorizedProducts={searchFilterFunction}
+          />
+          <Text style={styles.line}>line</Text>
 
           <View style={styles.products}>
             {products.map((product) => (
@@ -168,6 +181,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    borderLeftColor: "yellow", // Set the left border color to yellow
+    borderLeftWidth: 2, // Set the left border width
+    borderRightColor: "yellow", // Set the right border color to yellow
+    borderRightWidth: 2, // Set the right border width
   },
   products: {
     flex: 1,
@@ -213,38 +230,39 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#d7d5d5",
     marginBottom: 20,
+    marginLeft:15,
   },
   swiperContainer: {
     height: 200, // Set a fixed height for the Swiper container
-    overflow: 'hidden',
+    overflow: "hidden",
     margin: 15,
   },
   paginationDotsContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   paginationDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Customize dot color
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // Customize dot color
     margin: 3,
   },
   activePaginationDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#000', // Customize active dot color
+    backgroundColor: "#000", // Customize active dot color
     margin: 3,
   },
   image: {
     flex: 1,
-    resizeMode: 'cover',
-    width: '100%',
+    resizeMode: "cover",
+    width: "100%",
     borderRadius: 10,
   },
 });

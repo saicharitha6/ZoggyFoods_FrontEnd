@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: widthToDp(100),
     height: widthToDp(20),
-    backgroundColor: "#00b33c",
+    backgroundColor: "darkgreen",
     alignItems: "center",
     height: 60,
     paddingHorizontal: widthToDp(2),

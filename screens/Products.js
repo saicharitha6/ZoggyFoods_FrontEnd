@@ -145,10 +145,6 @@ export default function Products() {
               source={require("../assets/img6.png")}
               style={styles.image}
             />
-            <Image
-              source={require("../assets/img3.png")}
-              style={styles.image}
-            />
           </Swiper>
 
           <ProductCategories

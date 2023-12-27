@@ -63,7 +63,7 @@ export default function CartItem({ item, cartId, onChangeCart }) {
               key={product.id}
               name="minussquareo"
               size={24}
-              color="black"
+              color="red"
               onPress={() => {
                 setQuantity(--quantity);
                 updateQty(product.id);
@@ -75,7 +75,7 @@ export default function CartItem({ item, cartId, onChangeCart }) {
               key={product.id}
               name="plussquareo"
               size={24}
-              color="black"
+              color="green"
               onPress={() => {
                 setQuantity(++quantity);
                 updateQty(product.id);

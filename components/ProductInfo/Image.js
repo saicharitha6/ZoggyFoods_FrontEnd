@@ -48,13 +48,13 @@ const styles = StyleSheet.create({
     marginTop: widthToDp(-10),
   },
   imageContainer: {
-    backgroundColor: "#F7F6FB",
+    backgroundColor: "darkgreen",
     paddingBottom: widthToDp(10),
   },
   imagePreview: {
     width: widthToDp(15),
     marginRight: widthToDp(5),
-    borderColor: "#C37AFF",
+    borderColor: "yellow",
     borderRadius: 10,
     height: widthToDp(15),
   },

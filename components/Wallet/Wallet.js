@@ -8,6 +8,8 @@ import {
   Alert,
 } from "react-native";
 import Button from "../Button";
+import { Ionicons } from "@expo/vector-icons";
+import { Actions } from "react-native-router-flux";
 
 const Wallet = () => {
   const [originalWalletAmount, setOriginalWalletAmount] = useState(2000);
@@ -15,9 +17,9 @@ const Wallet = () => {
   const [selectedAmount, setSelectedAmount] = useState("");
 
   const handleSelectAmount = (amount) => {
-   const amountToDeduct = parseInt(amount, 10);
-  setWalletAmount(originalWalletAmount - amountToDeduct);
-  setSelectedAmount(amount.toString());
+    const amountToDeduct = parseInt(amount, 10);
+    setWalletAmount(originalWalletAmount - amountToDeduct);
+    setSelectedAmount(amount.toString());
   };
 
   const handleAddMoney = () => {
@@ -29,6 +31,18 @@ const Wallet = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>My Wallet</Text>
+      <TouchableOpacity
+        onPress={() => Actions.pop()}
+        style={{ position: "absolute", top: 50, left: 0 }}
+      >
+        <Ionicons
+          style={styles.icon}
+          name="arrow-back-outline"
+          size={24}
+          color="black"
+        />
+      </TouchableOpacity>
+
       <View style={styles.card}>
         <View style={styles.card1}>
           <Text style={styles.walletText}> Wallet Amount</Text>
@@ -83,13 +97,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   card: {
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "darkgreen",
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
   },
   card1: {
-    backgroundColor: "white",
+    backgroundColor: "yellow",
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
@@ -103,6 +117,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 30,
     textAlign: "center",
+    marginTop:20,
   },
   addMoney: {
     fontSize: 20,
@@ -123,7 +138,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    backgroundColor: "#3498db",
+    backgroundColor: "yellow",
     padding: 10,
     borderRadius: 5,
     flex: 1,
@@ -134,18 +149,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     marginTop: 20,
+    backgroundColor: "green",
   },
   buttonText: {
-    color: "#fff",
+    color: "#000",
     textAlign: "center",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#000",
     borderRadius: 5,
     padding: 10,
     width: "100%",
     marginBottom: 20,
+    backgroundColor:"#fff"
+  },
+  icon: {
+    marginLeft: 10,
   },
 });
 

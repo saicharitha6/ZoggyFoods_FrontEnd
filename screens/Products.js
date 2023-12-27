@@ -18,6 +18,7 @@ import baseURL from "../constants/url";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Footer from "../components/footer";
 import ProductCategories from "../components/Products/Categories";
 import Swiper from "react-native-swiper";
 
@@ -98,6 +99,7 @@ export default function Products() {
   return (
     <SafeAreaView style={[styles.safeContainer]}>
       <View style={styles.container}>
+        {/* <Header title="Zoggy" isHome={true} count={cart.length} /> */}
         <Header isHome={true} count={cart.length} />
         <View style={styles.searchBar}>
           {/* search Icon */}
@@ -154,6 +156,7 @@ export default function Products() {
           </View>
         </ScrollView>
       </View>
+      <Footer />
     </SafeAreaView>
   );
 }
@@ -248,3 +251,4 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
+

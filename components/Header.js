@@ -9,12 +9,12 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { widthToDp } from "rn-responsive-screen";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons, EvilIcons } from "@expo/vector-icons";
 import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseURL from "../constants/url";
 import axios from "axios";
-import zoggy from "../assets/zoggy.png";
+import user from "../assets/user.png";
 
 export default function Header({
   title,
@@ -45,8 +45,14 @@ export default function Header({
     <View style={styles.container}>
       {isHome ? (
         <View style={styles.header}>
-          <Image source={zoggy} style={styles.logo} />
-          <Text style={styles.title}>{title}</Text>
+          <Image source={user} style={styles.logo} />
+          <View style={styles.user}>
+            <Text style={styles.title}>Hi Guest</Text>
+            <View style={styles.location}>
+              <EvilIcons name="location" size={24} color="white" />
+              <Text style={styles.title}>, West Bengal</Text>
+            </View>
+          </View>
         </View>
       ) : (
         <TouchableOpacity
@@ -56,10 +62,19 @@ export default function Header({
           <Ionicons name="arrow-back-outline" size={24} color="black" />
           <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
+        
       )}
       <View style={styles.sideBar}>
         {isVisible ? (
           <>
+            <View>
+              <EvilIcons
+                name="search"
+                size={35}
+                color="white"
+                onPress={() => Actions.search()}
+              />
+            </View>
             <View style={styles.addToCart}>
               <Text style={styles.cart_count}>{count > 0 ? count : ""}</Text>
               <Feather
@@ -69,29 +84,8 @@ export default function Header({
                 onPress={() => Actions.cart()}
               />
             </View>
-            <View style={styles.topBar}>
-              <TouchableWithoutFeedback onPress={toggleDropdown}>
-                <Feather name="user" size={24} color="white" />
-              </TouchableWithoutFeedback>
-              <Modal
-                transparent={true}
-                visible={isDropdownVisible}
-                onRequestClose={() => setIsDropdownVisible(false)}
-              >
-                <TouchableWithoutFeedback
-                  onPress={() => setIsDropdownVisible(false)}
-                >
-                  <View style={styles.overlay} />
-                </TouchableWithoutFeedback>
-                <View style={styles.dropdown}>
-                  <TouchableOpacity onPress={() => Actions.orders()}>
-                    <Text style={styles.dropdownElements}>View Orders</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleLogout}>
-                    <Text style={styles.dropdownElements}>Logout</Text>
-                  </TouchableOpacity>
-                </View>
-              </Modal>
+            <View style={styles.notify}>
+              <Ionicons name="notifications" size={24} color="white" />
             </View>
           </>
         ) : (
@@ -114,7 +108,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     width: widthToDp(100),
-    backgroundColor: "#e67300",
+    height: widthToDp(20),
+    backgroundColor: "#00b33c",
     alignItems: "center",
     height: 60,
     paddingHorizontal: widthToDp(2),
@@ -130,9 +125,9 @@ const styles = StyleSheet.create({
     width: widthToDp(50),
   },
   title: {
-    fontSize: 20,
-    fontWeight: "500",
-    marginLeft: 10,
+    fontSize: 15,
+    fontWeight: "400",
+    color: "white",
   },
   cart_count: {
     fontSize: 20,
@@ -167,7 +162,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingRight: 5,
   },
-  topBar: {
+
+  notify: {
     flexDirection: "row",
   },
   overlay: {
@@ -186,6 +182,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "#DCDCDC",
     padding: 10,
     textAlign: "center",
+  },
+  user: {
+    flexDirection: "column",
+  },
+  location: {
+    flexDirection: "row",
   },
   myOrder: {
     color: "#ffffff",

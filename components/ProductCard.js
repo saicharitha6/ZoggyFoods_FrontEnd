@@ -9,14 +9,10 @@ import baseURL from "../constants/url";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function ProductCard({ key, product }) {
-  const [isCart, setCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isInCart, setIsInCart] = useState(false);
 
-  const resetQuantity = () => {
-    setQuantity(1); // Update the state value when the button is clicked
-  };
-
-  const addToCart = async () => {
+  const addToCart = async (quantity) => {
     const cartId = await AsyncStorage.getItem("cart_id");
     axios
       .post(baseURL + "/store/carts/" + cartId + "/line-items", {
@@ -25,16 +21,11 @@ export default function ProductCard({ key, product }) {
       })
       .then(({ data }) => {
         // alert(`Item ${product.title} added to cart`);
-        setCart(true);
       })
       .catch((err) => {
         console.log(err);
       });
-      resetQuantity();
-  };
-  const goToCart = () => {
-    Actions.cart();
-    setCart(false);
+      setIsInCart(true);
   };
 
   return (
@@ -47,31 +38,7 @@ export default function ProductCard({ key, product }) {
       />
       <Text style={styles.title}>{product.title}</Text>
       <Text style={styles.category}>{product.handle}</Text>
-      <View style={styles.quantityBtnContainer}>
-            <AntDesign
-              key={product.id}
-              name="minussquareo"
-              style={styles.quantityButton}
-              size={24}
-              color="orange"
-              onPress={() => {
-                setQuantity(quantity-1);
-              }}
-              disabled={quantity === 1}
-            />
-            <Text style={styles.quantityButton}>x{quantity}</Text>
-            <AntDesign
-              key={product.id}
-              name="plussquareo"
-              style={styles.quantityButton}
-              size={24}
-              color="orange"
-              onPress={() => {
-                setQuantity(quantity+1);
-              }}
-              disabled={quantity === 3}
-            />
-          </View>
+ 
       <View style={styles.priceContainer}>
         <Text style={styles.price}>
           ₹
@@ -80,20 +47,42 @@ export default function ProductCard({ key, product }) {
             : 50}
         </Text>
 
-        {isCart ? (
+        {!isInCart ? (
           <Button
-            onPress={goToCart}
-            title="Go to Cart"
-            // large={true}
-            style={styles.button}
-          />
+          onPress={()=>{addToCart(1)}}
+          title="Add"
+          style={styles.button}
+        />
         ) : (
-          <Button
-            onPress={addToCart}
-            title="Add"
-            // large={true}
-            style={styles.button}
+          <View style={styles.quantityBtnContainer}>
+          <AntDesign
+            key={product.id}
+            name="minussquareo"
+            style={styles.quantityButton}
+            size={24}
+            color="orange"
+            onPress={() => {
+              console.log(quantity);
+              setQuantity(quantity-1);
+              console.log(quantity);
+              addToCart(-1);
+            }}
+            disabled={quantity <= 1}
           />
+          <Text style={styles.quantityButton}>x{quantity}</Text>
+          <AntDesign
+            key={product.id}
+            name="plussquareo"
+            style={styles.quantityButton}
+            size={24}
+            color="orange"
+            onPress={() => {
+              setQuantity(quantity+1);
+              addToCart(1);
+            }}
+            disabled={quantity >= 3}
+          />
+        </View>
         )}
       </View>
     </View>

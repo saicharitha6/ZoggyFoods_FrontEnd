@@ -39,6 +39,29 @@ export default function MetaInfo({ product }) {
     setPrice(product.variants[index]?.prices[1]?.amount / 100);
   }
 
+  const calculateDeliveryTime = () => {
+    const currentDate = new Date();
+    const deliveryDate = new Date(currentDate);
+    deliveryDate.setDate(currentDate.getDate() + 1);
+
+    // Format the date and time for display
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    };
+    const formattedDeliveryTime = deliveryDate.toLocaleDateString(
+      "en-US",
+      options
+    );
+
+    return formattedDeliveryTime;
+  };
+
   return (
     <SafeAreaView style={[styles.safeContainer]}>
       <View style={styles.container}>
@@ -70,6 +93,10 @@ export default function MetaInfo({ product }) {
               </Text>
             </TouchableOpacity>
           ))}
+        </View>
+        <View style={styles.estimatedTime}>
+          <Text style={styles.heading}>Estimated Delivery Time</Text>
+          <Text style={styles.timeText}>{calculateDeliveryTime()}</Text>
         </View>
         <Text style={styles.heading}>Description</Text>
         <Text style={styles.description}>{product.description}</Text>
@@ -132,5 +159,14 @@ const styles = StyleSheet.create({
     fontSize: heightToDp(4),
     color: "#aaa",
     marginTop: heightToDp(2),
+  },
+  estimatedTime: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  timeText: {
+    color: "green",
+    fontWeight: "bold",
+    marginTop: 5,
   },
 });

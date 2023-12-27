@@ -3,6 +3,7 @@ import Products from "./screens/Products";
 import ProductInfo from "./screens/ProductInfo";
 import Cart from "./screens/Cart";
 import Checkout from "./screens/Checkout";
+import { CartProvider } from './components/CartContext';
 import { Provider as PaperProvider } from "react-native-paper";
 import { useEffect } from "react";
 import axios from "axios";
@@ -13,6 +14,9 @@ import SignUp from "./screens/SignUp";
 import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
 import Search from "./components/Search/Search";
+import Address from "./screens/Address";
+import Payments from "./screens/Payments";
+import Wallet from "./components/Wallet/Wallet";
 
 export default function App() {
   const getCartId = async () => {
@@ -54,19 +58,25 @@ export default function App() {
 
   return (
     <PaperProvider>
-      <Router>
-        <Stack key="root">
-          <Scene key="SignIn" component={SignIn} hideNavBar />
-          <Scene key="SignUp" component={SignUp} hideNavBar />
-          <Scene key="products" component={Products} hideNavBar />
-          <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
-          <Scene key="cart" component={Cart} hideNavBar />
-          <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
-          <Scene key="orders" component={Orders} hideNavBar />
-          <Scene key="search" component={Search} hideNavBar />
-          {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
-        </Stack>
-      </Router>
+      {/* Wrap the entire component tree with CartProvider */}
+      <CartProvider>
+        <Router>
+          <Stack key="root">
+            <Scene key="SignIn" component={SignIn} hideNavBar />
+            <Scene key="SignUp" component={SignUp} hideNavBar />
+            <Scene key="products" component={Products} hideNavBar />
+            <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
+            <Scene key="cart" component={Cart} hideNavBar />
+            <Scene key="address" component={Address} hideNavBar />
+            <Scene key="payments" component={Payments} hideNavBar />
+            <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
+            <Scene key="orders" component={Orders} hideNavBar />
+            <Scene key="search" component={Search} hideNavBar />
+            <Scene key="Wallet" component={Wallet} hideNavBar />
+            {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
+          </Stack>
+        </Router>
+      </CartProvider>
     </PaperProvider>
   );
 }

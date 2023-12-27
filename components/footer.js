@@ -20,7 +20,7 @@ const Footer = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => console.log("Wallet button pressed")}
+        onPress={() => Actions.Wallet()}
       >
         <Entypo name="wallet" size={30} color="black" />
         <Text style={styles.buttonText}>Wallet</Text>
@@ -42,7 +42,7 @@ const Footer = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => console.log("History button pressed")}
+        onPress={() => Actions.orders()}
       >
         <FontAwesome5 name="history" size={30} color="black" />
         <Text style={styles.buttonText}>History</Text>

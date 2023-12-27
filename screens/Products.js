@@ -3,10 +3,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Image,
   TextInput,
   RefreshControl,
+  Text,
 } from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import ProductCard from "../components/ProductCard";
 import { widthToDp } from "rn-responsive-screen";
 import axios from "axios";
@@ -16,13 +18,28 @@ import baseURL from "../constants/url";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Footer from "../components/Footer";
+import Footer from "../components/footer";
+import ProductCategories from "../components/Products/Categories";
+import Swiper from "react-native-swiper";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [collections, setCollections] = useState([]);
+  const swiperRef = useRef(null);
+
+  useEffect(() => {
+    const autoplayInterval = 3000; // Set the interval in milliseconds
+    const autoplayTimer = setInterval(() => {
+      if (swiperRef.current && swiperRef.current.scrollBy) {
+        swiperRef.current.scrollBy(1);
+      }
+    }, autoplayInterval);
+
+    return () => clearInterval(autoplayTimer);
+  }, []);
 
   function fetchProducts() {
     axios.get(`${baseURL}/store/products`).then((res) => {
@@ -40,14 +57,40 @@ export default function Products() {
     });
   };
 
+  function fetchCollections() {
+    axios.get(`${baseURL}/store/collections`).then(({ data }) => {
+      // console.log("Here", data.collections);
+      setCollections(data.collections);
+    });
+  }
+
+  function searchFilterFunction(text) {
+    let searchQuery = {
+      q: text,
+    };
+    setSearch(text);
+    axios({
+      method: "post",
+      url: `${baseURL}/store/products/search`,
+      data: searchQuery,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      setProducts(res.data.hits);
+    });
+  }
   useEffect(() => {
     fetchProducts();
     fetchCart();
+    fetchCollections();
   }, []);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchProducts();
     fetchCart();
+    fetchCollections();
+
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -56,12 +99,51 @@ export default function Products() {
   return (
     <SafeAreaView style={[styles.safeContainer]}>
       <View style={styles.container}>
-        <Header title="Zoggy" isHome={true} count={cart.length} />
+        {/* <Header title="Zoggy" isHome={true} count={cart.length} /> */}
+        <Header isHome={true} count={cart.length} />
+        <View style={styles.searchBar}>
+          {/* search Icon */}
+          <Feather
+            name="search"
+            size={20}
+            color="black"
+            style={{ marginLeft: 1 }}
+          />
+          {/* Input field */}
+          <TextInput
+            style={styles.input}
+            placeholder="Search"
+            value={search}
+            onChangeText={(text) => searchFilterFunction(text)}
+          />
+        </View>
+        <ProductCategories
+          categories={collections}
+          getCategorizedProducts={searchFilterFunction}
+        />
+        <Text style={styles.line}>line</Text>
+
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+          <Swiper
+            ref={swiperRef}
+            autoplay
+            loop
+            showsButtons={false}
+            showsPagination={true} // Enable pagination
+            dotStyle={styles.paginationDot} // Customize pagination dot style
+            activeDotStyle={styles.activePaginationDot} // Customize active pagination dot style
+            containerStyle={styles.swiperContainer}
+          >
+            <Image source={require("../assets/img2.png")} style={styles.image} />
+            <Image source={require("../assets/img1.png")} style={styles.image} />
+            <Image source={require("../assets/img6.png")} style={styles.image} />
+            <Image source={require("../assets/img3.png")} style={styles.image} />
+          </Swiper>
+
           <View style={styles.products}>
             {products.map((product) => (
               <TouchableOpacity
@@ -128,6 +210,45 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 10,
     backgroundColor: "#fff",
+  },
+  line: {
+    width: "90%",
+    height: 1,
+    backgroundColor: "#d7d5d5",
+    marginBottom: 20,
+  },
+  swiperContainer: {
+    height: 200, // Set a fixed height for the Swiper container
+    overflow: 'hidden',
+    margin: 15,
+  },
+  paginationDotsContainer: {
+    position: 'absolute',
+    bottom: 10,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Customize dot color
+    margin: 3,
+  },
+  activePaginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#000', // Customize active dot color
+    margin: 3,
+  },
+  image: {
+    flex: 1,
+    resizeMode: 'cover',
+    width: '100%',
+    borderRadius: 10,
   },
 });
 

@@ -75,8 +75,8 @@ export default function ProductCard({ key, product }) {
       <View style={styles.priceContainer}>
         <Text style={styles.price}>
           ₹
-          {product.variants[0].prices[1]?.amount
-            ? product.variants[0].prices[1]?.amount / 100
+          {product.variants[0]?.prices[1]?.amount
+            ? product.variants[0]?.prices[1]?.amount / 100
             : 50}
         </Text>
 

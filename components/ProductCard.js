@@ -53,7 +53,7 @@ export default function ProductCard({ key, product }) {
               name="minussquareo"
               style={styles.quantityButton}
               size={24}
-              color="orange"
+              color="red"
               onPress={() => {
                 setQuantity(quantity-1);
               }}
@@ -65,7 +65,7 @@ export default function ProductCard({ key, product }) {
               name="plussquareo"
               style={styles.quantityButton}
               size={24}
-              color="orange"
+              color="green"
               onPress={() => {
                 setQuantity(quantity+1);
               }}

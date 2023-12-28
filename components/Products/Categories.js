@@ -10,10 +10,14 @@ import {
 import { widthToDp } from "rn-responsive-screen";
 
 const ProductCategories = ({ categories, getCategorizedProducts }) => {
-  const [selectedCollection, setSelectedCollections] = useState("");
+  const [selectedCollection, setSelectedCollections] = useState();
+
   const selectCategory = (category) => {
-    setSelectedCollections(category);
+    setSelectedCollections((prevSelected) =>
+      prevSelected === category ? null : category
+    );
   };
+
   useEffect(() => {
     getCategorizedProducts(selectedCollection);
   }, [selectedCollection]);
@@ -29,10 +33,10 @@ const ProductCategories = ({ categories, getCategorizedProducts }) => {
         {categories.map((category, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => selectCategory(category.title)}
+            onPress={() => selectCategory(category)}
             style={[
               styles.categoryItem,
-              selectedCollection === category.title && styles.selectedCategory,
+              selectedCollection === category && styles.selectedCategory,
             ]}
           >
             <Image
@@ -73,9 +77,8 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "space-around",
     borderColor: "yellow",
-    borderWidth: 2, 
+    borderWidth: 2,
   },
-
   categoryImage: {
     width: 70,
     height: 70,

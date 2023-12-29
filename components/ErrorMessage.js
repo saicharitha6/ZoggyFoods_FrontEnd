@@ -6,28 +6,38 @@ const ErrMessage = ({ type, text, onEnd }) => {
   const styles = StyleSheet.create({
     container: {
       position: "absolute",
-      bottom: 50,
+      left: 0,
+      right: 0,
+      bottom: 100,
+      justifyContent: "center",
+      alignItems: "center",
     },
     errMsg: {
       padding: 10,
-      borderRadius: 5,
-      opacity: 0.6,
+      borderRadius: 50,
       height: 50,
       flexDirection: "row",
       alignItems: "center",
       gap: 5,
     },
     authentication: {
-      backgroundColor: "red",
+      backgroundColor: "#ff4d4fcc",
       color: "#fff",
     },
     validation: {
-      backgroundColor: "yellow",
+      backgroundColor: "#fcff4dcc",
       color: "#000",
+    },
+    message: {
+      backgroundColor: "#cdcdcdcc",
+      justifyItems: "center",
     },
     closeButton: {
       width: 15,
       height: 15,
+    },
+    text: {
+      // fontWeight: "900",
     },
   });
   useEffect(() => {
@@ -49,7 +59,7 @@ const ErrMessage = ({ type, text, onEnd }) => {
             title="close icons"
             style={styles.closeButton}
           />
-          <Text>{text}</Text>
+          <Text style={styles.text}>{text}</Text>
         </TouchableOpacity>
       )}
     </View>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import {
   AntDesign,
@@ -7,10 +7,34 @@ import {
   Entypo,
 } from "@expo/vector-icons";
 import { Actions } from "react-native-router-flux";
+import ErrMessage from "./ErrorMessage";
 
 const Footer = () => {
+  const [showMessage, setShowMessage] = useState(false);
+
+  const showMessageHandler = () => {
+    setShowMessage(true);
+    // if (text.length !== 0) {
+    //   const timeoutId = setTimeout(() => {
+    //     onEnd();
+    //   }, 5000);
+
+    //   return () => clearTimeout(timeoutId);
+    // }
+  };
+  const hideMessageHandler = () => {
+    setShowMessage(false);
+  };
+
   return (
     <View style={styles.footer}>
+      {showMessage && (
+        <ErrMessage
+          text="This Feature will be available soon"
+          type="message"
+          onEnd={hideMessageHandler}
+        />
+      )}
       <TouchableOpacity
         style={styles.button}
         onPress={() => console.log("Subscriptions button pressed")}
@@ -20,7 +44,9 @@ const Footer = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => Actions.Wallet()}
+        onPress={() => {
+          showMessageHandler();
+        }}
       >
         <Entypo name="wallet" size={30} color="white" />
         <Text style={styles.buttonText}>Wallet</Text>
@@ -40,10 +66,7 @@ const Footer = () => {
         <AntDesign name="calendar" size={30} color="white" />
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => Actions.orders()}
-      >
+      <TouchableOpacity style={styles.button} onPress={() => Actions.orders()}>
         <FontAwesome5 name="history" size={30} color="white" />
         <Text style={styles.buttonText}>History</Text>
       </TouchableOpacity>
@@ -65,15 +88,20 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: "relative",
-    backgroundColor: "#000", 
-    borderRadius: 30, 
-    width: 60, 
-    height: 60, 
-    bottom: 15, 
+    backgroundColor: "#000",
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    bottom: 15,
     // zIndex: 1, // Ensure the floating button is above other elements
     justifyContent: "center",
     alignItems: "center",
-    color:"#000"
+    color: "#000",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 7,
   },
   buttonText: {
     color: "#fff",

@@ -19,6 +19,7 @@ const ErrMessage = ({ type, text, onEnd }) => {
       flexDirection: "row",
       alignItems: "center",
       gap: 5,
+      paddingHorizontal: 50,
     },
     authentication: {
       backgroundColor: "#ff4d4fcc",

@@ -159,10 +159,8 @@ const SignInForm = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    marginTop: 80,
     padding: 20,
     width: "90%",
   },

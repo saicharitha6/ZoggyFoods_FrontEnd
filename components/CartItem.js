@@ -80,7 +80,7 @@ export default function CartItem({ item, cartId, onChangeCart }) {
                 setQuantity(++quantity);
                 updateQty(product.id);
               }}
-              disabled={quantity === 3}
+              // disabled={quantity === 3}
             />
             <AntDesign
               name="delete"

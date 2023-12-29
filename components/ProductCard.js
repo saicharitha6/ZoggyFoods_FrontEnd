@@ -25,7 +25,7 @@ export default function ProductCard({ key, product }) {
       .catch((err) => {
         console.log(err);
       });
-      setIsInCart(true);
+    setIsInCart(true);
   };
 
   return (
@@ -36,54 +36,58 @@ export default function ProductCard({ key, product }) {
         }}
         style={styles.image}
       />
-      <Text style={styles.title}>{product.title}</Text>
-      <Text style={styles.category}>{product.handle}</Text>
- 
-      <View style={styles.priceContainer}>
-        <Text style={styles.price}>
-          ₹
-          {product.variants[0]?.prices[1]?.amount
-            ? product.variants[0]?.prices[1]?.amount / 100
-            : 50}
-        </Text>
+      <View style={styles.productDetails}>
+        <Text style={styles.title}>{product.title}</Text>
+        <Text style={styles.category}>{product.handle}</Text>
 
-        {!isInCart ? (
-          <Button
-          onPress={()=>{addToCart(1)}}
-          title="Add"
-          style={styles.button}
-        />
-        ) : (
-          <View style={styles.quantityBtnContainer}>
-          <AntDesign
-            key={product.id}
-            name="minussquareo"
-            style={styles.quantityButton}
-            size={24}
-            color="red"
-            onPress={() => {
-              console.log(quantity);
-              setQuantity(quantity-1);
-              console.log(quantity);
-              addToCart(-1);
-            }}
-            disabled={quantity <= 1}
-          />
-          <Text style={styles.quantityButton}>x{quantity}</Text>
-          <AntDesign
-            key={product.id}
-            name="plussquareo"
-            style={styles.quantityButton}
-            size={24}
-            color="green"
-            onPress={() => {
-              setQuantity(quantity+1);
-              addToCart(1);
-            }}
-            disabled={quantity >= 3}
-          />
+        <View style={styles.priceContainer}>
+          <Text style={styles.price}>
+            ₹
+            {product.variants[0]?.prices[1]?.amount
+              ? product.variants[0]?.prices[1]?.amount / 100
+              : 50}
+          </Text>
+
+          {!isInCart ? (
+            <Button
+              onPress={() => {
+                addToCart(1);
+              }}
+              title="Add"
+              style={styles.button}
+            />
+          ) : (
+            <View style={styles.quantityBtnContainer}>
+              <AntDesign
+                key={product.id}
+                name="minussquareo"
+                style={styles.quantityButton}
+                size={24}
+                color="red"
+                onPress={() => {
+                  console.log(quantity);
+                  setQuantity(quantity - 1);
+                  console.log(quantity);
+                  addToCart(-1);
+                }}
+                disabled={quantity <= 1}
+              />
+              <Text style={styles.quantityButton}>x{quantity}</Text>
+              <AntDesign
+                key={product.id}
+                name="plussquareo"
+                style={styles.quantityButton}
+                size={24}
+                color="green"
+                onPress={() => {
+                  setQuantity(quantity + 1);
+                  addToCart(1);
+                }}
+                // disabled={quantity >= 3}
+              />
+            </View>
+          )}
         </View>
-        )}
       </View>
     </View>
   );
@@ -101,14 +105,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 6.84,
     elevation: 5,
-    padding: 10,
+    // padding: 10,
     width: widthToDp(42),
     backgroundColor: "#fff",
   },
   image: {
     height: heightToDp(40),
-    borderRadius: 7,
-    marginBottom: heightToDp(2),
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    marginBottom: heightToDp(1),
+  },
+  productDetails: {
+    padding: 10,
   },
   title: {
     fontSize: widthToDp(3.7),
@@ -135,7 +143,7 @@ const styles = StyleSheet.create({
   quantityBtnContainer: {
     flexDirection: "row",
   },
-  quantityButton:{
-    margin:5
-  }
+  quantityButton: {
+    margin: 5,
+  },
 });

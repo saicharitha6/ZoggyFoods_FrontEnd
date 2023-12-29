@@ -19,8 +19,8 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/footer";
-import ProductCategories from "../components/Products/Categories";
-import Swiper from "react-native-swiper";
+// import ProductCategories from "../components/Products/Categories";
+// import Swiper from "react-native-swiper";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -28,6 +28,7 @@ export default function Products() {
   const [cart, setCart] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [collections, setCollections] = useState([]);
+  const [selectedCollection, setSelectedCollections] = useState(null);
   const swiperRef = useRef(null);
 
   useEffect(() => {
@@ -62,6 +63,10 @@ export default function Products() {
       // console.log("Here", data.collections);
       setCollections(data.collections);
     });
+  }
+
+  function filterProductsBasedOnCollection(category) {
+    setSelectedCollections(category);
   }
 
   function searchFilterFunction(text) {
@@ -123,7 +128,7 @@ export default function Products() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <Swiper
+          {/* <Swiper
             ref={swiperRef}
             autoplay
             loop
@@ -145,23 +150,37 @@ export default function Products() {
               source={require("../assets/img6.png")}
               style={styles.image}
             />
-          </Swiper>
+          </Swiper> */}
 
-          <ProductCategories
+          {/* <ProductCategories
             categories={collections}
-            getCategorizedProducts={searchFilterFunction}
-          />
+            getCategorizedProducts={filterProductsBasedOnCollection}
+          /> */}
           <Text style={styles.line}>line</Text>
 
           <View style={styles.products}>
-            {products.map((product) => (
-              <TouchableOpacity
-                key={product.id}
-                onPress={() => Actions.ProductInfo({ productId: product.id })}
-              >
-                <ProductCard product={product} />
-              </TouchableOpacity>
-            ))}
+            {products.map((product) =>
+              selectedCollection !== undefined &&
+              selectedCollection !== null ? (
+                product.collection.id === selectedCollection.id && (
+                  <TouchableOpacity
+                    key={product.id}
+                    onPress={() =>
+                      Actions.ProductInfo({ productId: product.id })
+                    }
+                  >
+                    <ProductCard product={product} />
+                  </TouchableOpacity>
+                )
+              ) : (
+                <TouchableOpacity
+                  key={product.id}
+                  onPress={() => Actions.ProductInfo({ productId: product.id })}
+                >
+                  <ProductCard product={product} />
+                </TouchableOpacity>
+              )
+            )}
           </View>
         </ScrollView>
       </View>
@@ -229,7 +248,7 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#d7d5d5",
     marginBottom: 20,
-    marginLeft:15,
+    marginLeft: 15,
   },
   swiperContainer: {
     height: 200, // Set a fixed height for the Swiper container
@@ -265,4 +284,3 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
-

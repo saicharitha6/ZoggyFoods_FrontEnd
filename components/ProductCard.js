@@ -80,7 +80,7 @@ export default function ProductCard({ key, product }) {
               setQuantity(quantity+1);
               addToCart(1);
             }}
-            disabled={quantity >= 3}
+            // disabled={quantity >= 3}
           />
         </View>
         )}

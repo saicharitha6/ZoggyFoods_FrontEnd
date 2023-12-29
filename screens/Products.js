@@ -19,8 +19,8 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/footer";
-import ProductCategories from "../components/Products/Categories";
-import Swiper from "react-native-swiper";
+// import ProductCategories from "../components/Products/Categories";
+// import Swiper from "react-native-swiper";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -123,7 +123,7 @@ export default function Products() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <Swiper
+          {/* <Swiper
             ref={swiperRef}
             autoplay
             loop
@@ -145,12 +145,12 @@ export default function Products() {
               source={require("../assets/img6.png")}
               style={styles.image}
             />
-          </Swiper>
+          </Swiper> */}
 
-          <ProductCategories
+          {/* <ProductCategories
             categories={collections}
             getCategorizedProducts={searchFilterFunction}
-          />
+          /> */}
           <Text style={styles.line}>line</Text>
 
           <View style={styles.products}>

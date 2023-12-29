@@ -1,3 +1,4 @@
+// Removed Categories from UI
 import React, { useEffect, useState } from "react";
 import {
   View,

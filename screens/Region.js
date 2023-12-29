@@ -29,6 +29,7 @@ const ExploreScreen = () => {
   return (
     <View style={styles.container}>
       <WelcomeText />
+      <Text style={styles.title}>Select your location</Text>
       <View style={styles.pickerContainer}>
         <Picker
           style={styles.dropdown}
@@ -97,7 +98,7 @@ const ExploreScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 100,
     paddingHorizontal: 40,
     backgroundColor: "white",
   },
@@ -106,6 +107,13 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: "center",
     marginBottom: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 40,
+    marginTop: 20,
   },
   pickerContainer: {
     borderWidth: 1,

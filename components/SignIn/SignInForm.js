@@ -113,7 +113,7 @@ const SignInForm = () => {
   return (
     <View style={styles.container}>
       <WelcomeText />
-      <View style={{ alignSelf: "flex-start" }}>
+      <View style={{ alignSelf: "center" }}>
         <Text style={styles.title}>Sign In</Text>
       </View>
 
@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     width: "90%",
+    paddingTop: 100,
   },
   title: {
     fontSize: 24,

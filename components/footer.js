@@ -18,10 +18,7 @@ const Footer = () => {
         <MaterialCommunityIcons name="calendar-sync" size={30} color="white" />
         <Text style={styles.buttonText}>Subscriptions</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => Actions.Wallet()}
-      >
+      <TouchableOpacity style={styles.button} onPress={() => Actions.Wallet()}>
         <Entypo name="wallet" size={30} color="white" />
         <Text style={styles.buttonText}>Wallet</Text>
       </TouchableOpacity>
@@ -40,10 +37,7 @@ const Footer = () => {
         <AntDesign name="calendar" size={30} color="white" />
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => Actions.orders()}
-      >
+      <TouchableOpacity style={styles.button} onPress={() => Actions.orders()}>
         <FontAwesome5 name="history" size={30} color="white" />
         <Text style={styles.buttonText}>History</Text>
       </TouchableOpacity>
@@ -65,15 +59,20 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: "relative",
-    backgroundColor: "#000", 
-    borderRadius: 30, 
-    width: 60, 
-    height: 60, 
-    bottom: 15, 
+    backgroundColor: "#000",
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    bottom: 15,
     // zIndex: 1, // Ensure the floating button is above other elements
     justifyContent: "center",
     alignItems: "center",
-    color:"#000"
+    color: "#000",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 7,
   },
   buttonText: {
     color: "#fff",

@@ -21,135 +21,98 @@ const SignInForm = () => {
   const [loading, setLoading] = useState(false);
 
   const {
-    value: enteredEmail,
-    isValid: emailIsValid,
-    hasError: emailIsInvalid,
-    valueChangeHandler: emailChangeHandler,
-    validateValueHandler: validateEmailHandler,
-    focusHandler: emailFocusHandler,
-    isFocused: emailIsFocused,
-    reset: emailReset,
+    value: enteredPhoneNumber,
+    isValid: PhoneNumberIsValid,
+    hasError: PhoneNumberIsInvalid,
+    valueChangeHandler: PhoneNumberChangeHandler,
+    validateValueHandler: validatePhoneNumberHandler,
+    focusHandler: PhoneNumberFocusHandler,
+    isFocused: PhoneNumberIsFocused,
+    reset: PhoneNumberReset,
   } = useInput({
-    validateValue: (value) => value.trim().length >= 3 && value.includes("@"),
-  });
-  const {
-    value: enteredPassword,
-    isValid: passwordIsValid,
-    hasError: passwordIsInvalid,
-    valueChangeHandler: passwordChangeHandler,
-    validateValueHandler: validatePasswordHandler,
-    focusHandler: passwordFocusHandler,
-    isFocused: passwordIsFocused,
-    reset: passwordReset,
-  } = useInput({
-    validateValue: (value) => value.trim().length >= 8,
+    validateValue: (value) => value.trim().length === 10 && /^\d+$/.test(value),
   });
 
-  function authenticationHandler(loginData) {
-    return axios({
-      method: "post",
-      url: `${baseURL}/store/auth`,
-      data: loginData,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
+  const handleSubmit = async () => {
+    // Validate the phone number
+    validatePhoneNumberHandler();
+
+    if (!PhoneNumberIsValid) {
+      setErrMessage(
+        "Invalid phone number. Please enter a valid 10-digit number."
+      );
+      return;
+    }
+    Actions.OTPVerification();
+    try {
+      setLoading(true);
+      const response = await axios.post(`${baseURL}/send-otp`, {
+        phoneNumber: enteredPhoneNumber,
+      });
+      console.log(response.data);
+    } catch (error) {
+      setErrMessage("Error sending OTP. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   function endMessage() {
     setErrMessage("");
   }
 
-  function resetAll() {
-    passwordReset();
-    emailReset();
-  }
-
-  const handleSubmit = () => {
-    setLoading(true); // Set loading to true before making the request
-
-    if (emailIsValid && passwordIsValid) {
-      authenticationHandler({
-        email: enteredEmail,
-        password: enteredPassword,
-      })
-        .then((res) => {
-          setLoading(false); // Set loading to false after successful request
-          if (res.data !== undefined) {
-            Actions.products();
-          } else {
-            setErrMessage("Unexpected response structure");
-            resetAll();
-          }
-        })
-        .catch((err) => {
-          setLoading(false); // Set loading to false after failed request
-
-          const statusCode = err.response.status;
-
-          if (statusCode === 401) {
-            setLoading(true);
-            axios.get(`${baseURL}/store/auth/${enteredEmail}`).then((res) => {
-              setLoading(false);
-              if (res.data.exists) {
-                passwordReset();
-                setErrMessage("Incorrect password");
-              } else {
-                resetAll();
-                setErrMessage("Invalid credentials.");
-              }
-            });
-          } else if (statusCode === 400) {
-            setErrMessage("Invalid data");
-            resetAll();
-          }
-        });
-    } else {
-      setLoading(false); // Set loading to false if validation fails
-      setErrMessage("Invalid data");
-      resetAll();
-    }
-  };
-
   return (
     <View style={styles.container}>
       <WelcomeText />
-      <View style={{ alignSelf: "flex-start" }}>
-        <Text style={styles.title}>Sign In</Text>
-      </View>
-
-      <Input
-        style={[emailIsFocused && !emailIsValid && styles.invalid]}
-        placeholder="Email"
-        keyboardType="email-address"
-        value={enteredEmail}
-        onChangeText={(text) => emailChangeHandler(text)}
-        onBlur={validateEmailHandler}
-        onFocus={emailFocusHandler}
-        secureTextEntry={false}
-      />
-      <Input
-        style={[passwordIsFocused && !passwordIsValid && styles.invalid]}
-        placeholder="Password"
-        secureTextEntry
-        value={enteredPassword}
-        onChangeText={(text) => passwordChangeHandler(text)}
-        onBlur={validatePasswordHandler}
-        onFocus={passwordFocusHandler}
-      />
-      {loading && <ActivityIndicator size="small" color="#0000ff" />}
-      <View style={styles.forgetPasswordContainer}>
-        <Text style={styles.forgetPassword}>Forget password</Text>
-      </View>
-      <TouchableOpacity style={styles.touchableOpacity} onPress={handleSubmit}>
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
+      <View style={styles.card}>
+        <View style={{ alignSelf: "flex-start" }}>
+          <Text style={styles.title}>Log in or Sign Up</Text>
         </View>
-      </TouchableOpacity>
-      <View style={styles.signUpText}>
-        <Text>Don't have an account? </Text>
-        <Text style={styles.link} onPress={() => Actions.SignUp()}>
-          Sign Up
-        </Text>
+
+        <Input
+          style={[
+            PhoneNumberIsFocused && !PhoneNumberIsValid && styles.invalid,
+          ]}
+          placeholder="Mobile Number"
+          keyboardType="numeric"
+          value={enteredPhoneNumber}
+          onChangeText={(text) => PhoneNumberChangeHandler(text)}
+          onBlur={validatePhoneNumberHandler}
+          onFocus={PhoneNumberFocusHandler}
+          secureTextEntry={false}
+        />
+
+        <View style={styles.buttonContainer}>
+          {loading && <ActivityIndicator size="small" color="#0000ff" />}
+
+          <TouchableOpacity
+            style={styles.touchableOpacity}
+            onPress={handleSubmit}
+          >
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Get OTP</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.skip}>Skip </Text>
+
+        <View>
+          <Text style={styles.text}>
+            By signing in, you indicate that you have read and agree to our{" "}
+            <TouchableOpacity
+              onPress={() => Linking.openURL("https://your-terms-url")}
+            >
+              <Text style={styles.linkText}>Terms of Services</Text>
+            </TouchableOpacity>{" "}
+            and{" "}
+            <TouchableOpacity
+              onPress={() => Linking.openURL("https://your-privacy-url")}
+            >
+              <Text style={styles.linkText}>Privacy Policy</Text>
+            </TouchableOpacity>
+          </Text>
+        </View>
       </View>
       <ErrMessage type="authentication" text={errMessage} onEnd={endMessage} />
     </View>
@@ -158,62 +121,72 @@ const SignInForm = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    // justifyContent: "center",
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    marginTop: 80,
-    padding: 20,
+  },
+  card: {
     width: "90%",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    backgroundColor: "#fff",
+    padding: 20,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 20,
+    color: "green",
   },
-
-  button: {
-    width: "100%",
-    backgroundColor: "#007bff",
-    borderRadius: 5,
-    // padding: 10,
+  buttonContainer: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  button: {
+    backgroundColor: "#007bff",
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    width: "100%",
+    marginTop: 10,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-    padding: 10,
-    textAlign: "center",
   },
   touchableOpacity: {
-    width: "100%",
+    flex: 1,
   },
-  link: {
-    // marginTop: 20,
-    color: "#007bff",
-    textDecorationLine: "underline",
-  },
-  forgetPasswordContainer: {
-    alignSelf: "flex-end", // Align to the left
-  },
-  forgetPassword: {
-    color: "red",
-    textDecorationLine: "underline",
-    padding: 10,
-  },
-  signUpText: {
-    flexDirection: "row",
-    margin: 40,
+  skip: {
+    marginVertical: 20,
+    textAlign: "center",
+    color: "green",
   },
   invalid: {
+    borderColor: "red",
     width: "100%",
+    marginBottom: 10,
     padding: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "red",
-    marginBottom: 10,
+    borderColor: "#ddd",
+  },
+  linkText: {
+    color: "green",
+    textDecorationLine: "none",
+  },
+  text: {
+    color: "#000",
+    textAlign: "center",
   },
 });
 

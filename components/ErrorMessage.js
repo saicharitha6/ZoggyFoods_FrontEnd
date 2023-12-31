@@ -12,7 +12,7 @@ const ErrMessage = ({ type, text, onEnd }) => {
       padding: 10,
       borderRadius: 5,
       opacity: 0.6,
-      height: 50,
+      height: 60,
       flexDirection: "row",
       alignItems: "center",
       gap: 5,

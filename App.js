@@ -17,6 +17,7 @@ import Search from "./components/Search/Search";
 import Address from "./screens/Address";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
+import OTPVerification from "./components/SignIn/OTPVerification";
 
 export default function App() {
   const getCartId = async () => {
@@ -63,6 +64,7 @@ export default function App() {
         <Router>
           <Stack key="root">
             <Scene key="SignIn" component={SignIn} hideNavBar />
+            <Scene key="OTPVerification" component={OTPVerification} hideNavBar/>
             <Scene key="SignUp" component={SignUp} hideNavBar />
             <Scene key="products" component={Products} hideNavBar />
             <Scene key="ProductInfo" component={ProductInfo} hideNavBar />

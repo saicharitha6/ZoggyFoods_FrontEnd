@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import zoggy from "../../assets/zoggy.png";
+import zoggy from "../../assets/Z.png";
 
 export default function WelcomeText() {
   return (
@@ -15,7 +15,7 @@ export default function WelcomeText() {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginTop: 0
+    marginTop: 20
   },
   line: {
     width: 200,

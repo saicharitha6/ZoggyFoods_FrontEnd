@@ -30,7 +30,14 @@ const SignInForm = () => {
     isFocused: PhoneNumberIsFocused,
     reset: PhoneNumberReset,
   } = useInput({
-    validateValue: (value) => value.trim().length === 10 && /^\d+$/.test(value),
+    validateValue: (value) => {
+      const trimmedValue = value.trim();
+      return (
+        trimmedValue.length === 10 &&
+        /^\d+$/.test(trimmedValue) &&
+        /^[6789]/.test(trimmedValue)
+      );
+    },
   });
 
   const handleSubmit = async () => {
@@ -43,7 +50,7 @@ const SignInForm = () => {
       );
       return;
     }
-    Actions.OTPVerification();
+    Actions.OTPVerification({ enteredMobileNumber: enteredPhoneNumber });
     try {
       setLoading(true);
       const response = await axios.post(`${baseURL}/send-otp`, {
@@ -71,7 +78,9 @@ const SignInForm = () => {
 
         <Input
           style={[
-            PhoneNumberIsFocused && !PhoneNumberIsValid && styles.invalid,
+            PhoneNumberIsFocused &&
+              (!PhoneNumberIsValid || PhoneNumberIsInvalid) &&
+              styles.invalid,
           ]}
           placeholder="Mobile Number"
           keyboardType="numeric"
@@ -81,6 +90,12 @@ const SignInForm = () => {
           onFocus={PhoneNumberFocusHandler}
           secureTextEntry={false}
         />
+
+        {PhoneNumberIsInvalid && (
+          <Text style={styles.errorText}>
+            10 digit Mobile Number start with 6, 7, 8, or 9.
+          </Text>
+        )}
 
         <View style={styles.buttonContainer}>
           {loading && <ActivityIndicator size="small" color="#0000ff" />}
@@ -97,7 +112,7 @@ const SignInForm = () => {
 
         <Text style={styles.skip}>Skip </Text>
 
-        <View>
+        <View style={styles.termsPrivacyContainer}>
           <Text style={styles.text}>
             By signing in, you indicate that you have read and agree to our{" "}
             <TouchableOpacity
@@ -114,7 +129,7 @@ const SignInForm = () => {
           </Text>
         </View>
       </View>
-      <ErrMessage type="authentication" text={errMessage} onEnd={endMessage} />
+      <ErrMessage style={styles.error} type="authentication" text={errMessage} onEnd={endMessage} />
     </View>
   );
 };
@@ -142,7 +157,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "green",
+    color: "#006400",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -150,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   button: {
-    backgroundColor: "#007bff",
+    backgroundColor: "gray",
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
@@ -169,25 +184,35 @@ const styles = StyleSheet.create({
   skip: {
     marginVertical: 20,
     textAlign: "center",
-    color: "green",
+    color: "#006400",
   },
   invalid: {
     borderColor: "red",
-    width: "100%",
-    marginBottom: 10,
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#ddd",
   },
   linkText: {
-    color: "green",
+    color: "#006400",
     textDecorationLine: "none",
   },
   text: {
     color: "#000",
     textAlign: "center",
   },
+  errorText: {
+    color: "red",
+    marginTop: 5,
+  },
+  termsPrivacyContainer: {
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'row', // or 'column' for vertical alignment
+},
+error: {
+  alignItems: "flex-end",
+  alignContent: "flex-end",
+  paddingBottom: 0,
+  alignSelf: "flex-end", // Align the error component itself to the end
+  marginTop: "auto",
+}
 });
 
 export default SignInForm;

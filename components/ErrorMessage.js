@@ -5,8 +5,8 @@ import closeIcon from "../assets/close.png";
 const ErrMessage = ({ type, text, onEnd }) => {
   const styles = StyleSheet.create({
     container: {
-      position: "absolute",
-      bottom: 50,
+      // position: "absolute",
+      // bottom: 50,
     },
     errMsg: {
       padding: 10,

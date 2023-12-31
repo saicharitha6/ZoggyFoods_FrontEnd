@@ -10,10 +10,10 @@ import {
 import { Card } from "react-native-paper";
 import WelcomeText from "./WelcomeText";
 
-const OTPVerification = () => {
+const OTPVerification = ({ enteredMobileNumber }) => {
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(30);
-  const [mobileNumber, setMobileNumber] = useState("+91-xxxxxxxxxx");
+  const [mobileNumber, setMobileNumber] = useState(enteredMobileNumber); // Initialize with an empty string
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
@@ -26,7 +26,7 @@ const OTPVerification = () => {
   const editMobileNumber = () => {
     const newMobileNumber = prompt("Enter new mobile number:");
     if (newMobileNumber) {
-      setMobileNumber(`+91-${newMobileNumber}`);
+      setMobileNumber(newMobileNumber);
     }
   };
 
@@ -74,7 +74,10 @@ const OTPVerification = () => {
               </TouchableOpacity>
             )}
           </Text>
-          <Button title="Submit" onPress={submitOTP} />
+          <View style={styles.button}>
+              <Text onPress={submitOTP} style={styles.buttonText}>SUBMIT</Text>
+            </View>
+          {/* <Button title="Submit" onPress={submitOTP} /> */}
         </Card.Content>
       </Card>
     </View>
@@ -83,7 +86,7 @@ const OTPVerification = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
@@ -97,12 +100,12 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     marginBottom: 10,
-    color:"green"
+    color: "#006400",
   },
-  text:{
-     paddingBottom:5,
-     fontSize:13,
-     color:"gray"
+  text: {
+    paddingBottom: 5,
+    fontSize: 13,
+    color: "gray",
   },
   otpInput: {
     padding: 10,
@@ -117,11 +120,25 @@ const styles = StyleSheet.create({
   },
   resendTimer: {
     fontSize: 14,
-    color: "#888",
+    color: "#006400",
     marginBottom: 10,
   },
   editIcon: {
     color: "blue",
+  },
+  button: {
+    backgroundColor: "gray",
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    width: "100%",
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

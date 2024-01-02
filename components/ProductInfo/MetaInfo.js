@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: heightToDp(5),
     fontWeight: "bold",
-    color: "#C37AFF",
+    color: "#8B8000",
   },
   heading: {
     fontSize: heightToDp(5),
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     marginTop: heightToDp(1),
   },
   sizeTag: {
-    borderColor: "#C37AFF",
+    borderColor: "#8B8000",
     backgroundColor: "#F7F6FB",
     color: "#000",
     paddingHorizontal: heightToDp(7),

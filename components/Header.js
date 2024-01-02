@@ -62,7 +62,6 @@ export default function Header({
           <Ionicons name="arrow-back-outline" size={24} color="black" />
           <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
-        
       )}
       <View style={styles.sideBar}>
         {isVisible ? (
@@ -75,14 +74,18 @@ export default function Header({
                 onPress={() => Actions.search()}
               />
             </View>
-            <View style={styles.addToCart}>
-              <Text style={styles.cart_count}>{count > 0 ? count : ""}</Text>
+            <View style={styles.addCart}>
               <Feather
                 name="shopping-cart"
                 size={24}
                 color="white"
                 onPress={() => Actions.cart()}
               />
+              {count > 0 && (
+                <View style={styles.cart_count_container}>
+                  <Text style={styles.cart_count}>{count}</Text>
+                </View>
+              )}
             </View>
             <View style={styles.notify}>
               <Ionicons name="notifications" size={24} color="white" />
@@ -91,10 +94,9 @@ export default function Header({
         ) : (
           <View></View>
         )}
-         {isOrder ? (
+        {isOrder ? (
           <>
-            <View style={styles.addToCart}>
-            </View>
+            <View style={styles.addToCart}></View>
           </>
         ) : (
           <View></View>
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: widthToDp(100),
     height: widthToDp(20),
-    backgroundColor: "#00b33c",
+    backgroundColor: "darkgreen",
     alignItems: "center",
     height: 60,
     paddingHorizontal: widthToDp(2),
@@ -129,11 +131,25 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "white",
   },
+  addCart: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    marginRight:15
+  },
+  cart_count_container: {
+    position: "absolute",
+    top: -16, // Adjust this value to fine-tune the vertical position
+    right: -15, // Adjust this value to fine-tune the horizontal position
+    backgroundColor: "red",
+    borderRadius: 50, // Use a large value to make it circular
+    padding: 3,
+  },
   cart_count: {
-    fontSize: 20,
+    fontSize: 14,
     color: "white",
     fontWeight: "800",
-    height: 50,
+    textAlign: "center",
   },
   logo: {
     width: 70,
@@ -192,7 +208,7 @@ const styles = StyleSheet.create({
   myOrder: {
     color: "#ffffff",
     fontSize: 24,
-    fontWeight:"bold",
+    fontWeight: "bold",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",

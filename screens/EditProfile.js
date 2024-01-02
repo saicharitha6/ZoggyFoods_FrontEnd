@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import DatePicker from "react-native-modern-datepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ModalSelector from "react-native-modal-selector";
 
@@ -15,11 +15,20 @@ const EditProfile = () => {
   const [selectedGender, setSelectedGender] = useState(null);
   const [familyMembers, setFamilyMembers] = useState(1);
   const [selectedOption, setSelectedOption] = useState("Search Engine");
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const handleDateChange = (event, selected) => {
-    setShowDatePicker(false);
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(Platform.OS === "ios"); // Close the picker on iOS
+    setDate(currentDate);
   };
+
+  const showDateTimePicker = () => {
+    setShowDatePicker(true);
+  };
+
+  const formattedDate = date.toLocaleDateString(); // You can format the date as needed
 
   const options = [
     { key: 0, label: "Search Engine" },
@@ -43,10 +52,12 @@ const EditProfile = () => {
         <View style={styles.headerContent}>
           {/* Profile photo in a circle */}
           <View style={styles.profileImageContainer}>
-            <Image
-              source={require("../assets/user.png")} /* Use your placeholder image source */
-              style={styles.profileImage}
-            />
+            <View style={styles.emptyCircle}>
+              <Image
+                source={require("../assets/user.png")}
+                style={styles.profileImage}
+              />
+            </View>
             <TouchableOpacity
               style={styles.editIcon}
               onPress={() => {
@@ -137,37 +148,29 @@ const EditProfile = () => {
           {/* Date of Birth */}
           <View style={styles.dateOfBirthContainer}>
             <Text style={styles.label}>Select Date</Text>
-            <TouchableOpacity
-              style={styles.dateInputContainer}
-              onPress={() => {
-                // Show the date picker
-                DatePicker.show({
-                  titleText: "Select Date",
-                  selectedDate,
-                  onConfirm: (date) => setSelectedDate(date),
-                });
-              }}
-            >
+            <View style={styles.dateInputContainer}>
               <TextInput
-                style={styles.dateInput}
                 placeholder="DD-MM-YYYY"
-                value={selectedDate ? selectedDate : ""}
+                value={formattedDate}
                 editable={false}
+                style={{ color: 'black' }}
               />
-              <Icon
-                name="calendar"
-                size={20}
-                color="#000"
+              <TouchableOpacity
+                onPress={showDateTimePicker}
                 style={styles.calendarIcon}
+              >
+                <Icon name="calendar" size={20} color="#000" />
+              </TouchableOpacity>
+            </View>
+            {showDatePicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode="date"
+                is24Hour={true}
+                display="default"
+                onChange={onChange}
               />
-            </TouchableOpacity>
-
-            {/* Date Picker */}
-            {selectedDate && (
-              <View style={styles.datePickerContainer}>
-                <Text style={styles.label}>Selected Date</Text>
-                <Text>{selectedDate}</Text>
-              </View>
             )}
           </View>
 
@@ -199,6 +202,7 @@ const EditProfile = () => {
             initValue="Select an option"
             onChange={(option) => setSelectedOption(option.label)}
             style={styles.pickerContainer}
+            optionTextStyle={{ color: "green" }}
           >
             <TextInput
               style={styles.pickerInput}
@@ -250,11 +254,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  profileImage: {
+  emptyCircle: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginRight: 10,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#000",
+  },
+
+  profileImage: {
+    position: "absolute",
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
 
   editIcon: {
@@ -272,26 +287,25 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   inputContainer: {
     flex: 1,
-    marginHorizontal: 5,
+    marginHorizontal: 3,
   },
   label: {
     fontWeight: "bold",
     marginBottom: 5,
   },
   input: {
-    height: 40,
+    height: 50,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: "#ccc",
     paddingHorizontal: 10,
-    marginTop: 1,
   },
   genderContainer: {
-    marginTop: 20,
+    marginTop: 10,
   },
   genderOptions: {
     flexDirection: "row",
@@ -317,17 +331,17 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   dateOfBirthContainer: {
     flex: 1,
     marginRight: 10,
-    marginTop:10
+    marginTop: 10,
   },
   familyMembersContainer: {
     flex: 1,
     marginLeft: 10,
-    marginTop:10
+    marginTop: 10,
   },
   label: {
     fontSize: 16,
@@ -340,15 +354,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    padding: 10,
+    padding: 11,
   },
-  dateInput: {},
   calendarIcon: {
     marginLeft: 10,
-  },
-  datePickerText: {
-    color: "#000",
-    fontSize: 16,
   },
 
   familyMembersRow: {

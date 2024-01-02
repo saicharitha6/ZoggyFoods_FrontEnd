@@ -10,7 +10,6 @@ import axios from "axios";
 import baseURL from "./constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./screens/SignIn";
-import SignUp from "./screens/SignUp";
 import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
 import Search from "./components/Search/Search";
@@ -18,6 +17,8 @@ import Address from "./screens/Address";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
 import Profile from "./screens/Profile";
+import OTPVerification from "./components/SignIn/OTPVerification";
+import EditProfile from "./screens/EditProfile";
 
 export default function App() {
   const getCartId = async () => {
@@ -64,7 +65,11 @@ export default function App() {
         <Router>
           <Stack key="root">
             <Scene key="SignIn" component={SignIn} hideNavBar />
-            <Scene key="SignUp" component={SignUp} hideNavBar />
+            <Scene
+              key="OTPVerification"
+              component={OTPVerification}
+              hideNavBar
+            />
             <Scene key="products" component={Products} hideNavBar />
             <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
             <Scene key="cart" component={Cart} hideNavBar />
@@ -75,6 +80,8 @@ export default function App() {
             <Scene key="search" component={Search} hideNavBar />
             <Scene key="Wallet" component={Wallet} hideNavBar />
             <Scene key="profile" component={Profile} hideNavBar />
+            <Scene key="Wallet" component={Wallet} hideNavBar />
+            <Scene key="EditProfile" component={EditProfile} hideNavBar />
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

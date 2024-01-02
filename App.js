@@ -3,7 +3,7 @@ import Products from "./screens/Products";
 import ProductInfo from "./screens/ProductInfo";
 import Cart from "./screens/Cart";
 import Checkout from "./screens/Checkout";
-import { CartProvider } from './components/CartContext';
+import { CartProvider } from "./components/CartContext";
 import { Provider as PaperProvider } from "react-native-paper";
 import { useEffect } from "react";
 import axios from "axios";
@@ -17,6 +17,7 @@ import Search from "./components/Search/Search";
 import Address from "./screens/Address";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
+import Profile from "./screens/Profile";
 
 export default function App() {
   const getCartId = async () => {
@@ -73,6 +74,7 @@ export default function App() {
             <Scene key="orders" component={Orders} hideNavBar />
             <Scene key="search" component={Search} hideNavBar />
             <Scene key="Wallet" component={Wallet} hideNavBar />
+            <Scene key="profile" component={Profile} hideNavBar />
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

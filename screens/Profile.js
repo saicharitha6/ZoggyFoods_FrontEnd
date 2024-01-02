@@ -1,35 +1,67 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import Button from "../components/Button";
+import { View, StyleSheet } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/footer";
-import { Actions } from "react-native-router-flux";
-import { Entypo } from "@expo/vector-icons";
-import Wallet from "../components/Profile/Wallet";
 import ProfileOptions from "../components/Profile/ProfileOptions";
+import Head from "../components/Profile/Head";
+
+const mainOptions = [
+  {
+    title: "My Address",
+    image: require("../assets/maps-and-flags.png"),
+    action: () => console.log("My Address pressed"),
+  },
+  {
+    title: "Order History",
+    image: require("../assets/orders.png"),
+    action: () => console.log("Order History pressed"),
+  },
+  {
+    title: "Delivery Preference",
+    image: require("../assets/delivery.png"),
+    action: () => console.log("Delivery Preference pressed"),
+  },
+];
+
+const moreOptions = [
+  {
+    title: "Vacation mode",
+    image: require("../assets/vacation.png"),
+    action: () => console.log("Vacation mode pressed"),
+  },
+  {
+    title: "Refer & Earn",
+    image: require("../assets/refer.png"),
+    action: () => console.log("Refer & Earn pressed"),
+  },
+  {
+    title: "Language",
+    image: require("../assets/language.png"),
+    action: () => console.log("Language pressed"),
+  },
+  {
+    title: "Rate us",
+    image: require("../assets/rate-us.png"),
+    action: () => console.log("Rate us pressed"),
+  },
+  {
+    title: "Help & Support",
+    image: require("../assets/help-support.png"),
+    action: () => console.log("Help & Support pressed"),
+  },
+  {
+    title: "Legal and About us",
+    image: require("../assets/legal-aboutus.png"),
+    action: () => console.log("Legal and About us pressed"),
+  },
+];
 
 const Profile = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={{ flexDirection: "row" }}>
-          <Image
-            source={require("../assets/user.png")}
-            style={styles.profileImage}
-          />
-          <View style={styles.profileInfo}>
-            <Text style={styles.username}>John Doe</Text>
-            <Text style={styles.number}>982358239</Text>
-            <Button
-              title="Edit Profile"
-              onPress={() => {}}
-              style={styles.editBtn}
-            ></Button>
-          </View>
-        </View>
-        <Wallet />
-      </View>
-      <ProfileOptions />
+      <Head />
+      <ProfileOptions moreOptions={moreOptions} mainOptions={mainOptions} />
       <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
         <Footer />
       </View>
@@ -41,40 +73,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-  },
-  header: {
-    paddingVertical: 20,
-    // paddingRight: 0,
-    // paddingEnd: 0,
-    flexDirection: "row",
-    justifyContent: "space-between", // Adjusted
-    // alignItems: "center",
-    backgroundColor: "darkgreen",
-    width: "100%",
-  },
-  profileImage: {
-    width: 105,
-    height: 85,
-    borderRadius: 75,
-    marginBottom: 16,
-  },
-  profileInfo: {
-    gap: 4,
-  },
-  username: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "white",
-  },
-  number: {
-    color: "white",
-
-    fontSize: 15,
-  },
-  editBtn: {
-    borderRadius: 5,
-    margin: 0,
-    backgroundColor: "green",
   },
 });
 

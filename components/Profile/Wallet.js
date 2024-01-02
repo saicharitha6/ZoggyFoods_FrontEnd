@@ -33,8 +33,7 @@ const styles = StyleSheet.create({
   wallet: {
     backgroundColor: "green",
     alignItems: "center",
-    paddingLeft: 15,
-    paddingRight: 5,
+    paddingHorizontal: 15,
     paddingVertical: 5,
     gap: 3,
     borderBottomLeftRadius: 5,

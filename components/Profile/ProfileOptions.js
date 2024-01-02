@@ -1,78 +1,42 @@
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const mainOptions = [
-  {
-    title: "My Address",
-    image: require("../../assets/maps-and-flags.png"),
-    action: () => console.log("My Address pressed"),
-  },
-  {
-    title: "Order History",
-    image: require("../../assets/orders.png"),
-    action: () => console.log("Order History pressed"),
-  },
-  {
-    title: "Delivery Preference",
-    image: require("../../assets/delivery.png"),
-    action: () => console.log("Delivery Preference pressed"),
-  },
-];
-
-const moreOptions = [
-  {
-    title: "Vacation mode",
-    image: require("../../assets/vacation.png"),
-    action: () => console.log("Vacation mode pressed"),
-  },
-  {
-    title: "Refer & Earn",
-    image: require("../../assets/refer.png"),
-    action: () => console.log("Refer & Earn pressed"),
-  },
-  {
-    title: "Language",
-    image: require("../../assets/language.png"),
-    action: () => console.log("Language pressed"),
-  },
-  {
-    title: "Rate us",
-    image: require("../../assets/rate-us.png"),
-    action: () => console.log("Rate us pressed"),
-  },
-  {
-    title: "Help & Support",
-    image: require("../../assets/help-support.png"),
-    action: () => console.log("Help & Support pressed"),
-  },
-  {
-    title: "Legal and About us",
-    image: require("../../assets/legal-aboutus.png"),
-    action: () => console.log("Legal and About us pressed"),
-  },
-];
-
-const ProfileOptions = () => {
-  const renderOptions = (options, isLastList) => {
+const ProfileOptions = ({ moreOptions, mainOptions }) => {
+  const renderOptions = (options) => {
     return options.map((option, index) => (
       <TouchableOpacity
         key={index}
         style={[
           styles.optionContainer,
-          isLastList && index === options.length - 1
+          index === options.length - 1
             ? styles.lastOption
             : styles.borderBottom,
         ]}
         onPress={option.action}
       >
-        <Image source={option.image} style={styles.image} />
-        <Text style={styles.title}>{option.title}</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Image source={option.image} style={styles.image} />
+          <Text style={styles.title}>{option.title}</Text>
+        </View>
+        <View style={{ alignSelf: "flex-end" }}>
+          <Image
+            source={require("../../assets/right-arrow.png")}
+            style={styles.arrowImage}
+          ></Image>
+        </View>
       </TouchableOpacity>
     ));
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <View style={styles.options}>{renderOptions(mainOptions)}</View>
 
       <View style={styles.options}>{renderOptions(moreOptions)}</View>
@@ -81,21 +45,27 @@ const ProfileOptions = () => {
           style={styles.optionContainer}
           onPress={() => console.log("Logout")}
         >
-          <Image
-            source={require("../../assets/logout.png")}
-            style={styles.image}
-          />
-          <Text style={styles.title}>Logout</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Image
+              source={require("../../assets/logout.png")}
+              style={styles.image}
+            />
+            <Text style={styles.title}>Logout</Text>
+          </View>
+          <View style={{ alignSelf: "flex-end" }}>
+            <Image
+              source={require("../../assets/right-arrow.png")}
+              style={styles.arrowImage}
+            ></Image>
+          </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 5,
-  },
+  container: {},
   image: {
     width: 25,
     height: 25,
@@ -107,26 +77,37 @@ const styles = StyleSheet.create({
 
   options: {
     margin: 10,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 7,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    gap: 10,
+    // shadowColor: "#ccc",
+    // shadowOffset: { width: 0, height: 10 },
+    // shadowOpacity: 0.5,
+    // shadowRadius: 10,
+    // elevation: 7,
   },
   optionContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
+    alignContent: "center",
+    justifyContent: "space-between",
     borderRadius: 10,
-    marginBottom: 5, // Add marginBottom to create space between options
+    marginBottom: 5,
   },
   borderBottom: {
+    paddingBottom: 10,
     borderBottomWidth: 1,
-    borderColor: "#ccc", // Adjust the color of the border as needed
+    borderColor: "#ccc",
   },
   lastOption: {
-    marginBottom: 0, // Remove marginBottom for the last option to eliminate extra space
-    borderBottomWidth: 0, // Remove borderBottom for the last option
+    marginBottom: 0,
+    borderBottomWidth: 0,
+  },
+  arrowImage: {
+    width: 20,
+    height: 20,
   },
 });
 

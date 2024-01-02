@@ -10,7 +10,6 @@ import axios from "axios";
 import baseURL from "./constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./screens/SignIn";
-import SignUp from "./screens/SignUp";
 import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
 import Search from "./components/Search/Search";
@@ -65,7 +64,6 @@ export default function App() {
           <Stack key="root">
             <Scene key="SignIn" component={SignIn} hideNavBar />
             <Scene key="OTPVerification" component={OTPVerification} hideNavBar/>
-            <Scene key="SignUp" component={SignUp} hideNavBar />
             <Scene key="products" component={Products} hideNavBar />
             <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
             <Scene key="cart" component={Cart} hideNavBar />

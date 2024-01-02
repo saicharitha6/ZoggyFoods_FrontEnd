@@ -17,6 +17,7 @@ import Address from "./screens/Address";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
 import OTPVerification from "./components/SignIn/OTPVerification";
+import EditProfile from "./screens/EditProfile";
 
 export default function App() {
   const getCartId = async () => {
@@ -62,7 +63,7 @@ export default function App() {
       <CartProvider>
         <Router>
           <Stack key="root">
-            <Scene key="SignIn" component={SignIn} hideNavBar />
+            {/* <Scene key="SignIn" component={SignIn} hideNavBar />
             <Scene key="OTPVerification" component={OTPVerification} hideNavBar/>
             <Scene key="products" component={Products} hideNavBar />
             <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
@@ -72,7 +73,8 @@ export default function App() {
             <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
             <Scene key="orders" component={Orders} hideNavBar />
             <Scene key="search" component={Search} hideNavBar />
-            <Scene key="Wallet" component={Wallet} hideNavBar />
+            <Scene key="Wallet" component={Wallet} hideNavBar /> */}
+            <Scene key="EditProfile" component={EditProfile} hideNavBar/>
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

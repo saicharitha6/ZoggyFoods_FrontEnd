@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import Button from "../Button";
 import Wallet from "./Wallet";
+import { Actions } from "react-native-router-flux";
 
 export default function Head() {
   return (
@@ -15,7 +16,7 @@ export default function Head() {
           <Text style={styles.number}>982358239</Text>
           <Button
             title="Edit Profile"
-            onPress={() => {}}
+            onPress={() => Actions.EditProfile()}
             style={styles.editBtn}
           ></Button>
         </View>

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Card } from "react-native-paper";
 import WelcomeText from "./WelcomeText";
+import { Actions } from "react-native-router-flux";
 
 const OTPVerification = ({ enteredMobileNumber }) => {
   const [otp, setOtp] = useState("");
@@ -37,6 +38,7 @@ const OTPVerification = ({ enteredMobileNumber }) => {
     } else {
       alert("Invalid OTP. Please try again.");
     }
+    Actions.products();
   };
 
   const resendOTP = () => {
@@ -75,8 +77,10 @@ const OTPVerification = ({ enteredMobileNumber }) => {
             )}
           </Text>
           <View style={styles.button}>
-              <Text onPress={submitOTP} style={styles.buttonText}>SUBMIT</Text>
-            </View>
+            <Text onPress={submitOTP} style={styles.buttonText}>
+              SUBMIT
+            </Text>
+          </View>
           {/* <Button title="Submit" onPress={submitOTP} /> */}
         </Card.Content>
       </Card>

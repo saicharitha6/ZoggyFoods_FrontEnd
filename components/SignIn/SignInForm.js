@@ -136,9 +136,12 @@ const SignInForm = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex:1,
     justifyContent: "center",
     alignItems: "center",
+    position:"absolute",
     backgroundColor: "#fff",
+    paddingTop:50
   },
   card: {
     width: "90%",

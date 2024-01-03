@@ -90,10 +90,14 @@ const OTPVerification = ({ enteredMobileNumber }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:1,
     justifyContent: "center",
     alignItems: "center",
+    position:"absolute",
     backgroundColor: "#fff",
+    paddingTop:50,
+    paddingBottom:"100%",
+    width:"100%",
   },
   card: {
     width: 300,

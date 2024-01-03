@@ -79,8 +79,8 @@ export default function App() {
 
   useEffect(() => {
     // Use Actions to navigate directly to OTPVerification if isFirstLaunch
-    if (isFirstLaunch) {
-      Actions.OTPVerification(); // Assuming the key for OTPVerification screen is "OTPVerification"
+    if (!isFirstLaunch) {
+      Actions.SignIn(); // Assuming the key for OTPVerification screen is "OTPVerification"
     }
   }, [isFirstLaunch]);
 
@@ -89,13 +89,13 @@ export default function App() {
       <CartProvider>
         <Router>
           <Stack key="root">
-            <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
             <Scene key="SignIn" component={SignIn} hideNavBar />
             <Scene
               key="OTPVerification"
               component={OTPVerification}
               hideNavBar
             />
+            <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
             <Scene key="products" component={Products} hideNavBar />
             <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
             <Scene key="cart" component={Cart} hideNavBar />

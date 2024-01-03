@@ -10,6 +10,7 @@ import {
 import { Card } from "react-native-paper";
 import WelcomeText from "./WelcomeText";
 import { Actions } from "react-native-router-flux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const OTPVerification = ({ enteredMobileNumber }) => {
   const [otp, setOtp] = useState("");
@@ -31,11 +32,16 @@ const OTPVerification = ({ enteredMobileNumber }) => {
     }
   };
 
-  const submitOTP = () => {
+  const submitOTP = async () => {
     // Perform validation (in a real scenario, send to server for validation)
     if (/^\d{4}$/.test(otp)) {
       alert("OTP Verified Successfully!");
-      Actions.products();
+      const firstLaunch = await AsyncStorage.getItem("firstLaunch");
+      if (firstLaunch === true) {
+        Actions.Welcome();
+      } else {
+        Actions.products();
+      }
     } else {
       alert("Invalid OTP. Please try again.");
     }

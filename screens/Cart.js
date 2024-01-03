@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import axios from "axios";
@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import { Actions } from "react-native-router-flux";
 import { useCartContext } from '../components/CartContext';
+import emptyShoppingCart from "../assets/emptyShoppingCart.png";
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
@@ -60,7 +61,8 @@ export default function Cart() {
           />
         ))}
       </ScrollView>
-      {/* Creating a seperate view to show the total amount and checkout button */}
+    {cart?.items?.length > 0 ?  
+     <>{/* Creating a seperate view to show the total amount and checkout button */}
       <View>
         <View style={styles.row}>
           <Text style={styles.cartTotalText}>Items</Text>
@@ -111,10 +113,25 @@ export default function Cart() {
           <Button
             large={true}
             onPress={() => {setTotal(calculateTotal());Actions.address()}}
-            title={cart?.items?.length > 0 ? "Place Order" : "Empty Cart"}
+            title={"Place Order"}
           />
         </View>
       </View>
+      </>:
+      <View>
+        <View style={styles.emptyCartcontainer}>
+          <Image source={emptyShoppingCart} style={styles.emptyCartImage} />
+        </View>  
+        <View style={styles.textContainer}>
+              <Text style={styles.textHeading}>You don't have any items in your cart</Text>
+              <Text style={styles.textDescription}>Your favourite items are just a click away</Text>
+              <Button
+              onPress={() => Actions.pop()}
+              large={true}
+              title="Start Shopping"
+            />
+        </View>  
+    </View>}
     </SafeAreaView>
   );
 }
@@ -142,4 +159,28 @@ const styles = StyleSheet.create({
     fontSize: widthToDp(4.5),
     color: "#989899",
   },
+  emptyCartcontainer: {
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    
+  },
+  emptyCartImage:{
+    height:250,
+    width:250,
+    marginTop:-900,
+  },
+  textContainer:{
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: -350,
+  },
+  textHeading:{
+    fontWeight:"bold",
+    fontSize:18
+  },
+  textDescription:{
+    color: "#848687",
+    padding:10
+  }
 });

@@ -5,29 +5,33 @@ import closeIcon from "../assets/close.png";
 const ErrMessage = ({ type, text, onEnd }) => {
   const styles = StyleSheet.create({
     container: {
-      // position: "absolute",
-      // bottom: 50,
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 100,
+      justifyContent: "center",
+      alignItems: "center",
     },
     errMsg: {
       padding: 10,
-      borderRadius: 5,
-      opacity: 0.6,
-      height: 60,
+      borderRadius: 50,
+      height: 50,
       flexDirection: "row",
       alignItems: "center",
       gap: 5,
+      paddingHorizontal: 50,
     },
     authentication: {
-      backgroundColor: "red",
+      backgroundColor: "#ff4d4fcc",
       color: "#fff",
     },
     validation: {
-      backgroundColor: "yellow",
+      backgroundColor: "#fcff4dcc",
       color: "#000",
     },
-    closeButton: {
-      width: 15,
-      height: 15,
+    message: {
+      backgroundColor: "#cdcdcdcc",
+      justifyItems: "center",
     },
   });
   useEffect(() => {
@@ -44,11 +48,6 @@ const ErrMessage = ({ type, text, onEnd }) => {
     <View style={styles.container}>
       {text.length !== 0 && (
         <TouchableOpacity style={[styles.errMsg, styles[type]]} onPress={onEnd}>
-          <Image
-            source={closeIcon}
-            title="close icons"
-            style={styles.closeButton}
-          />
           <Text>{text}</Text>
         </TouchableOpacity>
       )}

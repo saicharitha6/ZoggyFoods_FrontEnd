@@ -71,10 +71,9 @@ const SignInForm = () => {
   return (
     <View style={styles.container}>
       <WelcomeText />
-      <View style={styles.card}>
-        <View style={{ alignSelf: "flex-start" }}>
-          <Text style={styles.title}>Log in or Sign Up</Text>
-        </View>
+      <View style={{ alignSelf: "center" }}>
+        <Text style={styles.title}>Sign In</Text>
+      </View>
 
         <Input
           style={[
@@ -136,25 +135,13 @@ const SignInForm = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    justifyContent: "center",
+    flex: 1,
     alignItems: "center",
     position:"absolute",
     backgroundColor: "#fff",
-    paddingTop:50
-  },
-  card: {
-    width: "90%",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
     padding: 20,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
+    width: "90%",
+    paddingTop: 100,
   },
   title: {
     fontSize: 20,

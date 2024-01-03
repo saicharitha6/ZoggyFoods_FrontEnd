@@ -71,9 +71,10 @@ const SignInForm = () => {
   return (
     <View style={styles.container}>
       <WelcomeText />
-      <View style={{ alignSelf: "center" }}>
-        <Text style={styles.title}>Sign In</Text>
-      </View>
+      <View style={styles.card}>
+        <View style={{ alignSelf: "flex-start" }}>
+          <Text style={styles.title}>Log in or Sign Up</Text>
+        </View>
 
         <Input
           style={[
@@ -128,7 +129,12 @@ const SignInForm = () => {
           </Text>
         </View>
       </View>
-      <ErrMessage style={styles.error} type="authentication" text={errMessage} onEnd={endMessage} />
+      <ErrMessage
+        style={styles.error}
+        type="authentication"
+        text={errMessage}
+        onEnd={endMessage}
+      />
     </View>
   );
 };
@@ -137,11 +143,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    position:"absolute",
+    position: "absolute",
     backgroundColor: "#fff",
+    marginTop: 80,
     padding: 20,
     width: "90%",
-    paddingTop: 100,
   },
   title: {
     fontSize: 20,
@@ -192,17 +198,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   termsPrivacyContainer: {
-  justifyContent: 'center',
-  alignItems: 'center',
-  flexDirection: 'row', // or 'column' for vertical alignment
-},
-error: {
-  alignItems: "flex-end",
-  alignContent: "flex-end",
-  paddingBottom: 0,
-  alignSelf: "flex-end", // Align the error component itself to the end
-  marginTop: "auto",
-}
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row", // or 'column' for vertical alignment
+  },
+  error: {
+    alignItems: "flex-end",
+    alignContent: "flex-end",
+    paddingBottom: 0,
+    alignSelf: "flex-end", // Align the error component itself to the end
+    marginTop: "auto",
+  },
 });
 
 export default SignInForm;

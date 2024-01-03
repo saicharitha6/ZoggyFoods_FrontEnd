@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import {
   Image,
@@ -7,8 +8,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Actions } from "react-native-router-flux";
 
 const ProfileOptions = ({ moreOptions, mainOptions }) => {
+  const logoutHandler = async () => {
+    console.log("Logout");
+    Actions.SignIn();
+  };
+
   const renderOptions = (options) => {
     return options.map((option, index) => (
       <TouchableOpacity
@@ -43,7 +50,7 @@ const ProfileOptions = ({ moreOptions, mainOptions }) => {
       <View style={styles.options}>
         <TouchableOpacity
           style={styles.optionContainer}
-          onPress={() => console.log("Logout")}
+          onPress={logoutHandler}
         >
           <View style={{ flexDirection: "row" }}>
             <Image

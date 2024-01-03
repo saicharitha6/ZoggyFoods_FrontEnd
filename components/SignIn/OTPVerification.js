@@ -35,10 +35,10 @@ const OTPVerification = ({ enteredMobileNumber }) => {
     // Perform validation (in a real scenario, send to server for validation)
     if (/^\d{4}$/.test(otp)) {
       alert("OTP Verified Successfully!");
+      Actions.products();
     } else {
       alert("Invalid OTP. Please try again.");
     }
-    Actions.products();
   };
 
   const resendOTP = () => {
@@ -90,14 +90,14 @@ const OTPVerification = ({ enteredMobileNumber }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    position:"absolute",
+    position: "absolute",
     backgroundColor: "#fff",
-    paddingTop:50,
-    paddingBottom:"100%",
-    width:"100%",
+    paddingTop: 50,
+    paddingBottom: "100%",
+    width: "100%",
   },
   card: {
     width: 300,

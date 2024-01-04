@@ -18,7 +18,7 @@ export default function Cart() {
   const { setTotal } = useCartContext();
   const fetchCart = async () => {
     // Get the cart id from the device storage
-    const cartId = await AsyncStorage.getItem("cart_id");
+    const cartId = await AsyncStorage.getItem("cart_id");    
     setCartId(cartId);
     // Fetch the products from the cart API using the cart id
     axios.get(`${baseURL}/store/carts/${cartId}`).then(({ data }) => {

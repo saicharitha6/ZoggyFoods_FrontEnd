@@ -20,6 +20,7 @@ import Profile from "./screens/Profile";
 import OTPVerification from "./components/SignIn/OTPVerification";
 import EditProfile from "./screens/EditProfile";
 import WelcomeScreen from "./screens/Welcome";
+import SubscriptionCalendarScreen from "./screens/Calendar";
 
 export default function App() {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null); // Track if it's the first launch
@@ -107,6 +108,11 @@ export default function App() {
             <Scene key="profile" component={Profile} hideNavBar />
             <Scene key="Wallet" component={Wallet} hideNavBar />
             <Scene key="EditProfile" component={EditProfile} hideNavBar />
+            <Scene
+              key="Calendar"
+              component={SubscriptionCalendarScreen}
+              hideNavBar
+            />
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

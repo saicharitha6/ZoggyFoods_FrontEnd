@@ -29,11 +29,8 @@ export default function Head() {
 const styles = StyleSheet.create({
   header: {
     paddingVertical: 20,
-    // paddingRight: 0,
-    // paddingEnd: 0,
     flexDirection: "row",
     justifyContent: "space-between", // Adjusted
-    // alignItems: "center",
     backgroundColor: "darkgreen",
     width: "100%",
   },

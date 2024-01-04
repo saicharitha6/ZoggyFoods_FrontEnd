@@ -61,7 +61,7 @@ const Footer = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => console.log("Calendar button pressed")}
+        onPress={() => Actions.Calendar()}
       >
         <AntDesign name="calendar" size={30} color="white" />
         <Text style={styles.buttonText}>Calendar</Text>

@@ -11,6 +11,38 @@ import { AntDesign } from "@expo/vector-icons";
 export default function ProductCard({ key, product }) {
   const [quantity, setQuantity] = useState(1);
   const [isInCart, setIsInCart] = useState(false);
+  const [itemIdMap, setItemIdMap] = useState({});
+
+  async function removeItem(productId) {
+    const cartId = await AsyncStorage.getItem("cart_id");
+    axios
+      .delete(`${baseURL}/store/carts/${cartId}/line-items/${itemIdMap[productId]}`)
+      .then(({ data }) => {
+        // if (data.cart) {
+        //   onChangeCart(data);
+        // }
+      });
+  }
+
+   // Function to handle increasing the quantity
+   const increaseQuantity = () => {
+    setQuantity(quantity + 1);
+    if (!isInCart) {
+      setIsInCart(true); // Product is added to cart when quantity increases from 1
+    }
+  };
+
+  // Function to handle decreasing the quantity
+  const decreaseQuantity = (productId) => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    } else {
+      setQuantity(1);
+      setIsInCart(false); // Product is removed from cart when quantity decreases to 0 or less
+      removeItem(productId);
+    }
+  };
+
 
   const addToCart = async (quantity) => {
     const cartId = await AsyncStorage.getItem("cart_id");
@@ -20,12 +52,21 @@ export default function ProductCard({ key, product }) {
         quantity: quantity,
       })
       .then(({ data }) => {
+        setIsInCart(true);
+        setItemIdMap(oldItemMap =>{
+          let idMap = {...oldItemMap}
+          data.cart.items.map((item)=>{
+            delete idMap[item.variant.product.id];
+            idMap[item.variant.product.id] = item.id;
+          })
+          return {...idMap};
+        } )
         // alert(`Item ${product.title} added to cart`);
       })
       .catch((err) => {
         console.log(err);
       });
-    setIsInCart(true);
+    // setIsInCart(true);
   };
 
   return (
@@ -65,12 +106,10 @@ export default function ProductCard({ key, product }) {
                 size={24}
                 color="red"
                 onPress={() => {
-                  console.log(quantity);
-                  setQuantity(quantity - 1);
-                  console.log(quantity);
+                  decreaseQuantity(product.id);
                   addToCart(-1);
                 }}
-                disabled={quantity <= 1}
+                // disabled={quantity <= 1}
               />
               <Text style={styles.quantityButton}>x{quantity}</Text>
               <AntDesign
@@ -80,7 +119,7 @@ export default function ProductCard({ key, product }) {
                 size={24}
                 color="green"
                 onPress={() => {
-                  setQuantity(quantity + 1);
+                  increaseQuantity();
                   addToCart(1);
                 }}
                 // disabled={quantity >= 3}

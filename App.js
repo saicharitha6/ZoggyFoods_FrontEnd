@@ -17,10 +17,12 @@ import Address from "./screens/Address";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
 import Profile from "./screens/Profile";
-import OTPVerification from "./components/SignIn/OTPVerification";
 import EditProfile from "./screens/EditProfile";
 import WelcomeScreen from "./screens/Welcome";
 import SubscriptionCalendarScreen from "./screens/Calendar";
+import SignUp from "./screens/SignUp";
+import SelectLocation from "./screens/Region";
+import DeliveryPreferences from "./screens/DeliveryPreferences";
 
 export default function App() {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null); // Track if it's the first launch
@@ -90,13 +92,10 @@ export default function App() {
       <CartProvider>
         <Router>
           <Stack key="root">
-            <Scene key="SignIn" component={SignIn} hideNavBar />
-            <Scene
-              key="OTPVerification"
-              component={OTPVerification}
-              hideNavBar
-            />
             <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
+            <Scene key="SignIn" component={SignIn} hideNavBar />
+            <Scene key="SignUp" component={SignUp} hideNavBar />
+            <Scene key="Region" component={SelectLocation} hideNavBar />
             <Scene key="products" component={Products} hideNavBar />
             <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
             <Scene key="cart" component={Cart} hideNavBar />
@@ -106,8 +105,13 @@ export default function App() {
             <Scene key="orders" component={Orders} hideNavBar />
             <Scene key="search" component={Search} hideNavBar />
             <Scene key="profile" component={Profile} hideNavBar />
-            <Scene key="Wallet" component={Wallet} hideNavBar />
+            <Scene
+              key="DeliveryPreference"
+              component={DeliveryPreferences}
+              hideNavBar
+            />
             <Scene key="EditProfile" component={EditProfile} hideNavBar />
+            <Scene key="Wallet" component={Wallet} hideNavBar />
             <Scene
               key="Calendar"
               component={SubscriptionCalendarScreen}

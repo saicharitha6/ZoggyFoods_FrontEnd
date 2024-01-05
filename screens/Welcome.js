@@ -8,7 +8,7 @@ const WelcomeScreen = () => {
   const swiperRef = useRef(null);
 
   const handleGetStarted = () => {
-    Actions.products();
+    Actions.SignIn();
   };
 
   const handleNext = () => {

@@ -16,15 +16,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
   },
-
-  // welcomeText: {
-  //   fontSize: 20,
-  //   padding: 20,
-  //   paddingBottom: 0,
-  //   textDecorationLine: "underline",
-  //   marginBottom: 20,
-  //   fontWeight: "bold",
-  // },
   icon: {
     width: 200,
     height: 100,

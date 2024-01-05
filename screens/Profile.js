@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/footer";
 import ProfileOptions from "../components/Profile/ProfileOptions";
 import Head from "../components/Profile/Head";
+import { Actions } from "react-native-router-flux";
 
 const mainOptions = [
   {
@@ -20,7 +21,7 @@ const mainOptions = [
   {
     title: "Delivery Preference",
     image: require("../assets/delivery.png"),
-    action: () => console.log("Delivery Preference pressed"),
+    action: () => Actions.DeliveryPreference(),
   },
 ];
 

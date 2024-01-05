@@ -8,22 +8,19 @@ import { Actions } from "react-native-router-flux";
 const DummyRegions = ["Region 1", "Region 2", "Region 3"];
 const DummyLocations = ["Location 1", "Location 2", "Location 3"];
 
-const ExploreScreen = () => {
+const SelectLocation = () => {
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
 
-  const handleExplore = () => {
+  const handleProceed = () => {
     console.log("Explore clicked:", selectedRegion, selectedLocation);
     setSelectedLocation("");
     setSelectedRegion("");
+    Actions.products();
   };
 
   const handleLocationNotFound = () => {
     console.log("Location not found");
-  };
-
-  const handleLogin = () => {
-    console.log("Navigate to login");
   };
 
   return (
@@ -75,10 +72,10 @@ const ExploreScreen = () => {
       </View>
 
       <Button
-        onPress={handleExplore}
-        title="Explore"
+        onPress={handleProceed}
+        title="Proceed"
         large={true}
-        style={styles.exploreButton}
+        style={styles.proceedButton}
       />
 
       <TouchableOpacity onPress={handleLocationNotFound}>
@@ -135,7 +132,7 @@ const styles = StyleSheet.create({
     borderColor: "#bcbcbc",
   },
 
-  exploreButton: {
+  proceedButton: {
     borderRadius: 5,
     marginBottom: 30,
   },
@@ -155,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExploreScreen;
+export default SelectLocation;

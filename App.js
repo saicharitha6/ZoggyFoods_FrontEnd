@@ -14,10 +14,12 @@ import SignUp from "./screens/SignUp";
 import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
 import Search from "./components/Search/Search";
-import Address from "./screens/Address";
+// import Address from "./screens/Address";
+import Address from "./components/Address/Address";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
-import MyAddresses from "./components/Profile/MyAddresses";
+import MyAddresses from "./components/Address/MyAddresses";
+import EditAddress from "./components/Address/EditAddress";
 
 export default function App() {
   const getCartId = async () => {
@@ -73,9 +75,11 @@ export default function App() {
             <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
             <Scene key="orders" component={Orders} hideNavBar />
             <Scene key="search" component={Search} hideNavBar />
-            <Scene key="Wallet" component={Wallet} hideNavBar /> */}
+            <Scene key="Wallet" component={Wallet} hideNavBar />
             <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
-            <Scene key="address" component={Address} hideNavBar />
+            <Scene key="Address" component={Address} hideNavBar />
+            <Scene key="EditAddress" component={EditAddress} hideNavBar />
+            {/* <Scene key="address" component={Address} hideNavBar /> */}
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

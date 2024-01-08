@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 import { Actions } from "react-native-router-flux";
@@ -28,7 +28,7 @@ const MyAddresses = () => {
       <TouchableOpacity
         key={index}
         style={styles.addressCard}
-        onPress={() => console.log(`Address pressed: ${address.address_1}`)}
+        onPress={() => Actions.EditAddress({ addressId: address.id })}
       >
         <View style={styles.addressInfo}>
           <Text
@@ -46,64 +46,96 @@ const MyAddresses = () => {
           >{`Province: ${address.province}`}</Text>
         </View>
 
-        {/* Edit icon */}
         <TouchableOpacity
-          onPress={() =>
-            console.log(`Edit Address pressed: ${address.address_1}`)
-          }
+          onPress={() => Actions.EditAddress({ addressId: address.id })}
           style={styles.editIcon}
         >
           <Icon name="pencil-outline" size={24} color="#333" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleDeleteAddress(address.id)}
+          style={styles.deleteIcon}
+        >
+          <Icon name="trash-outline" size={24} color="red" />
         </TouchableOpacity>
       </TouchableOpacity>
     ));
   };
 
   const handleAddAddress = async (newAddress) => {
-  try {
-    // Check if the new address already exists
-    const exists = shippingAddresses.some(
-      (address) =>
-        address.address_1 === newAddress.address_1 &&
-        address.phone === newAddress.phone &&
-        address.city === newAddress.city &&
-        address.postal_code === newAddress.postal_code
-    );
+    try {
+      // Check if the new address already exists
+      const exists = shippingAddresses.some(
+        (address) =>
+          address.phone === newAddress.phone &&
+          address.address_1 === newAddress.address_1 &&
+          address.phone === newAddress.phone &&
+          address.city === newAddress.city &&
+          address.postal_code === newAddress.postal_code
+      );
 
-    if (exists) {
-      console.log("Address already exists");
+      if (exists) {
+        console.log("Address already exists");
+        // Show an error message or take appropriate action
+      } else {
+        // Make the POST request to add the new address
+        const response = await axios.post(
+          `${baseURL}/store/customers/me/addresses`,
+          {
+            address: {
+              ...newAddress,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          // Address added successfully
+          console.log("Address added successfully:", response.data);
+          setShippingAddresses((prevAddresses) => [
+            ...prevAddresses,
+            response.data.address,
+          ]);
+        } else {
+          // Log unexpected status code
+          console.error(
+            "Failed to add address. Unexpected status code:",
+            response.status
+          );
+          // Log detailed error response
+          console.error("Detailed error response:", response.data);
+          // Show an error message or take appropriate action
+        }
+      }
+    } catch (error) {
+      // Log and handle the error
+      console.error("Error adding address:", error);
+      // Log detailed error response if available
+      if (error.response) {
+        console.error("Detailed error response:", error.response.data);
+      }
       // Show an error message or take appropriate action
-    } else {
-      // Make the POST request to add the new address
-      const response = await axios.post(`${baseURL}/store/customers/me/addresses`, {
-        address: {
-          ...newAddress,
-        },
-      });
+    }
+  };
+
+  const handleDeleteAddress = async (addressId) => {
+    try {
+      const response = await axios.delete(
+        `${baseURL}/store/customers/me/addresses/${addressId}`
+      );
 
       if (response.status === 200) {
-        // Address added successfully
-        console.log("Address added successfully:", response.data);
-        setShippingAddresses((prevAddresses) => [...prevAddresses, response.data.address]);
+        // Successfully deleted the address
+        setShippingAddresses((prevAddresses) =>
+          prevAddresses.filter((address) => address.id !== addressId)
+        );
+        // Alert("Deleted Successfully");
       } else {
-        // Log unexpected status code
-        console.error("Failed to add address. Unexpected status code:", response.status);
-        // Log detailed error response
-        console.error("Detailed error response:", response.data);
-        // Show an error message or take appropriate action
+        console.error("Failed to delete address. Unexpected status code:", response.status);
       }
+    } catch (error) {
+      console.error("Error deleting address:", error);
     }
-  } catch (error) {
-    // Log and handle the error
-    console.error("Error adding address:", error);
-    // Log detailed error response if available
-    if (error.response) {
-      console.error("Detailed error response:", error.response.data);
-    }
-    // Show an error message or take appropriate action
-  }
-};
-
+  };
 
   return (
     <ScrollView>
@@ -188,6 +220,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  // deleteIcon: {
+  //   alignSelf: "flex-end", // Align the delete icon to the right
+  //   marginTop: 10,
+  // },
 });
 
 export default MyAddresses;

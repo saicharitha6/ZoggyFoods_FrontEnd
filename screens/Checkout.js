@@ -19,6 +19,22 @@ export default function Checkout({ cart }) {
   const [shippingOptions, setShippingOptions] = useState([]);
   const [selectedShippingOption, setSelectedShippingOption] = useState("");
   const [paymentSession, setPaymentSession] = useState({});
+  const [selectedDeliveryOption, setSelectedDeliveryOption] = useState("");
+
+  const getSelectedDeliveryOption = async () => {
+    try {
+      // Retrieve the selected delivery option from AsyncStorage
+      const option = await AsyncStorage.getItem("selectedDeliveryOption");
+
+      // Set the value in the state
+      setSelectedDeliveryOption(option);
+    } catch (error) {
+      console.error(
+        "Error retrieving selected delivery option:",
+        error.message
+      );
+    }
+  };
 
   // const { confirmPayment } = useStripe();
 
@@ -131,11 +147,17 @@ export default function Checkout({ cart }) {
   useEffect(() => {
     // Calling the function to fetch the payment options when the component mounts
     fetchPaymentOption();
+    getSelectedDeliveryOption();
   }, []);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Header title="Checkout" isVisible={false} />
+        <View>
+          <Text style={styles.delivery}>
+            Selected Delivery Option: {selectedDeliveryOption}
+          </Text>
+        </View>
         <View style={styles.address}>
           <Text style={styles.title}>Shipping Address</Text>
           <ShippingAddress onChange={handleAddressInputChange} />
@@ -205,5 +227,10 @@ const styles = StyleSheet.create({
   },
   shippingOption: {
     marginTop: heightToDp(2),
+  },
+  delivery: {
+    margin: 20,
+    fontStyle: "italic",
+    fontWeight: "bold",
   },
 });

@@ -45,7 +45,9 @@ export default function Header({
     <View style={styles.container}>
       {isHome ? (
         <View style={styles.header}>
-          <Image source={user} style={styles.logo} />
+          <TouchableOpacity onPress={() => Actions.profile()}>
+            <Image source={user} style={styles.logo} />
+          </TouchableOpacity>
           <View style={styles.user}>
             <Text style={styles.title}>Hi Guest</Text>
             <View style={styles.location}>
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     position: "relative",
-    marginRight:15
+    marginRight: 15,
   },
   cart_count_container: {
     position: "absolute",

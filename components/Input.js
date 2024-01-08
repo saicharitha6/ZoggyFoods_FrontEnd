@@ -27,7 +27,7 @@ export default function Input({
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: "100",
     padding: 10,
     borderRadius: 5,
     borderWidth: 1,

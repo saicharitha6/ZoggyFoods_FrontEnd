@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import {
   AntDesign,
@@ -7,10 +7,34 @@ import {
   Entypo,
 } from "@expo/vector-icons";
 import { Actions } from "react-native-router-flux";
+import ErrMessage from "./ErrorMessage";
 
 const Footer = () => {
+  const [showMessage, setShowMessage] = useState(false);
+
+  const showMessageHandler = () => {
+    setShowMessage(true);
+    // if (text.length !== 0) {
+    //   const timeoutId = setTimeout(() => {
+    //     onEnd();
+    //   }, 5000);
+
+    //   return () => clearTimeout(timeoutId);
+    // }
+  };
+  const hideMessageHandler = () => {
+    setShowMessage(false);
+  };
+
   return (
     <View style={styles.footer}>
+      {showMessage && (
+        <ErrMessage
+          text="This Feature will be available soon"
+          type="message"
+          onEnd={hideMessageHandler}
+        />
+      )}
       <TouchableOpacity
         style={styles.button}
         onPress={() => console.log("Subscriptions button pressed")}
@@ -18,7 +42,12 @@ const Footer = () => {
         <MaterialCommunityIcons name="calendar-sync" size={30} color="white" />
         <Text style={styles.buttonText}>Subscriptions</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => Actions.Wallet()}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          showMessageHandler();
+        }}
+      >
         <Entypo name="wallet" size={30} color="white" />
         <Text style={styles.buttonText}>Wallet</Text>
       </TouchableOpacity>
@@ -32,7 +61,7 @@ const Footer = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => console.log("Calendar button pressed")}
+        onPress={() => Actions.Calendar()}
       >
         <AntDesign name="calendar" size={30} color="white" />
         <Text style={styles.buttonText}>Calendar</Text>

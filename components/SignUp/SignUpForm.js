@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: "center",
+    // alignItems: "center",
     backgroundColor: "#fff",
     paddingTop: 0,
   },
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   signUpText: {
     flexDirection: "row",
     marginTop: 50,
-    justifyContent: "flex-end",
+    justifyContent: "center",
   },
   link: {
     // marginTop: 20,

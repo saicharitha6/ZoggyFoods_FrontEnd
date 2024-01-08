@@ -73,16 +73,17 @@ const SignInForm = () => {
         password: enteredPassword,
       })
         .then((res) => {
-          setLoading(false); // Set loading to false after successful request
-          if (res.data !== undefined) {
-            Actions.products();
+          console.log("res->", res.status);
+          setLoading(false);
+          if (res.status === 200) {
+            Actions.Region();
           } else {
             setErrMessage("Unexpected response structure");
             resetAll();
           }
         })
         .catch((err) => {
-          setLoading(false); // Set loading to false after failed request
+          setLoading(false);
 
           const statusCode = err.response.status;
 
@@ -159,8 +160,6 @@ const SignInForm = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#fff",
     marginTop: 80,
     padding: 20,

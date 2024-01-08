@@ -1,31 +1,39 @@
-import { Router, Scene, Stack } from "react-native-router-flux";
+import { Actions, Router, Scene, Stack } from "react-native-router-flux";
 import Products from "./screens/Products";
 import ProductInfo from "./screens/ProductInfo";
 import Cart from "./screens/Cart";
 import Checkout from "./screens/Checkout";
-import { CartProvider } from './components/CartContext';
+import { CartProvider } from "./components/CartContext";
 import { Provider as PaperProvider } from "react-native-paper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react"; // Import useState
 import axios from "axios";
 import baseURL from "./constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./screens/SignIn";
-import SignUp from "./screens/SignUp";
 import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
 import Search from "./components/Search/Search";
 import Address from "./screens/Address";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
+import Profile from "./screens/Profile";
+import EditProfile from "./screens/EditProfile";
+import WelcomeScreen from "./screens/Welcome";
+import SubscriptionCalendarScreen from "./screens/Calendar";
+import SignUp from "./screens/SignUp";
+import SelectLocation from "./screens/Region";
+import DeliveryPreferences from "./screens/DeliveryPreferences";
 
 export default function App() {
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null); // Track if it's the first launch
+
   const getCartId = async () => {
     await axios.post(`${baseURL}/store/carts`).then((res) => {
       AsyncStorage.setItem("cart_id", res.data.cart.id);
     });
   };
+
   const checkCartId = async () => {
-    // await AsyncStorage.removeItem("cart_id");
     const cartId = await AsyncStorage.getItem("cart_id");
 
     if (cartId) {
@@ -47,23 +55,47 @@ export default function App() {
           }
         });
     }
+
     if (!cartId) {
       getCartId();
     }
   };
 
   useEffect(() => {
+    const checkFirstLaunch = async () => {
+      try {
+        const value = await AsyncStorage.getItem("firstLaunch");
+        if (value === null) {
+          setIsFirstLaunch(true);
+          AsyncStorage.setItem("firstLaunch", "false");
+        } else {
+          setIsFirstLaunch(false);
+        }
+      } catch (error) {
+        console.error("Error checking first launch:", error);
+      }
+    };
+
+    checkFirstLaunch();
     checkCartId();
   }, []);
 
+  useEffect(() => {
+    // Use Actions to navigate directly to OTPVerification if isFirstLaunch
+    if (!isFirstLaunch) {
+      Actions.SignIn(); // Assuming the key for OTPVerification screen is "OTPVerification"
+    }
+  }, [isFirstLaunch]);
+
   return (
     <PaperProvider>
-      {/* Wrap the entire component tree with CartProvider */}
       <CartProvider>
         <Router>
           <Stack key="root">
+            <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
             <Scene key="SignIn" component={SignIn} hideNavBar />
             <Scene key="SignUp" component={SignUp} hideNavBar />
+            <Scene key="Region" component={SelectLocation} hideNavBar />
             <Scene key="products" component={Products} hideNavBar />
             <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
             <Scene key="cart" component={Cart} hideNavBar />
@@ -72,7 +104,19 @@ export default function App() {
             <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
             <Scene key="orders" component={Orders} hideNavBar />
             <Scene key="search" component={Search} hideNavBar />
+            <Scene key="profile" component={Profile} hideNavBar />
+            <Scene
+              key="DeliveryPreference"
+              component={DeliveryPreferences}
+              hideNavBar
+            />
+            <Scene key="EditProfile" component={EditProfile} hideNavBar />
             <Scene key="Wallet" component={Wallet} hideNavBar />
+            <Scene
+              key="Calendar"
+              component={SubscriptionCalendarScreen}
+              hideNavBar
+            />
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

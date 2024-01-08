@@ -16,10 +16,33 @@ import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import baseURL from "../constants/url";
-import { useCartContext } from '../components/CartContext';
+import { useCartContext } from "../components/CartContext";
 
 const PlaceOrder = () => {
   const { cartTotal } = useCartContext();
+  const [selectedDeliveryOption, setSelectedDeliveryOption] = useState("");
+
+  useEffect(() => {
+    getSelectedDeliveryOption();
+    // Calling the fetchCart function when the component mounts
+    setPaymentSession();
+  }, []);
+
+  const getSelectedDeliveryOption = async () => {
+    try {
+      // Retrieve the selected delivery option from AsyncStorage
+      const option = await AsyncStorage.getItem("selectedDeliveryOption");
+
+      // Set the value in the state
+      setSelectedDeliveryOption(option);
+    } catch (error) {
+      console.error(
+        "Error retrieving selected delivery option:",
+        error.message
+      );
+    }
+  };
+
   const getDeliveryDate = () => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -35,11 +58,6 @@ const PlaceOrder = () => {
 
     return tomorrow.toLocaleDateString("en-US", options);
   };
-
-  useEffect(() => {
-    // Calling the fetchCart function when the component mounts
-    setPaymentSession();
-  }, []);
 
   const getCartId = () => {
     axios.post(`${baseURL}/store/carts`).then((res) => {
@@ -130,6 +148,8 @@ const PlaceOrder = () => {
         <View>
           <Text style={styles.delivery}>Delivery Address</Text>
           <Text style={styles.inputText}>Home</Text>
+          <Text style={styles.delivery}>Selected Delivery Option: </Text>
+          <Text style={styles.amount}>{selectedDeliveryOption}</Text>
         </View>
       </View>
     </SafeAreaView>

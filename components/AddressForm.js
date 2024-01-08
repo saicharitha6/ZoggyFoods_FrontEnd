@@ -6,22 +6,26 @@ export default function AddressForm({ onChange }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [addressLine1, setAddressLine1] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
+  // const [addressLine2, setAddressLine2] = useState("");
   const [city, setCity] = useState("");
   const [country_code, setCountry_code] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [phone, setPhone] = useState("");
+  const [company, setCompany] = useState("");
+  const [province, setProvince] = useState("");
 
   const handleChange = () => {
     let address = {
       first_name: firstName,
       last_name: lastName,
       address_1: addressLine1,
-      address_2: addressLine2,
-      city,
-      country_code,
+      // address_2: addressLine2,
+      city: city,
+      country_code: country_code,
       postal_code: postalCode,
-      phone,
+      phone: phone,
+      company: company,
+      province: province,
     };
 
     onChange(address);
@@ -46,13 +50,11 @@ export default function AddressForm({ onChange }) {
         style={styles.input}
       />
       <TextInput
-        onChangeText={(e) => setAddressLine1(e)}
+        onChangeText={(e) => {
+          setAddressLine1(e);
+          handleChange();
+        }}
         placeholder="Address Line 1"
-        style={styles.input}
-      />
-      <TextInput
-        onChangeText={(e) => setAddressLine2(e)}
-        placeholder="Address Line 2"
         style={styles.input}
       />
       <TextInput
@@ -78,6 +80,22 @@ export default function AddressForm({ onChange }) {
           handleChange();
         }}
         placeholder="Phone"
+        style={styles.input}
+      />
+      <TextInput
+        onChangeText={(e) => {
+          setCompany(e);
+          handleChange();
+        }}
+        placeholder="Company"
+        style={styles.input}
+      />
+      <TextInput
+        onChangeText={(e) => {
+          setProvince(e);
+          handleChange();
+        }}
+        placeholder="Province"
         style={styles.input}
       />
     </View>

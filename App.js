@@ -17,6 +17,7 @@ import Search from "./components/Search/Search";
 import Address from "./screens/Address";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
+import MyAddresses from "./components/Profile/MyAddresses";
 
 export default function App() {
   const getCartId = async () => {
@@ -72,7 +73,9 @@ export default function App() {
             <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
             <Scene key="orders" component={Orders} hideNavBar />
             <Scene key="search" component={Search} hideNavBar />
-            <Scene key="Wallet" component={Wallet} hideNavBar />
+            <Scene key="Wallet" component={Wallet} hideNavBar /> */}
+            <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
+            <Scene key="address" component={Address} hideNavBar />
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

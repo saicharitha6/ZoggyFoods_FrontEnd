@@ -12,7 +12,7 @@ import AddressForm from "../components/AddressForm";
 import baseURL from "../constants/url";
 import { Actions } from "react-native-router-flux";
 
-const Address = ({ cart }) => {
+const Address = () => {
   const [shippingAddress, setShippingAddress] = useState({});
   const [shippingOptions, setShippingOptions] = useState([]);
 
@@ -29,9 +29,6 @@ const Address = ({ cart }) => {
         {
           address: {
             ...shippingAddress,
-            company: "Wyman LLC",
-            province: "Georgia",
-            country_code: "US",
           },
         }
       );
@@ -48,7 +45,7 @@ const Address = ({ cart }) => {
           );
 
           if (shippingResponse.status === 200) {
-            Actions.payments();
+            Actions.MyAddresses();
           } else {
             console.error(
               "Failed to add shipping method. Unexpected status code:",

@@ -130,7 +130,10 @@ const MyAddresses = () => {
         );
         // Alert("Deleted Successfully");
       } else {
-        console.error("Failed to delete address. Unexpected status code:", response.status);
+        console.error(
+          "Failed to delete address. Unexpected status code:",
+          response.status
+        );
       }
     } catch (error) {
       console.error("Error deleting address:", error);
@@ -153,7 +156,9 @@ const MyAddresses = () => {
 
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => Actions.address({ onAddAddress: handleAddAddress })}
+          onPress={() =>
+            Actions.Addr({ isEdit: false, onAddAddress: handleAddAddress })
+          }
         >
           <Text style={styles.addButtonText}>Add Address</Text>
         </TouchableOpacity>

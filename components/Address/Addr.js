@@ -9,12 +9,15 @@ import AddressForm from "../AddressForm";
 import baseURL from "../../constants/url";
 import { Actions } from "react-native-router-flux";
 
-const Address = ({ isEdit, addressId }) => {
+const Addr = ({ isEdit, addressId }) => {
   const [shippingAddress, setShippingAddress] = useState({});
   const [loading, setLoading] = useState(true);
 
   const handleAddressInputChange = (address) => {
-    setShippingAddress(address);
+    setShippingAddress((prevAddress) => ({
+      ...prevAddress,
+      ...address,
+    }));
   };
 
   const AddOrEditAddress = async () => {
@@ -76,6 +79,9 @@ const Address = ({ isEdit, addressId }) => {
       }
     } catch (error) {
       console.error("Error fetching address:", error);
+      if (error.response && error.response.status === 404) {
+        console.error("Address not found. Handle this case appropriately.");
+      }
     } finally {
       setLoading(false);
     }
@@ -106,10 +112,12 @@ const Address = ({ isEdit, addressId }) => {
         />
         <View style={styles.address}>
           <Text style={styles.title}>Please fill in the details</Text>
-          <AddressForm
-            onChange={handleAddressInputChange}
-            initialAddress={isEdit ? shippingAddress : null}
-          />
+          {Object.keys(shippingAddress).length >= 0 && (
+            <AddressForm
+              onChange={handleAddressInputChange}
+              initialAddress={shippingAddress}
+            />
+          )}
         </View>
 
         <View style={styles.shipping}>
@@ -144,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Address;
+export default Addr;

@@ -1,9 +1,9 @@
 import React from 'react';
-import Address from './Address';
+import Addr from './Addr';
 
 const EditAddress = ({ addressId }) => {
   return (
-    <Address
+    <Addr
       isEdit={true}
       addressId={addressId} // Pass the addressId prop to the Address component
     />

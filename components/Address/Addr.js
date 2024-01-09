@@ -13,13 +13,12 @@ const Addr = ({ isEdit, addressId }) => {
   const [shippingAddress, setShippingAddress] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const handleAddressInputChange = (address) => {
+  const handleAddressInputChange = (field, value) => {
     setShippingAddress((prevAddress) => ({
       ...prevAddress,
-      ...address,
+      [field]: value,
     }));
   };
-
   const AddOrEditAddress = async () => {
     try {
       const headers = {
@@ -28,7 +27,7 @@ const Addr = ({ isEdit, addressId }) => {
 
       if (isEdit) {
         // Use axios.put for updating an existing address
-        const response = await axios.put(
+        const response = await axios.post(
           `${baseURL}/store/customers/me/addresses/${addressId}`, // Include addressId in the URL
           {
             address: {
@@ -79,7 +78,6 @@ const Addr = ({ isEdit, addressId }) => {
       const response = await axios.get(
         `${baseURL}/store/customers/me/addresses/${addressId}`
       );
-
       if (response.status === 200) {
         setShippingAddress(response.data.address);
       } else {
@@ -97,6 +95,7 @@ const Addr = ({ isEdit, addressId }) => {
 
   useEffect(() => {
     if (isEdit && addressId) {
+      console.log("Fetching address for editing. AddressId:", addressId);
       fetchAddress();
     } else {
       setLoading(false);

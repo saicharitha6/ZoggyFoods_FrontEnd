@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, TextInput } from "react-native";
+import { View, StyleSheet, Text, TextInput, Alert } from "react-native";
 import { heightToDp } from "rn-responsive-screen";
 import Button from "./Button";
 import { Actions } from "react-native-router-flux";
@@ -42,9 +42,9 @@ export default function AddressForm({ onSubmit, initialAddress }) {
       company: company,
       province: province,
     };
-
     onSubmit(address);
-    Actions.MyAddresses();
+    // Actions.pop();
+    Alert.alert("Added Address")
   };
 
   return (

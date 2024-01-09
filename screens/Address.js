@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -38,6 +38,40 @@ const Address = ({ cart }) => {
     }
   };
 
+  const addAddressAndProceed = async () => {
+    try {
+      if (!selectedAddress) {
+        console.error("Please fill in the address details.");
+        Alert.alert("Add Details");
+        return;
+      }
+
+      const newAddressResponse = await axios.post(
+        `${baseURL}/store/customers/me/addresses`,
+        {
+          address: {
+            ...selectedAddress,
+          },
+        }
+      );
+
+      if (newAddressResponse.status === 200) {
+        // Set the newly added address as the selected address
+        setSelectedAddress(newAddressResponse.data.address);
+
+        // Navigate to the payments screen
+        Actions.payments();
+      } else {
+        console.error(
+          "Failed to add address. Unexpected status code:",
+          newAddressResponse.status
+        );
+      }
+    } catch (error) {
+      console.error("Error adding address:", error);
+    }
+  };
+
   const fetchShippingAddresses = async () => {
     try {
       const response = await axios.get(`${baseURL}/store/customers/me`);
@@ -73,37 +107,6 @@ const Address = ({ cart }) => {
     }
   };
 
-  const addAddressAndProceed = async () => {
-    try {
-      if (!selectedAddress) {
-        console.error("Please fill in the address details.");
-        return;
-      }
-
-      const newAddressResponse = await axios.post(
-        `${baseURL}/store/customers/me/addresses`,
-        {
-          address: {
-            ...selectedAddress,
-          },
-        }
-      );
-
-      if (newAddressResponse.status === 200) {
-        await fetchShippingAddresses();
-        setSelectedAddress(newAddressResponse.data.address);
-        Actions.payments();
-      } else {
-        console.error(
-          "Failed to add address. Unexpected status code:",
-          newAddressResponse.status
-        );
-      }
-    } catch (error) {
-      console.error("Error adding address:", error);
-    }
-  };
-
   useEffect(() => {
     fetchShippingAddresses();
     fetchShippingOptions();
@@ -116,7 +119,7 @@ const Address = ({ cart }) => {
         <View style={styles.address}>
           {shippingAddresses.length === 0 && (
             <AddressForm
-              onChange={handleAddressInputChange}
+              onSubmit={handleAddressInputChange}
               initialAddress={selectedAddress}
             />
           )}
@@ -145,16 +148,25 @@ const Address = ({ cart }) => {
                   </Text>
                 </TouchableOpacity>
               ))}
-              <Button onPress={placeOrder} large title="Place Order" />
+              <Text style={styles.belowText}>
+                After Address Added Proceed to Payment!!!
+              </Text>
+              <Button onPress={placeOrder} large title="Proceed to Payment" />
             </>
           ) : (
             <View>
+              <Text style={styles.belowText}>
+                After Address Added Proceed to Payment!!!
+              </Text>
               <TouchableOpacity
                 style={styles.addAddressButton}
-                onPress={addAddressAndProceed} // Update the onPress handler
+                onPress={addAddressAndProceed}
               >
-                <Text style={styles.addAddressButtonText} onPress={placeOrder}>
-                  Add Address
+                <Text
+                  style={styles.addAddressButtonText}
+                  onPress={addAddressAndProceed}
+                >
+                  Proceed to Payment
                 </Text>
               </TouchableOpacity>
             </View>
@@ -189,7 +201,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   selectedOption: {
-    backgroundColor: "green", // Apply green background to the selected option
+    backgroundColor: "lightyellow",
   },
   addAddressButton: {
     marginTop: heightToDp(2),
@@ -203,6 +215,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  belowText: {
+    marginTop: 10,
+    fontStyle: "italic",
+    fontWeight: "300",
+    color: "red",
   },
 });
 

@@ -28,7 +28,7 @@ const MyAddresses = () => {
       <TouchableOpacity
         key={index}
         style={styles.addressCard}
-        onPress={() => Actions.EditAddress({ addressId: address.id })}
+        onPress={() => Actions.EditAddress({ address: address })}
       >
         <View style={styles.addressInfo}>
           {/* Update the styles for the specific title and value */}
@@ -49,7 +49,7 @@ const MyAddresses = () => {
         </View>
 
         <TouchableOpacity
-          onPress={() => Actions.EditAddress({ addressId: address.id })}
+          onPress={() => Actions.EditAddress({ address: address })}
           style={styles.editIcon}
         >
           <Icon name="pencil-outline" size={23} color="#333" margin={15} />

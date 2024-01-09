@@ -22,14 +22,20 @@ const Addr = ({ isEdit, addressId }) => {
 
   const AddOrEditAddress = async () => {
     try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
       if (isEdit) {
-        const response = await axios.post(
-          `${baseURL}/store/customers/me/addresses/${addressId}`,
+        // Use axios.put for updating an existing address
+        const response = await axios.put(
+          `${baseURL}/store/customers/me/addresses/${addressId}`, // Include addressId in the URL
           {
             address: {
               ...shippingAddress,
             },
-          }
+          },
+          { headers }
         );
 
         if (response.status === 200) {
@@ -41,13 +47,15 @@ const Addr = ({ isEdit, addressId }) => {
           );
         }
       } else {
+        // Use axios.post for adding a new address
         const addressResponse = await axios.post(
           `${baseURL}/store/customers/me/addresses`,
           {
             address: {
               ...shippingAddress,
             },
-          }
+          },
+          { headers }
         );
 
         if (addressResponse.status === 200) {

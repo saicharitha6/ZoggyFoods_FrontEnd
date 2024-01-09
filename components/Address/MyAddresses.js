@@ -31,26 +31,28 @@ const MyAddresses = () => {
         onPress={() => Actions.EditAddress({ addressId: address.id })}
       >
         <View style={styles.addressInfo}>
-          <Text
-            style={styles.addressLine}
-          >{`Address: ${address.address_1}`}</Text>
-          <Text
-            style={styles.addressLine}
-          >{`Country Code: ${address.country_code}`}</Text>
-          <Text style={styles.addressLine}>{`City: ${address.city}`}</Text>
-          <Text
-            style={styles.addressLine}
-          >{`Postal Code: ${address.postal_code}`}</Text>
-          <Text
-            style={styles.addressLine}
-          >{`Province: ${address.province}`}</Text>
+          {/* Update the styles for the specific title and value */}
+          <Text style={styles.addressTitle}>{`Address`}</Text>
+          <Text style={styles.addressValue}>{`${address.address_1}`}</Text>
+
+          <Text style={styles.addressTitle}>{`Country Code`}</Text>
+          <Text style={styles.addressValue}>{`${address.country_code}`}</Text>
+
+          <Text style={styles.addressTitle}>{`City`}</Text>
+          <Text style={styles.addressValue}>{`${address.city}`}</Text>
+
+          <Text style={styles.addressTitle}>{`Postal Code`}</Text>
+          <Text style={styles.addressValue}>{`${address.postal_code}`}</Text>
+
+          {/* <Text style={styles.addressTitle}>{`Province:`}</Text>
+          <Text style={styles.addressValue}>{`${address.province}`}</Text> */}
         </View>
 
         <TouchableOpacity
           onPress={() => Actions.EditAddress({ addressId: address.id })}
           style={styles.editIcon}
         >
-          <Icon name="pencil-outline" size={24} color="#333" />
+          <Icon name="pencil-outline" size={23} color="#333" margin={15} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => handleDeleteAddress(address.id)}
@@ -67,7 +69,7 @@ const MyAddresses = () => {
       // Check if the new address already exists
       const exists = shippingAddresses.some(
         (address) =>
-          address.phone === newAddress.phone &&
+          address.country_code === newAddress.country_code &&
           address.address_1 === newAddress.address_1 &&
           address.phone === newAddress.phone &&
           address.city === newAddress.city &&
@@ -198,9 +200,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 15,
     margin: 10,
-    flexDirection: "row",
+    flexDirection: "row", // Set the flexDirection to row
     justifyContent: "space-between",
     alignItems: "center", // Center items vertically
+  },
+
+  // Address lines with specific styling
+  addressTitle: {
+    fontSize: 16,
+    marginBottom: 5,
+    fontWeight: "bold",
+    marginRight: 10, // Add margin between title and value
+  },
+  addressValue: {
+    fontSize: 16,
+    marginBottom: 5,
+    fontWeight: "normal",
   },
   addressInfo: {
     flex: 1, // Take the available space
@@ -211,6 +226,7 @@ const styles = StyleSheet.create({
   addressLine: {
     fontSize: 16,
     marginBottom: 5,
+    fontWeight: "bold", // Set default font weight to bold
   },
   addButton: {
     backgroundColor: "green",
@@ -225,10 +241,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  // deleteIcon: {
-  //   alignSelf: "flex-end", // Align the delete icon to the right
-  //   marginTop: 10,
-  // },
 });
 
 export default MyAddresses;

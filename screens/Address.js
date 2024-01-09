@@ -177,8 +177,9 @@ const styles = StyleSheet.create({
     marginHorizontal: widthToDp(5),
   },
   title: {
-    fontSize: widthToDp(4.0),
+    fontSize: widthToDp(4.5),
     paddingTop: 10,
+    fontWeight: "bold",
   },
   shippingOption: {
     marginTop: heightToDp(2),

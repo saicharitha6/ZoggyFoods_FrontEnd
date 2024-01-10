@@ -17,7 +17,6 @@ const PaymentsOptions = ({ selectedAddress }) => {
 
   const handleProceed = () => {
     Actions.PlaceOrder({selectedAddress});
-    console.log(selectedAddress);
     // Add your logic to proceed with the selected payment option
   };
 

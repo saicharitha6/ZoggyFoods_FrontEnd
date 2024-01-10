@@ -14,14 +14,14 @@ const MyAddresses = () => {
     axios
       .get(`${baseURL}/store/customers/me`)
       .then((response) => {
-        // Extract shipping_addresses array from the response
-        const addresses = response.data.customer.shipping_addresses;
+        // Use optional chaining to safely access nested property
+        const addresses = response?.data?.customer?.shipping_addresses ?? [];
         setShippingAddresses(addresses);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []); // Empty dependency array to run the effect only once
+  }, []); // Empty dependency array to run the effect only once 
 
   const renderAddresses = () => {
     return shippingAddresses.map((address, index) => (
@@ -77,7 +77,7 @@ const MyAddresses = () => {
       );
 
       if (exists) {
-        console.log("Address already exists");
+        Alert.alert("Address already exists");
         // Show an error message or take appropriate action
       } else {
         // Make the POST request to add the new address
@@ -92,7 +92,6 @@ const MyAddresses = () => {
 
         if (response.status === 200) {
           // Address added successfully
-          console.log("Address added successfully:", response.data);
           setShippingAddresses((prevAddresses) => [
             ...prevAddresses,
             response.data.address,

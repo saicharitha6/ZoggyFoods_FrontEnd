@@ -10,9 +10,9 @@ import { Actions } from "react-native-router-flux";
 
 const AddEditAddress = ({ isEdit, address }) => {
   const handleAddressInputChange = (updatedAddress) => {
-    AddOrEditAddress(updatedAddress);
+    addOrEditAddress(updatedAddress);
   };
-  const AddOrEditAddress = async (addressData) => {
+  const addOrEditAddress = async (addressData) => {
     try {
       const headers = {
         "Content-Type": "application/json",

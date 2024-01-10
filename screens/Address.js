@@ -19,7 +19,6 @@ const Address = ({ cart }) => {
 
   const handleAddressInputChange = (address) => {
     setSelectedAddress(address);
-    console.log(selectedAddress);
   };
 
   const placeOrder = async () => {
@@ -27,8 +26,7 @@ const Address = ({ cart }) => {
       let cart_id = await AsyncStorage.getItem("cart_id");
       if (selectedAddress) {
         // Use the selectedAddress directly for placing the order
-        console.log("Selected Address:", selectedAddress);
-        Actions.payments({ selectedAddress }); // Replace this with your actual navigation logic
+        Actions.payments({ selectedAddress });
       } else {
         // If no address is selected, you can show an error or prompt the user to select an address.
         console.error("Please select a shipping address.");

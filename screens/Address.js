@@ -43,7 +43,7 @@ const Address = ({ cart }) => {
     try {
       if (!selectedAddress) {
         console.error("Please fill in the address details.");
-        Alert.alert("Add Details");
+        Alert.alert("Add Details in Form and Add Address");
         return;
       }
 
@@ -141,8 +141,8 @@ const Address = ({ cart }) => {
                   ]}
                   onPress={() => setSelectedAddress(address)}
                 >
-                  <Text>Address: {address.address_1}</Text>
-                  <Text>City: {address.city}</Text>
+                  <Text>Address Line : {address.address_1}</Text>
+                  <Text>City : {address.city}</Text>
                   <Text>
                     postal Code :{" "}
                     {`${address.country_code}, ${address.postal_code}`}
@@ -150,7 +150,7 @@ const Address = ({ cart }) => {
                 </TouchableOpacity>
               ))}
               <Text style={styles.belowText}>
-                After Address Added Proceed to Payment!!!
+                After Address Selected Proceed to Payment!!!
               </Text>
               <Button onPress={placeOrder} large title="Proceed to Payment" />
             </>

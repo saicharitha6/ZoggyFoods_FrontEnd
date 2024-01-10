@@ -159,7 +159,7 @@ const MyAddresses = () => {
         <TouchableOpacity
           style={styles.addButton}
           onPress={() =>
-            Actions.Addr({ isEdit: false, onAddAddress: handleAddAddress })
+            Actions.AddEditAddress({ isEdit: false, onAddAddress: handleAddAddress })
           }
         >
           <Text style={styles.addButtonText}>Add Address</Text>

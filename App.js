@@ -14,7 +14,7 @@ import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
 import Search from "./components/Search/Search";
 import Address from "./screens/Address";
-import Addr from "./components/Address/Addr";
+import AddEditAddress from "./components/Address/AddEditAddress";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
 import Profile from "./screens/Profile";
@@ -121,7 +121,7 @@ export default function App() {
               hideNavBar
             />
             <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
-            <Scene key="Addr" component={Addr} hideNavBar />
+            <Scene key="AddEditAddress" component={AddEditAddress} hideNavBar />
             <Scene key="EditAddress" component={EditAddress} hideNavBar />
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>

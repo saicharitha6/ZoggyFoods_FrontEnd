@@ -8,7 +8,7 @@ import AddressForm from "../AddressForm";
 import baseURL from "../../constants/url";
 import { Actions } from "react-native-router-flux";
 
-const Addr = ({ isEdit, address }) => {
+const AddEditAddress = ({ isEdit, address }) => {
   const handleAddressInputChange = (updatedAddress) => {
     AddOrEditAddress(updatedAddress);
   };
@@ -93,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Addr;
+export default AddEditAddress;

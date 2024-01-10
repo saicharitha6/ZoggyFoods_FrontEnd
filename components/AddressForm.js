@@ -13,7 +13,16 @@ export default function AddressForm({ onSubmit, initialAddress }) {
   const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
   const [province, setProvince] = useState("");
-  
+
+  // Error state for each field
+  const [errors, setErrors] = useState({
+    address_1: "",
+    city: "",
+    country_code: "",
+    postalCode: "",
+    phone: "",
+  });
+
   useEffect(() => {
     if (initialAddress) {
       setFirstName(initialAddress.first_name || "");
@@ -28,21 +37,87 @@ export default function AddressForm({ onSubmit, initialAddress }) {
     }
   }, [initialAddress]);
 
+  const isNumeric = (value) => /^\d+$/.test(value);
+
+  const validateFields = () => {
+
+    if (!addressLine1.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        address_1: "Address Line 1 is required",
+      }));
+      return false;
+    }
+
+    if (!city.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        city: "City is required",
+      }));
+      return false;
+    }
+    // Validate country_code
+    const validCountryCodes = ["IN", "US"];
+    if (!validCountryCodes.includes(country_code.toUpperCase())) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        country_code: "Please enter a valid country code (IN or US)",
+      }));
+      return false;
+    }
+
+    // Validate postalCode (pincode)
+    if (!isNumeric(postalCode)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        postalCode: "Please enter a numeric postal code",
+      }));
+      return false;
+    }
+
+     // Validate phone number length
+     if (phone.length !== 10 || !isNumeric(phone)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        phone: "Please enter a 10-digit numeric phone number",
+      }));
+      return false;
+    }
+
+    // Reset error messages
+    setErrors({
+      address_1: "",
+      city: "",
+      country_code: "",
+      postalCode: "",
+      phone: "",
+    });
+
+    return true;
+  };
+
   const submitHandler = () => {
+    if (!validateFields()) {
+      // Stop execution if validation fails
+      Alert.alert("Validation Error", "Please check the form for errors.");
+      return;
+    }
+
+    // All fields are filled and numeric, proceed with form submission
     let address = {
       first_name: firstName,
       last_name: lastName,
       address_1: addressLine1,
       city: city,
-      country_code: country_code,
+      country_code: country_code.toUpperCase(),
       postal_code: postalCode,
       phone: phone,
       company: company,
       province: province,
     };
+
     onSubmit(address);
-    // Actions.pop();
-    Alert.alert("Added Address")
+    Alert.alert("Added Address");
   };
 
   return (
@@ -71,6 +146,9 @@ export default function AddressForm({ onSubmit, initialAddress }) {
         placeholder="Address Line 1"
         style={styles.input}
       />
+     {errors.address_1 ? (
+        <Text style={styles.error}>{errors.address_1}</Text>
+      ) : null}
       <TextInput
         value={city}
         onChangeText={(e) => {
@@ -79,6 +157,7 @@ export default function AddressForm({ onSubmit, initialAddress }) {
         placeholder="City"
         style={styles.input}
       />
+      {errors.city ? <Text style={styles.error}>{errors.city}</Text> : null}
       <TextInput
         value={country_code}
         onChangeText={(e) => {
@@ -87,22 +166,31 @@ export default function AddressForm({ onSubmit, initialAddress }) {
         placeholder="Country Code"
         style={styles.input}
       />
+      {errors.country_code ? (
+        <Text style={styles.error}>{errors.country_code}</Text>
+      ) : null}
       <TextInput
         value={postalCode}
         onChangeText={(e) => {
           setPostalCode(e);
         }}
         placeholder="Postal Code"
+        keyboardType="numeric"
         style={styles.input}
       />
+      {errors.postalCode ? (
+        <Text style={styles.error}>{errors.postalCode}</Text>
+      ) : null}
       <TextInput
         value={phone}
         onChangeText={(e) => {
           setPhone(e);
         }}
         placeholder="Phone"
+        keyboardType="numeric"
         style={styles.input}
       />
+      {errors.phone ? <Text style={styles.error}>{errors.phone}</Text> : null}
       <TextInput
         value={company}
         onChangeText={(e) => {
@@ -144,5 +232,9 @@ const styles = StyleSheet.create({
     borderColor: "#E5E5E5",
     borderRadius: 5,
     marginTop: 10.2,
+  },
+  error: {
+    color: "red",
+    marginTop: 5,
   },
 });

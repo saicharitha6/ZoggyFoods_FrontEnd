@@ -19,6 +19,7 @@ const Address = ({ cart }) => {
 
   const handleAddressInputChange = (address) => {
     setSelectedAddress(address);
+    console.log(selectedAddress);
   };
 
   const placeOrder = async () => {
@@ -27,7 +28,7 @@ const Address = ({ cart }) => {
       if (selectedAddress) {
         // Use the selectedAddress directly for placing the order
         console.log("Selected Address:", selectedAddress);
-        Actions.payments(); // Replace this with your actual navigation logic
+        Actions.payments({ selectedAddress }); // Replace this with your actual navigation logic
       } else {
         // If no address is selected, you can show an error or prompt the user to select an address.
         console.error("Please select a shipping address.");
@@ -60,7 +61,7 @@ const Address = ({ cart }) => {
         setSelectedAddress(newAddressResponse.data.address);
 
         // Navigate to the payments screen
-        Actions.payments();
+        Actions.payments({ selectedAddress });
       } else {
         console.error(
           "Failed to add address. Unexpected status code:",

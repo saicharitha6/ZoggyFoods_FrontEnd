@@ -76,7 +76,7 @@ const SignInForm = () => {
           console.log("res->", res.status);
           setLoading(false);
           if (res.status === 200) {
-            Actions.Region();
+            Actions.Details();
           } else {
             setErrMessage("Unexpected response structure");
             resetAll();

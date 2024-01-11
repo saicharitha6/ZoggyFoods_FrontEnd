@@ -18,7 +18,7 @@ import axios from "axios";
 import baseURL from "../constants/url";
 import { useCartContext } from "../components/CartContext";
 
-const PlaceOrder = () => {
+const PlaceOrder = ({ selectedAddress }) => {
   const { cartTotal } = useCartContext();
   const [selectedDeliveryOption, setSelectedDeliveryOption] = useState("");
 
@@ -147,7 +147,8 @@ const PlaceOrder = () => {
         </View>
         <View>
           <Text style={styles.delivery}>Delivery Address</Text>
-          <Text style={styles.inputText}>Home</Text>
+          {/* <Text style={styles.inputText}>{selectedAddress}</Text> */}
+          <Text style={styles.inputText}>Address : {selectedAddress.address_1},{" "}{selectedAddress.city},{" "}{selectedAddress.postal_code}{"."}</Text>
           <Text style={styles.delivery}>Selected Delivery Option: </Text>
           <Text style={styles.amount}>{selectedDeliveryOption}</Text>
         </View>

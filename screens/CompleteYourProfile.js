@@ -119,10 +119,13 @@ const CompleteYourProfile = ({ mobileNumber }) => {
           setLoading(false);
           if (response.data !== undefined) {
             dispatch(loginSuccess(mobileNumber));
-            await AsyncStorage.setItem("loginState", {
-              isLoggedIn: true,
-              mobileNumber: mobileNumber,
-            });
+            await AsyncStorage.setItem(
+              "loginState",
+              JSON.stringify({
+                isLoggedIn: true,
+                mobileNumber: mobileNumber,
+              })
+            );
 
             Actions.Region();
           } else {

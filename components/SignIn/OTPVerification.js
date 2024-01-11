@@ -58,7 +58,7 @@ const OTPVerification = ({ enteredMobileNumber }) => {
       if (verifyResponse.data.status) {
         console.log("verifyResponse", verifyResponse.data);
         const customerResponse = await axios.get(
-          `${baseURL}/store/customers/${mobileNumber}`
+          `${baseURL}/store/customers/phone/${mobileNumber}`
         );
         if (customerResponse.data.status === false) {
           console.log("customerResponse", customerResponse.data);
@@ -71,10 +71,13 @@ const OTPVerification = ({ enteredMobileNumber }) => {
           }
         } else {
           dispatch(loginSuccess(mobileNumber));
-          await AsyncStorage.setItem("loginState", {
-            isLoggedIn: true,
-            mobileNumber: mobileNumber,
-          });
+          await AsyncStorage.setItem(
+            "loginState",
+            JSON.stringify({
+              isLoggedIn: true,
+              mobileNumber: mobileNumber,
+            })
+          );
 
           Actions.products();
         }

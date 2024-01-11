@@ -74,9 +74,12 @@ export function StackedScreen() {
   const loginState = async () => {
     try {
       const value = await AsyncStorage.getItem("loginState");
-      if (value) {
+      console.log(value);
+      if (value.isLoggedIn) {
         dispatch(loginSuccess(value.mobileNumber));
         Actions.products();
+      } else {
+        Actions.SignIn();
       }
     } catch (error) {
       console.error("Error checking first launch:", error);
@@ -100,7 +103,7 @@ export function StackedScreen() {
     loginState();
     checkFirstLaunch();
     checkCartId();
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!isFirstLaunch) {
@@ -114,22 +117,6 @@ export function StackedScreen() {
         <Router>
           <Stack key="root">
             {!isLoggedIn ? (
-              <Stack key="auth" hideNavBar>
-                <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
-                <Scene key="SignIn" component={SignIn} hideNavBar />
-                <Scene
-                  key="OTPVerification"
-                  component={OTPVerification}
-                  hideNavBar
-                />
-                <Scene
-                  key="CompleteYourProfile"
-                  component={CompleteYourProfile}
-                  hideNavBar
-                />
-                <Scene key="Region" component={SelectLocation} hideNavBar />
-              </Stack>
-            ) : (
               <Stack key="app" hideNavBar>
                 <Scene key="products" component={Products} hideNavBar />
                 <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
@@ -160,6 +147,22 @@ export function StackedScreen() {
                 />
                 <Scene key="EditAddress" component={EditAddress} hideNavBar />
                 {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
+              </Stack>
+            ) : (
+              <Stack key="auth" hideNavBar>
+                <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
+                <Scene key="SignIn" component={SignIn} hideNavBar />
+                <Scene
+                  key="OTPVerification"
+                  component={OTPVerification}
+                  hideNavBar
+                />
+                <Scene
+                  key="CompleteYourProfile"
+                  component={CompleteYourProfile}
+                  hideNavBar
+                />
+                <Scene key="Region" component={SelectLocation} hideNavBar />
               </Stack>
             )}
           </Stack>

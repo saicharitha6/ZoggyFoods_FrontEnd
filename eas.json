@@ -1,0 +1,31 @@
+{
+    "cli": {
+      "version": ">= 5.9.1",
+      "appVersionSource": "remote"
+    },
+    "build": {
+      "base": {
+        "node": "20.10.0",
+        "yarn": "1.22.19"
+      },
+      "development": {
+        "extends": "base",
+        "developmentClient": true,
+        "distribution": "internal"
+      },
+      "preview": {
+        "distribution": "internal"
+      },
+      "production": {
+        "extends": "base",
+        "env": {
+          "EXPO_PUBLIC_API_URL": "https://zoggy-foods.plts-dev.com",
+          "APP_ICON": "./assets/zoggy.png",
+          "APP_NAME": "Instant Idly"
+        }
+      }
+    },
+    "submit": {
+      "production": {}
+    }
+  }

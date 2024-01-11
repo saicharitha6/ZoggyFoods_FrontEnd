@@ -19,6 +19,7 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/footer";
+import CartBanner from "../components/CartBanner";
 // import ProductCategories from "../components/Products/Categories";
 // import Swiper from "react-native-swiper";
 
@@ -184,6 +185,7 @@ export default function Products() {
           </View>
         </ScrollView>
       </View>
+      {cart.length>0 && <CartBanner/>}     
       <Footer />
     </SafeAreaView>
   );

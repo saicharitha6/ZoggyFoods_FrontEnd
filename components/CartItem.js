@@ -27,7 +27,7 @@ export default function CartItem({ item, cartId, onChangeCart }) {
       });
   }
   function updateQty(itemId) {
-    if (item.quantity !== quantity && quantity <= 3) {
+    if (item.quantity !== quantity && quantity >= 1) {
       axios
         .post(`${baseURL}/store/carts/${cartId}/line-items/${itemId}`, {
           quantity,

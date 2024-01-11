@@ -47,11 +47,10 @@ export default function Cart() {
   return (
     // SafeAreaView is used to avoid the notch on the phone
     <SafeAreaView style={[styles.container]}>
+      {/* Using the reusable header component */}
+      <Header title="My Cart" isVisible={true} />
       {/* SchrollView is used in order to scroll the content */}
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* Using the reusable header component */}
-        <Header title="My Cart" isVisible={false} />
-
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         {/* Mapping the products into the Cart component */}
         {cart?.items?.map((product) => (
           <CartItem
@@ -108,7 +107,7 @@ export default function Cart() {
                 {/* Calculating the total */}₹{calculateTotal()}
               </Text>
             </View>
-            <View>
+            <View style={styles.button}>
               {/* A button to navigate to PlaceOrder screen */}
               <Button
                 large={true}
@@ -152,6 +151,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
   },
+  scrollViewContainer: {
+    padding: 20,
+  },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -190,5 +192,8 @@ const styles = StyleSheet.create({
   textDescription: {
     color: "#848687",
     padding: 10,
+  },
+  button: {
+    paddingBottom: 20,
   },
 });

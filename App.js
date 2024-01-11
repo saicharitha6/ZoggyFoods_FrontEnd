@@ -14,6 +14,7 @@ import PlaceOrder from "./screens/PlaceOrder";
 import Orders from "./components/Orders/Orders";
 import Search from "./components/Search/Search";
 import Address from "./screens/Address";
+import AddEditAddress from "./components/Address/AddEditAddress";
 import Payments from "./screens/Payments";
 import Wallet from "./components/Wallet/Wallet";
 import Profile from "./screens/Profile";
@@ -23,6 +24,8 @@ import SubscriptionCalendarScreen from "./screens/Calendar";
 import SignUp from "./screens/SignUp";
 import SelectLocation from "./screens/Region";
 import DeliveryPreferences from "./screens/DeliveryPreferences";
+import MyAddresses from "./components/Address/MyAddresses";
+import EditAddress from "./components/Address/EditAddress";
 
 export default function App() {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null); // Track if it's the first launch
@@ -117,6 +120,9 @@ export default function App() {
               component={SubscriptionCalendarScreen}
               hideNavBar
             />
+            <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
+            <Scene key="AddEditAddress" component={AddEditAddress} hideNavBar />
+            <Scene key="EditAddress" component={EditAddress} hideNavBar />
             {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>

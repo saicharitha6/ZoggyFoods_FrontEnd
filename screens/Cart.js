@@ -10,7 +10,7 @@ import { width, widthToDp } from "rn-responsive-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import { Actions } from "react-native-router-flux";
-import { useCartContext } from '../components/CartContext';
+import { useCartContext } from "../components/CartContext";
 import emptyShoppingCart from "../assets/emptyShoppingCart.png";
 
 export default function Cart() {
@@ -19,7 +19,7 @@ export default function Cart() {
   const { setTotal } = useCartContext();
   const fetchCart = async () => {
     // Get the cart id from the device storage
-    const cartId = await AsyncStorage.getItem("cart_id");    
+    const cartId = await AsyncStorage.getItem("cart_id");
     setCartId(cartId);
     // Fetch the products from the cart API using the cart id
     axios.get(`${baseURL}/store/carts/${cartId}`).then(({ data }) => {
@@ -61,77 +61,86 @@ export default function Cart() {
           />
         ))}
       </ScrollView>
-    {cart?.items?.length > 0 ?  
-     <>{/* Creating a seperate view to show the total amount and checkout button */}
-      <View>
-        <View style={styles.row}>
-          <Text style={styles.cartTotalText}>Items</Text>
+      {cart?.items?.length > 0 ? (
+        <>
+          {/* Creating a seperate view to show the total amount and checkout button */}
+          <View>
+            <View style={styles.row}>
+              <Text style={styles.cartTotalText}>Items</Text>
 
-          {/* Showing Cart Total */}
-          <Text
-            style={[
-              styles.cartTotalText,
-              {
-                color: "#4C4C4C",
-              },
-            ]}
-          >
-            {/* Dividing the total by 100 because Medusa doesn't store numbers in decimal */}
-            ₹{cart?.total / 100}
-          </Text>
-        </View>
-        <View style={styles.row}>
-          {/* Showing the discount (if any) */}
-          <Text style={styles.cartTotalText}>Discount</Text>
-          <Text
-            style={[
-              styles.cartTotalText,
-              {
-                color: "#4C4C4C",
-              },
-            ]}
-          >
-            - ₹{cart?.discount_total / 100}
-          </Text>
-        </View>
-        <View style={[styles.row, styles.total]}>
-          <Text style={styles.cartTotalText}>Total</Text>
-          <Text
-            style={[
-              styles.cartTotalText,
-              {
-                color: "#4C4C4C",
-              },
-            ]}
-          >
-            {/* Calculating the total */}
-            ₹{calculateTotal()}
-          </Text>
-        </View>
-        <View>
-          {/* A button to navigate to PlaceOrder screen */}
-          <Button
-            large={true}
-            onPress={() => {setTotal(calculateTotal());Actions.address()}}
-            title={"Place Order"}
-          />
-        </View>
-      </View>
-      </>:
-      <View>
-        <View style={styles.emptyCartcontainer}>
-          <Image source={emptyShoppingCart} style={styles.emptyCartImage} />
-        </View>  
-        <View style={styles.textContainer}>
-              <Text style={styles.textHeading}>You don't have any items in your cart</Text>
-              <Text style={styles.textDescription}>Your favourite items are just a click away</Text>
+              {/* Showing Cart Total */}
+              <Text
+                style={[
+                  styles.cartTotalText,
+                  {
+                    color: "#4C4C4C",
+                  },
+                ]}
+              >
+                {/* Dividing the total by 100 because Medusa doesn't store numbers in decimal */}
+                ₹{cart?.total / 100}
+              </Text>
+            </View>
+            <View style={styles.row}>
+              {/* Showing the discount (if any) */}
+              <Text style={styles.cartTotalText}>Discount</Text>
+              <Text
+                style={[
+                  styles.cartTotalText,
+                  {
+                    color: "#4C4C4C",
+                  },
+                ]}
+              >
+                - ₹{cart?.discount_total / 100}
+              </Text>
+            </View>
+            <View style={[styles.row, styles.total]}>
+              <Text style={styles.cartTotalText}>Total</Text>
+              <Text
+                style={[
+                  styles.cartTotalText,
+                  {
+                    color: "#4C4C4C",
+                  },
+                ]}
+              >
+                {/* Calculating the total */}₹{calculateTotal()}
+              </Text>
+            </View>
+            <View>
+              {/* A button to navigate to PlaceOrder screen */}
               <Button
+                large={true}
+                onPress={() => {
+                  setTotal(calculateTotal());
+                  Actions.address();
+                }}
+                title={"Place Order"}
+              />
+            </View>
+          </View>
+        </>
+      ) : (
+        <View>
+          <View style={styles.emptyCartcontainer}>
+            <Image source={emptyShoppingCart} style={styles.emptyCartImage} />
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.textHeading}>
+              You don't have any items in your cart
+            </Text>
+            <Text style={styles.textDescription}>
+              Your favourite items are just a click away
+            </Text>
+            <Button
               onPress={() => Actions.pop()}
               large={true}
               title="Start Shopping"
             />
-        </View>  
-    </View>}
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -163,24 +172,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    
   },
-  emptyCartImage:{
-    height:250,
-    width:250,
-    marginTop:-900,
+  emptyCartImage: {
+    height: 250,
+    width: 250,
+    marginTop: -900,
   },
-  textContainer:{
+  textContainer: {
     justifyContent: "center",
     alignItems: "center",
     marginTop: -350,
   },
-  textHeading:{
-    fontWeight:"bold",
-    fontSize:18
+  textHeading: {
+    fontWeight: "bold",
+    fontSize: 18,
   },
-  textDescription:{
+  textDescription: {
     color: "#848687",
-    padding:10
-  }
+    padding: 10,
+  },
 });

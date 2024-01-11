@@ -38,4 +38,4 @@ package-lock.json
 *.tsbuildinfo
 
 # Android-Build
-
+eas.json

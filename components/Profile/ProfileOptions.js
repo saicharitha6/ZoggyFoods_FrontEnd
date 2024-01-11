@@ -9,10 +9,16 @@ import {
   View,
 } from "react-native";
 import { Actions } from "react-native-router-flux";
+import { logout } from "../../store/authActions";
 
 const ProfileOptions = ({ moreOptions, mainOptions }) => {
   const logoutHandler = async () => {
     console.log("Logout");
+    dispatch(logout);
+    await AsyncStorage.setItem("loginState", {
+      isLoggedIn: false,
+      mobileNumber: null,
+    });
     Actions.SignIn();
   };
 

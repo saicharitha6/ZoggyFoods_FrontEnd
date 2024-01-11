@@ -28,9 +28,14 @@ import CompleteYourProfile from "./screens/CompleteYourProfile";
 import OTPVerification from "./components/SignIn/OTPVerification";
 import MyAddresses from "./components/Address/MyAddresses";
 import EditAddress from "./components/Address/EditAddress";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store from "./store";
+import { loginSuccess } from "./store/authActions";
 
-export default function App() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(null); // Track if it's the first launch
+export function StackedScreen() {
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const dispatch = useDispatch();
 
   const getCartId = async () => {
     await axios.post(`${baseURL}/store/carts`).then((res) => {
@@ -66,6 +71,18 @@ export default function App() {
     }
   };
 
+  const loginState = async () => {
+    try {
+      const value = await AsyncStorage.getItem("loginState");
+      if (value) {
+        dispatch(loginSuccess(value.mobileNumber));
+        Actions.products();
+      }
+    } catch (error) {
+      console.error("Error checking first launch:", error);
+    }
+  };
+
   useEffect(() => {
     const checkFirstLaunch = async () => {
       try {
@@ -80,15 +97,14 @@ export default function App() {
         console.error("Error checking first launch:", error);
       }
     };
-
+    loginState();
     checkFirstLaunch();
     checkCartId();
   }, []);
 
   useEffect(() => {
-    // Use Actions to navigate directly to OTPVerification if isFirstLaunch
     if (!isFirstLaunch) {
-      Actions.SignIn(); // Assuming the key for OTPVerification screen is "OTPVerification"
+      Actions.SignIn();
     }
   }, [isFirstLaunch]);
 
@@ -97,48 +113,66 @@ export default function App() {
       <CartProvider>
         <Router>
           <Stack key="root">
-            <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
-            <Scene key="SignIn" component={SignIn} hideNavBar />
-            <Scene
-              key="OTPVerification"
-              component={OTPVerification}
-              hideNavBar
-            />
-            <Scene
-              key="CompleteYourProfile"
-              component={CompleteYourProfile}
-              hideNavBar
-            />
-            {/* <Scene key="SignUp" component={SignUp} hideNavBar /> */}
-            <Scene key="Region" component={SelectLocation} hideNavBar />
-            <Scene key="products" component={Products} hideNavBar />
-            <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
-            <Scene key="cart" component={Cart} hideNavBar />
-            <Scene key="address" component={Address} hideNavBar />
-            <Scene key="payments" component={Payments} hideNavBar />
-            <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
-            <Scene key="orders" component={Orders} hideNavBar />
-            <Scene key="search" component={Search} hideNavBar />
-            <Scene key="profile" component={Profile} hideNavBar />
-            <Scene
-              key="DeliveryPreference"
-              component={DeliveryPreferences}
-              hideNavBar
-            />
-            <Scene key="EditProfile" component={EditProfile} hideNavBar />
-            <Scene key="Wallet" component={Wallet} hideNavBar />
-            <Scene
-              key="Calendar"
-              component={SubscriptionCalendarScreen}
-              hideNavBar
-            />
-            <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
-            <Scene key="AddEditAddress" component={AddEditAddress} hideNavBar />
-            <Scene key="EditAddress" component={EditAddress} hideNavBar />
-            {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
+            {!isLoggedIn ? (
+              <Stack key="auth" hideNavBar>
+                <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
+                <Scene key="SignIn" component={SignIn} hideNavBar />
+                <Scene
+                  key="OTPVerification"
+                  component={OTPVerification}
+                  hideNavBar
+                />
+                <Scene
+                  key="CompleteYourProfile"
+                  component={CompleteYourProfile}
+                  hideNavBar
+                />
+                <Scene key="Region" component={SelectLocation} hideNavBar />
+              </Stack>
+            ) : (
+              <Stack key="app" hideNavBar>
+                <Scene key="products" component={Products} hideNavBar />
+                <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
+                <Scene key="cart" component={Cart} hideNavBar />
+                <Scene key="address" component={Address} hideNavBar />
+                <Scene key="payments" component={Payments} hideNavBar />
+                <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
+                <Scene key="orders" component={Orders} hideNavBar />
+                <Scene key="search" component={Search} hideNavBar />
+                <Scene key="profile" component={Profile} hideNavBar />
+                <Scene
+                  key="DeliveryPreference"
+                  component={DeliveryPreferences}
+                  hideNavBar
+                />
+                <Scene key="EditProfile" component={EditProfile} hideNavBar />
+                <Scene key="Wallet" component={Wallet} hideNavBar />
+                <Scene
+                  key="Calendar"
+                  component={SubscriptionCalendarScreen}
+                  hideNavBar
+                />
+                <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
+                <Scene
+                  key="AddEditAddress"
+                  component={AddEditAddress}
+                  hideNavBar
+                />
+                <Scene key="EditAddress" component={EditAddress} hideNavBar />
+                {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
+              </Stack>
+            )}
           </Stack>
         </Router>
       </CartProvider>
     </PaperProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <StackedScreen />
+    </Provider>
   );
 }

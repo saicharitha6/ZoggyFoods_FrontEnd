@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { Card } from "react-native-paper";
 import WelcomeText from "./WelcomeText";
@@ -13,11 +14,15 @@ import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import baseURL from "../../constants/url";
+import { loginSuccess } from "../../store/authActions";
+import { useDispatch } from "react-redux";
 
 const OTPVerification = ({ enteredMobileNumber }) => {
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(30);
   const [mobileNumber, setMobileNumber] = useState(enteredMobileNumber); // Initialize with an empty string
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
@@ -35,35 +40,52 @@ const OTPVerification = ({ enteredMobileNumber }) => {
   };
 
   const submitOTP = async () => {
-    // Perform validation (in a real scenario, send to server for validation)
-    console.log("here->", mobileNumber, otp);
-    if (/^\d{6}$/.test(otp)) {
-      axios({
-        method: "post",
-        url: `${baseURL}/store/sms/verify-otp`,
-        data: {
+    try {
+      setLoading(true);
+
+      if (!/^\d{6}$/.test(otp)) {
+        throw new Error("Invalid OTP. Please enter a 6-digit OTP.");
+      }
+
+      const verifyResponse = await axios.post(
+        `${baseURL}/store/sms/verify-otp`,
+        {
           sendTo: mobileNumber.trim(),
           otp: otp.trim(),
-        },
-      })
-        .then(async (res) => {
-          console.log(res.data);
-          if (res.data.status) {
-            const firstLaunch = await AsyncStorage.getItem("firstLaunch");
-            if (firstLaunch === true) {
-              Actions.Welcome();
-            } else {
-              Actions.Region();
-            }
+        }
+      );
+
+      if (verifyResponse.data.status) {
+        console.log("verifyResponse", verifyResponse.data);
+        const customerResponse = await axios.get(
+          `${baseURL}/store/customers/${mobileNumber}`
+        );
+        if (customerResponse.data.status === false) {
+          console.log("customerResponse", customerResponse.data);
+
+          const firstLaunch = await AsyncStorage.getItem("firstLaunch");
+          if (firstLaunch === true) {
+            Actions.Welcome();
           } else {
-            alert("Wrong OTP");
+            Actions.CompleteYourProfile({ mobileNumber: mobileNumber });
           }
-        })
-        .catch((err) => {
-          console.log("err->", err.status);
-        });
-    } else {
-      alert("Invalid OTP. Please try again.");
+        } else {
+          dispatch(loginSuccess(mobileNumber));
+          await AsyncStorage.setItem("loginState", {
+            isLoggedIn: true,
+            mobileNumber: mobileNumber,
+          });
+
+          Actions.products();
+        }
+      } else {
+        throw new Error("Wrong OTP. Please enter the correct OTP.");
+      }
+    } catch (error) {
+      console.error("Error submitting OTP:", error.message);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,6 +136,13 @@ const OTPVerification = ({ enteredMobileNumber }) => {
           </Text>
 
           <Button title="SUBMIT" onPress={submitOTP} style={styles.button} />
+          {loading && (
+            <ActivityIndicator
+              style={styles.loadingIndicator}
+              size="small"
+              color="#006400"
+            />
+          )}
         </Card.Content>
       </Card>
     </View>
@@ -180,6 +209,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  loadingIndicator: {
+    marginTop: 10,
   },
 });
 

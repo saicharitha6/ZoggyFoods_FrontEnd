@@ -14,7 +14,7 @@ import axios from "axios";
 import baseURL from "../constants/url";
 import ErrMessage from "../components/ErrorMessage";
 
-const DetailsForm = () => {
+const CompleteYourProfile = ({ mobileNumber }) => {
   const [errMessage, setErrMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [accessToken, setAccessToken] = useState("");
@@ -115,9 +115,15 @@ const DetailsForm = () => {
         last_name: enteredLastName,
         email: enteredEmail,
       })
-        .then((response) => {
+        .then(async (response) => {
           setLoading(false);
           if (response.data !== undefined) {
+            dispatch(loginSuccess(mobileNumber));
+            await AsyncStorage.setItem("loginState", {
+              isLoggedIn: true,
+              mobileNumber: mobileNumber,
+            });
+
             Actions.Region();
           } else {
             setErrMessage("Unexpected response structure");
@@ -144,7 +150,7 @@ const DetailsForm = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.ovalShape} />
-        <Text style={styles.title}>Please enter below details</Text>
+        <Text style={styles.title}>Please Complete your profile</Text>
         <View style={{ marginHorizontal: 30 }}>
           <Input
             style={[firstNameIsFocused && !firstNameIsValid && styles.invalid]}
@@ -273,4 +279,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailsForm;
+export default CompleteYourProfile;

@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/instantIdly.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.pearlthoughts.instantidlyinternal"
+      "package": "com.expopt.instantidlyinternal"
     },
     "web": {
       "favicon": "./assets/zoggy.png"

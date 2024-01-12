@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Zoggy-app",
-    "slug": "Zoggy-app",
+    "name": "Instant Idly Internal",
+    "slug": "instant-idly-internal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/instantIdly.png",
@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -19,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/instantIdly.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.expopt.instantidlyinternal"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/zoggy.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d69f47a8-c8a1-49ab-8271-9f2184d0f6af"
+      }
+    },
+    "owner": "expo-pt"
   }
 }

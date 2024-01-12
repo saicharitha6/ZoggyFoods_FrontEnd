@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import { Actions } from "react-native-router-flux";
 import { useCartContext } from "../components/CartContext";
-import emptyShoppingCart from "../assets/emptyShoppingCart.png";
+import emptycart from "../assets/empty-cart.png";
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
@@ -123,7 +123,7 @@ export default function Cart() {
       ) : (
         <View>
           <View style={styles.emptyCartcontainer}>
-            <Image source={emptyShoppingCart} style={styles.emptyCartImage} />
+            <Image source={emptycart} style={styles.emptyCartImage} />
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.textHeading}>

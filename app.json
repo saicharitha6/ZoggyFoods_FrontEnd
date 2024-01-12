@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Zoggy-app",
-    "slug": "Zoggy-app",
+    "name": "Instant Idly Internal",
+    "slug": "instant-idly-internal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/instantIdly.png",
@@ -22,7 +22,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/zoggy.png"
     }
   }
 }

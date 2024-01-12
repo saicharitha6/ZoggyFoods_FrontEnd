@@ -12,11 +12,11 @@ import { Actions } from "react-native-router-flux";
 import { heightToDp, width, widthToDp } from "rn-responsive-screen";
 import { ScrollView } from "react-native-gesture-handler";
 
-const PaymentsOptions = () => {
+const PaymentsOptions = ({ selectedAddress }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleProceed = () => {
-    Actions.PlaceOrder();
+    Actions.PlaceOrder({selectedAddress});
     // Add your logic to proceed with the selected payment option
   };
 
@@ -65,10 +65,11 @@ const styles = StyleSheet.create({
   },
   paymentOption: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "green",
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    marginTop:15,
     width: "100%",
   },
   selectedOption: {

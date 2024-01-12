@@ -1,19 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Button from "../components/Button";
 import WelcomeText from "../components/SignIn/WelcomeText";
 import { Actions } from "react-native-router-flux";
+import baseURL from "../constants/url";
 
-const DummyRegions = ["Region 1", "Region 2", "Region 3"];
-const DummyLocations = ["Location 1", "Location 2", "Location 3"];
+const DummyRegions = ["Chennai"];
 
 const SelectLocation = () => {
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
+  const [deliverableLocations, setDeliverableLocations] = useState([]);
+  const [selectedLocationId, setSelectedLocationId] = useState([]);
+  
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch(`${baseURL}/store/locations`);
+        const data = await response.json();
+        const deliverableLocations = data.locations.filter(location => location.DeliveryLocation_is_deliverable)
+
+        setDeliverableLocations(deliverableLocations);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   const handleProceed = () => {
     console.log("Explore clicked:", selectedRegion, selectedLocation);
+    console.log(selectedRegion)
+    console.log(selectedLocation)
+    console.log(selectedLocationId)
     setSelectedLocation("");
     setSelectedRegion("");
     Actions.products();
@@ -50,7 +71,11 @@ const SelectLocation = () => {
         <Picker
           style={styles.dropdown}
           selectedValue={selectedLocation}
-          onValueChange={(itemValue) => setSelectedLocation(itemValue)}
+          onValueChange={(itemValue, itemIndex) => {
+            setSelectedLocation(itemValue);
+            const locationId = deliverableLocations[itemIndex]?.DeliveryLocation_id;
+            setSelectedLocationId(locationId)
+          }}
           dropdownIconColor="green"
         >
           <Picker.Item
@@ -59,11 +84,11 @@ const SelectLocation = () => {
             color="#888888"
             style={{ height: 40 }}
           />
-          {DummyLocations.map((location, index) => (
+          {deliverableLocations.map((location, index) => (
             <Picker.Item
-              key={index}
-              label={location}
-              value={location}
+              key={location.DeliveryLocation_id}
+              label={`${location.DeliveryLocation_area} ${location.DeliveryLocation_pincode}`}
+              value={`${location.DeliveryLocation_area} ${location.DeliveryLocation_pincode}`}
               color="#000000"
               style={{ height: 40 }}
             />

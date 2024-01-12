@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,56 +13,22 @@ import baseURL from "../constants/url";
 import { Actions } from "react-native-router-flux";
 
 const Address = ({ cart }) => {
-  const [shippingAddress, setShippingAddress] = useState({});
-  const [shippingOptions, setShippingOptions] = useState([]);
+  const [shippingAddresses, setShippingAddresses] = useState({});
+  const [selectedAddress, setSelectedAddress] = useState(null);
 
   const handleAddressInputChange = (address) => {
-    setShippingAddress(address);
+    setSelectedAddress(address);
   };
 
   const placeOrder = async () => {
     try {
       let cart_id = await AsyncStorage.getItem("cart_id");
-
-      const addressResponse = await axios.post(
-        `${baseURL}/store/customers/me/addresses`,
-        {
-          address: {
-            ...shippingAddress,
-            company: "Wyman LLC",
-            province: "Georgia",
-            country_code: "US",
-          },
-        }
-      );
-
-      if (addressResponse.status === 200) {
-        const firstShippingOption = shippingOptions[0];
-
-        if (firstShippingOption) {
-          const shippingResponse = await axios.post(
-            `${baseURL}/store/carts/${cart_id}/shipping-methods`,
-            {
-              option_id: firstShippingOption.id,
-            }
-          );
-
-          if (shippingResponse.status === 200) {
-            Actions.payments();
-          } else {
-            console.error(
-              "Failed to add shipping method. Unexpected status code:",
-              shippingResponse.status
-            );
-          }
-        } else {
-          console.error("No shipping options available.");
-        }
+      if (selectedAddress) {
+        // Use the selectedAddress directly for placing the order
+        Actions.payments({ selectedAddress });
       } else {
-        console.error(
-          "Failed to add address. Unexpected status code:",
-          addressResponse.status
-        );
+        // If no address is selected, you can show an error or prompt the user to select an address.
+        console.error("Please select a shipping address.");
       }
     } catch (error) {
       console.error("Error placing order:", error);
@@ -70,41 +36,138 @@ const Address = ({ cart }) => {
     }
   };
 
-  const fetchShippingOptions = async () => {
+  const addAddressAndProceed = async () => {
     try {
-      let cartId = await AsyncStorage.getItem("cart_id");
-      const response = await axios.get(
-        `${baseURL}/store/shipping-options/${cartId}`
+      if (!selectedAddress) {
+        console.error("Please fill in the address details.");
+        Alert.alert("Add Details in Form and Add Address");
+        return;
+      }
+
+      const newAddressResponse = await axios.post(
+        `${baseURL}/store/customers/me/addresses`,
+        {
+          address: {
+            ...selectedAddress,
+          },
+        }
       );
 
+      if (newAddressResponse.status === 200) {
+        // Set the newly added address as the selected address
+        setSelectedAddress(newAddressResponse.data.address);
+
+        // Navigate to the payments screen
+        Actions.payments({ selectedAddress });
+      } else {
+        console.error(
+          "Failed to add address. Unexpected status code:",
+          newAddressResponse.status
+        );
+      }
+    } catch (error) {
+      console.error("Error adding address:", error);
+    }
+  };
+
+  const fetchShippingAddresses = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/store/customers/me`);
+
       if (response.status === 200) {
-        setShippingOptions(response.data.shipping_options);
+        setShippingAddresses(response.data.customer.shipping_addresses);
+        // If addresses are found, set the first one as the selectedAddress
+        if (response.data.customer.shipping_addresses.length > 0) {
+          setSelectedAddress(response.data.customer.shipping_addresses[0]);
+        }
       } else {
         console.error("Unexpected status code:", response.status);
       }
+    } catch (error) {
+      console.error("Error fetching shipping addresses:", error);
+    }
+  };
+
+  const fetchShippingOptions = async () => {
+    try {
+      let cartId = await AsyncStorage.getItem("cart_id");
+      axios.get(
+        `${baseURL}/store/shipping-options`
+      ).then(({data}) =>{      
+        axios.post(`${baseURL}/store/carts/${cartId}/shipping-methods`, {
+            option_id: data.shipping_options[0].id,
+          });
+      });
+
     } catch (error) {
       console.error("Error fetching shipping options:", error);
     }
   };
 
   useEffect(() => {
+    fetchShippingAddresses();
     fetchShippingOptions();
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Header title="Add Address" isVisible={false} />
+        <Header title="Add Address" isVisible={true} />
         <View style={styles.address}>
-          <Text style={styles.title}>Please fill in the details</Text>
-          <AddressForm onChange={handleAddressInputChange} />
+          {shippingAddresses.length === 0 && (
+            <AddressForm
+              onSubmit={handleAddressInputChange}
+              initialAddress={selectedAddress}
+            />
+          )}
         </View>
 
         <View style={styles.shipping}>
-          {shippingOptions.map((option) => (
-            <View style={styles.shippingOption} key={option.id}></View>
-          ))}
-          <Button onPress={placeOrder} large title="Add Address" />
+          {shippingAddresses.length > 0 ? (
+            <>
+              <Text style={styles.title}>Select Shipping Address:</Text>
+              {shippingAddresses.map((address) => (
+                <TouchableOpacity
+                  key={address.id}
+                  style={[
+                    styles.shippingOption,
+                    selectedAddress && selectedAddress.id === address.id
+                      ? styles.selectedOption
+                      : null,
+                  ]}
+                  onPress={() => setSelectedAddress(address)}
+                >
+                  <Text>Address Line : {address.address_1}</Text>
+                  <Text>City : {address.city}</Text>
+                  <Text>
+                    postal Code :{" "}
+                    {`${address.country_code}, ${address.postal_code}`}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+              <Text style={styles.belowText}>
+                After Address Selected Proceed to Payment!!!
+              </Text>
+              <Button onPress={placeOrder} large title="Proceed to Payment" />
+            </>
+          ) : (
+            <View>
+              <Text style={styles.belowText}>
+                After Address Added Proceed to Payment!!!
+              </Text>
+              <TouchableOpacity
+                style={styles.addAddressButton}
+                onPress={addAddressAndProceed}
+              >
+                <Text
+                  style={styles.addAddressButtonText}
+                  onPress={addAddressAndProceed}
+                >
+                  Proceed to Payment
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -123,11 +186,38 @@ const styles = StyleSheet.create({
     marginHorizontal: widthToDp(5),
   },
   title: {
-    fontSize: widthToDp(4.0),
+    fontSize: widthToDp(4.5),
     paddingTop: 10,
+    fontWeight: "bold",
   },
   shippingOption: {
     marginTop: heightToDp(2),
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 10,
+    borderRadius: 5,
+  },
+  selectedOption: {
+    backgroundColor: "lightyellow",
+  },
+  addAddressButton: {
+    marginTop: heightToDp(2),
+    backgroundColor: "green",
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+  },
+  addAddressButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  belowText: {
+    marginTop: 10,
+    fontStyle: "italic",
+    fontWeight: "300",
+    color: "red",
   },
 });
 

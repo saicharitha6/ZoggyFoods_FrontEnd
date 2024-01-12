@@ -11,7 +11,7 @@ const mainOptions = [
   {
     title: "My Address",
     image: require("../assets/maps-and-flags.png"),
-    action: () => console.log("My Address pressed"),
+    action: () => Actions.MyAddresses(),
   },
   {
     title: "Order History",

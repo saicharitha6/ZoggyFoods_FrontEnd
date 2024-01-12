@@ -2,10 +2,10 @@ import { StyleSheet, View } from "react-native";
 import PaymentsOptions from "../components/Payments/PaymentsOption";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Payments() {
+export default function Payments({selectedAddress}) {
   return (
     <SafeAreaView style={styles.container}>
-      <PaymentsOptions />
+      <PaymentsOptions selectedAddress={selectedAddress}/>
     </SafeAreaView>
   );
 }

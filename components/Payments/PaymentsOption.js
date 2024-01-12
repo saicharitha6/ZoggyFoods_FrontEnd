@@ -65,10 +65,11 @@ const styles = StyleSheet.create({
   },
   paymentOption: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "green",
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    marginTop:15,
     width: "100%",
   },
   selectedOption: {

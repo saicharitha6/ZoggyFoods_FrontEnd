@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { widthToDp, heightToDp } from "rn-responsive-screen";
 import Button from "./Button";
@@ -94,39 +94,34 @@ export default function ProductCard({ key, product }) {
               onPress={() => {
                 addToCart(1);
               }}
-              title="Add"
+              title="Buy Now"
               style={styles.button}
             />
           ) : (
             <View style={styles.quantityBtnContainer}>
-              <AntDesign
-                key={product.id}
-                name="minussquareo"
-                style={styles.quantityButton}
-                size={24}
-                color="red"
-                onPress={() => {
+            <View>
+                <TouchableOpacity 
+                 key={product.id}
+                 onPress={() => {
+                        increaseQuantity();
+                        addToCart(1);
+                      }}
+                ><Text style={styles.quantityButtonFont}>+   |</Text></TouchableOpacity>
+            </View>
+            <View>
+              <Text style={styles.quantityButtonFont}>{quantity}</Text>
+            </View>
+            <View>
+                <TouchableOpacity        
+                 key={product.id}          
+                 onPress={() => {
                   decreaseQuantity(product.id);
                   addToCart(-1);
-                }}
-                // disabled={quantity <= 1}
-              />
-              <Text style={styles.quantityButton}>x{quantity}</Text>
-              <AntDesign
-                key={product.id}
-                name="plussquareo"
-                style={styles.quantityButton}
-                size={24}
-                color="green"
-                onPress={() => {
-                  increaseQuantity();
-                  addToCart(1);
-                }}
-                // disabled={quantity >= 3}
-              />
+                }}><Text style={styles.quantityButtonFont}>|   -</Text></TouchableOpacity>
             </View>
+          </View>
           )}
-        </View>
+        </View>       
       </View>
     </View>
   );
@@ -179,10 +174,23 @@ const styles = StyleSheet.create({
   button: {
     width: 100,
   },
-  quantityBtnContainer: {
-    flexDirection: "row",
+
+  quantityBtnContainer:{
+   flexDirection:"row",
+   justifyContent:"space-around",
+   alignItems:"center",
+   borderRadius:5,
+   borderStyle:"solid",
+   borderWidth:1,
+   borderColor:"darkgreen",
+   backgroundColor:"darkgreen",
+  height:30,
+  width:100,
+  margin:6,
   },
-  quantityButton: {
-    margin: 5,
-  },
+  quantityButtonFont:{
+    fontSize: 18,
+    fontWeight:"bold",
+    color:"white"
+  }
 });

@@ -77,7 +77,7 @@ export default function Header({
             <View style={styles.location}>
               <EvilIcons
                 name="location"
-                size={24}
+                size={23}
                 paddingTop={3}
                 color="white"
               />
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     width: widthToDp(45),
   },
   title: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "400",
     color: "white",
   },
@@ -231,9 +231,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   user: {
-    flexDirection: "column",
-    marginLeft: 0,
-    paddingLeft: 0,
+    flexDirection: "column"
   },
   location: {
     flexDirection: "row",

@@ -81,14 +81,14 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   username: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "bold",
     color: "white",
   },
   number: {
     color: "white",
-
-    fontSize: 15,
+    fontSize: 13,
+    marginRight:10
   },
   editBtn: {
     borderRadius: 5,

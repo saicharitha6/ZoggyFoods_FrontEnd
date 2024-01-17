@@ -14,6 +14,7 @@ import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseURL from "../constants/url";
 import axios from "axios";
+import { useLocation } from "../components/LocationContext";
 import user from "../assets/user.png";
 
 export default function Header({
@@ -24,6 +25,28 @@ export default function Header({
   count = 0,
 }) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const { selectedLocation } = useLocation();
+  const [firstName, setFirstName] = useState("");
+  const [refreshProfile] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/store/customers/me`);
+      if (response.status === 200) {
+        const user = response.data.customer;
+        const fetchedFirstName = user.first_name;
+        setFirstName(fetchedFirstName);
+      } else {
+        console.error("Failed to fetch user data");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      // Handle error if needed
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [refreshProfile]);
 
   const toggleDropdown = () => {
     setIsDropdownVisible(!isDropdownVisible);
@@ -49,10 +72,16 @@ export default function Header({
             <Image source={user} style={styles.logo} />
           </TouchableOpacity>
           <View style={styles.user}>
-            <Text style={styles.title}>Hi Guest</Text>
+            <Text style={styles.title}> Hi {firstName}</Text>
+
             <View style={styles.location}>
-              <EvilIcons name="location" size={24} color="white" />
-              <Text style={styles.title}>, West Bengal</Text>
+              <EvilIcons
+                name="location"
+                size={24}
+                paddingTop={3}
+                color="white"
+              />
+              <Text style={styles.title}>{selectedLocation}</Text>
             </View>
           </View>
         </View>
@@ -126,7 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: widthToDp(50),
+    width: widthToDp(45),
   },
   title: {
     fontSize: 15,
@@ -203,6 +232,8 @@ const styles = StyleSheet.create({
   },
   user: {
     flexDirection: "column",
+    marginLeft: 0,
+    paddingLeft: 0,
   },
   location: {
     flexDirection: "row",

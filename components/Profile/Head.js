@@ -1,9 +1,46 @@
 import { Image, StyleSheet, Text, View } from "react-native";
+import { useState, useEffect } from "react";
 import Button from "../Button";
 import Wallet from "./Wallet";
 import { Actions } from "react-native-router-flux";
+import baseURL from "../../constants/url";
+import axios from "axios";
 
 export default function Head() {
+  const [firstName, setFirstName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [refreshProfile] = useState(false);
+
+  const fetchUserData = async () => {
+    try {
+      const apiUrl = `${baseURL}/store/customers/me`;
+
+      const response = await axios.get(apiUrl);
+
+      if (response.status === 200) {
+        const userData = response.data.customer;
+        setFirstName(userData.first_name);
+        setPhone(userData.phone);
+        // Set other user data as needed
+      } else {
+        console.error("Failed to fetch user data");
+      }
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
+  useEffect(() => {
+    fetchUserData();
+  }, [refreshProfile]);
+
+  const handleEditProfile = () => {
+    Actions.EditProfile({
+      firstName, // Pass the current first name
+      phone, // Pass the current phone
+      onProfileUpdate: fetchUserData, // Pass the fetchUserData function
+    });
+  };
+
   return (
     <View style={styles.header}>
       <View style={{ flexDirection: "row" }}>
@@ -12,11 +49,11 @@ export default function Head() {
           style={styles.profileImage}
         />
         <View style={styles.profileInfo}>
-          <Text style={styles.username}>John Doe</Text>
-          <Text style={styles.number}>982358239</Text>
+          <Text style={styles.username}>{firstName}</Text>
+          <Text style={styles.number}>{phone}</Text>
           <Button
             title="Edit Profile"
-            onPress={() => Actions.EditProfile()}
+            onPress={handleEditProfile}
             style={styles.editBtn}
           ></Button>
         </View>

@@ -1,11 +1,12 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Button from "../components/Button";
 import WelcomeText from "../components/SignIn/WelcomeText";
 import { Actions } from "react-native-router-flux";
 import baseURL from "../constants/url";
-
+import { useLocation } from "../components/LocationContext";
+import { Alert } from "react-native";
 const DummyRegions = ["Chennai"];
 
 const SelectLocation = () => {
@@ -13,13 +14,16 @@ const SelectLocation = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [deliverableLocations, setDeliverableLocations] = useState([]);
   const [selectedLocationId, setSelectedLocationId] = useState([]);
-  
+  const { updateLocation } = useLocation(); // Use the context hook
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
         const response = await fetch(`${baseURL}/store/locations`);
         const data = await response.json();
-        const deliverableLocations = data.locations.filter(location => location.DeliveryLocation_is_deliverable)
+        const deliverableLocations = data.locations.filter(
+          (location) => location.DeliveryLocation_is_deliverable
+        );
 
         setDeliverableLocations(deliverableLocations);
       } catch (error) {
@@ -31,10 +35,19 @@ const SelectLocation = () => {
   }, []);
 
   const handleProceed = () => {
+    if (!selectedRegion || !selectedLocation) {
+      // Display an alert or some indication that both region and location need to be selected.
+      Alert.alert("Please select both region and location");
+      return;
+    }
     console.log("Explore clicked:", selectedRegion, selectedLocation);
-    console.log(selectedRegion)
-    console.log(selectedLocation)
-    console.log(selectedLocationId)
+    console.log(selectedRegion);
+    console.log(selectedLocation);
+    console.log(selectedLocationId);
+
+    // Update the selected location in the context
+    updateLocation(selectedLocation);
+
     setSelectedLocation("");
     setSelectedRegion("");
     Actions.products();
@@ -73,8 +86,9 @@ const SelectLocation = () => {
           selectedValue={selectedLocation}
           onValueChange={(itemValue, itemIndex) => {
             setSelectedLocation(itemValue);
-            const locationId = deliverableLocations[itemIndex]?.DeliveryLocation_id;
-            setSelectedLocationId(locationId)
+            const locationId =
+              deliverableLocations[itemIndex]?.DeliveryLocation_id;
+            setSelectedLocationId(locationId);
           }}
           dropdownIconColor="green"
         >

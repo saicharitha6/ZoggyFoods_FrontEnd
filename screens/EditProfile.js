@@ -8,7 +8,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ModalSelector from "react-native-modal-selector";
 import baseURL from "../constants/url";
@@ -26,22 +25,7 @@ const EditProfile = ({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [selectedGender, setSelectedGender] = useState(null);
-  const [familyMembers, setFamilyMembers] = useState(1);
   const [selectedOption, setSelectedOption] = useState("Search Engine");
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowDatePicker(Platform.OS === "ios"); // Close the picker on iOS
-    setDate(currentDate);
-  };
-
-  const showDateTimePicker = () => {
-    setShowDatePicker(true);
-  };
-
-  const formattedDate = date.toLocaleDateString(); // You can format the date as needed
 
   const options = [
     { key: 0, label: "Search Engine" },
@@ -110,9 +94,6 @@ const EditProfile = ({
         // gender: selectedGender,
         // Include other profile fields as needed
       });
-
-      console.log("API Response:", response); // Log the response
-
       // Handle the API response
       if (response.status === 200) {
         Alert.alert("Success", "Profile updated successfully");
@@ -254,57 +235,6 @@ const EditProfile = ({
             </View>
           </View>
 
-          <View style={styles.rowContainer}>
-            {/* Date of Birth */}
-            <View style={styles.dateOfBirthContainer}>
-              <Text style={styles.label}>Select Date</Text>
-              <View style={styles.dateInputContainer}>
-                <TextInput
-                  placeholder="DD-MM-YYYY"
-                  value={formattedDate}
-                  editable={false}
-                  style={{ color: "black" }}
-                />
-                <TouchableOpacity
-                  onPress={showDateTimePicker}
-                  style={styles.calendarIcon}
-                >
-                  <Icon name="calendar" size={20} color="#000" />
-                </TouchableOpacity>
-              </View>
-              {showDatePicker && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode="date"
-                  is24Hour={true}
-                  display="default"
-                  onChange={onChange}
-                />
-              )}
-            </View>
-
-            {/* Family Members */}
-            <View style={styles.familyMembersContainer}>
-              <Text style={styles.label}>Family Members</Text>
-              <View style={styles.familyMembersRow}>
-                <TouchableOpacity
-                  style={styles.roundedButton}
-                  onPress={() => setFamilyMembers(familyMembers - 1)}
-                >
-                  <Text style={styles.buttonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.familyMembersText}>{familyMembers}</Text>
-                <TouchableOpacity
-                  style={styles.roundedButton}
-                  onPress={() => setFamilyMembers(familyMembers + 1)}
-                >
-                  <Text style={styles.buttonText}>+</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-
           <View style={styles.container1}>
             <Text style={styles.label1}>How did you find us?</Text>
             <ModalSelector
@@ -323,11 +253,11 @@ const EditProfile = ({
             </ModalSelector>
           </View>
 
-          <View style={styles.button}>
-            <TouchableOpacity onPress={updateProfile}>
+          <TouchableOpacity onPress={updateProfile}>
+            <View style={styles.button}>
               <Text style={styles.buttonText}>SUBMIT</Text>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>

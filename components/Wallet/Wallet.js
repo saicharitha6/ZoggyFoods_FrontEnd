@@ -195,11 +195,10 @@ const styles = StyleSheet.create({
   },
   transactioHistoryButton: {
     padding: 10,
-    borderWidth: 5,
+    borderWidth: 1,
     borderRadius: 5,
     alignItems: "center",
     marginTop: 20,
-    borderColor: "yellow",
     flex: 1,
     marginHorizontal: 5
   },

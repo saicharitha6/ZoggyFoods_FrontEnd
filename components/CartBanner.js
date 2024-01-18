@@ -11,10 +11,13 @@ import {
   import { Ionicons, Feather } from "@expo/vector-icons";
   import AsyncStorage from "@react-native-async-storage/async-storage";
   
-  export default function CartBanner() {
+  export default function CartBanner({reloadCartBanner}) {
     const [cart, setCart] = useState([]);
     const [quantity,setQuantity] = useState(0);
-
+    const [reload, setReload] = useState(reloadCartBanner);
+    if(reload != reloadCartBanner){
+      setReload(reloadCartBanner);
+    }
     const fetchCart = async () => {
         // Get the cart id from the device storage
         const cartId = await AsyncStorage.getItem("cart_id");  
@@ -40,11 +43,10 @@ import {
     });
     setQuantity(totalQuantity);
  };
-
       useEffect(() => {
         // Calling the fetchCart function when the component mounts
         fetchCart();       
-      }, []);
+      }, [reload]);
 
       useEffect(()=>{
         totalItemQuantity();

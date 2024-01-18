@@ -1,15 +1,14 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
-import { height, heightToDp } from "rn-responsive-screen";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import Button from "../Button";
 import axios from "axios";
 import baseURL from "../../constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Actions } from "react-native-router-flux";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { heightToDp } from "rn-responsive-screen";
 
-export default function MetaInfo({ product, updateProduct }) {
+export default function MetaInfo({ product }) {
   const [activeSize, setActiveSize] = useState(0);
   const [isCart, setCart] = useState(false);
   const [price, setPrice] = useState(
@@ -38,8 +37,13 @@ export default function MetaInfo({ product, updateProduct }) {
 
         // Update the local state with the decreased inventory
         const updatedVariants = [...product.variants];
-        updatedVariants[activeSize].inventory_quantity -= 1;
-        updateProduct({ ...product, variants: updatedVariants });
+        const currentInventory = updatedVariants[activeSize].inventory_quantity;
+
+        // Check if the inventory is greater than 0 before decrementing
+        if (currentInventory > 0) {
+          updatedVariants[activeSize].inventory_quantity -= 1;
+          // updateProduct({ ...product, variants: updatedVariants });
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -115,6 +119,7 @@ export default function MetaInfo({ product, updateProduct }) {
         </View>
         <Text style={styles.heading}>Description</Text>
         <Text style={styles.description}>{product.description}</Text>
+
         {isProductOutOfStock() ? (
           <Text style={styles.outOfStock}>OUT OF STOCK</Text>
         ) : isVariantOutOfStock() ? (
@@ -196,10 +201,10 @@ const styles = StyleSheet.create({
   outOfStock: {
     fontSize: heightToDp(5),
     fontWeight: "bold",
-    color: "yellow",
+    color: "red",
     textAlign: "center",
     marginTop: heightToDp(2),
-    backgroundColor: "darkgreen",
+    backgroundColor: "darkred",
     borderRadius: 10,
     padding: 10,
   },

@@ -33,7 +33,7 @@ const Orders = () => {
     // SafeAreaView is used to avoid the notch on the phone
     <SafeAreaView style={[styles.container]}>
       {/* SchrollView is used in order to scroll the content */}
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container1}>
         {/* Using the reusable header component */}
         <Header title="My Orders" isVisible={false} isOrder={true} />
         {/* Orders List  */}
@@ -57,6 +57,10 @@ const Orders = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  container1: {
     backgroundColor: "#fff",
     alignItems: "center",
   },

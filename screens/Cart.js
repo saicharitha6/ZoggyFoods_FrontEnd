@@ -133,7 +133,7 @@ export default function Cart() {
               Your favourite items are just a click away
             </Text>
             <Button
-              onPress={() => Actions.pop()}
+              onPress={() => Actions.products()}
               large={true}
               title="Start Shopping"
             />

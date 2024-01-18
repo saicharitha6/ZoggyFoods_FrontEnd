@@ -16,7 +16,7 @@ const mainOptions = [
   {
     title: "Order History",
     image: require("../assets/orders.png"),
-    action: () => console.log("Order History pressed"),
+    action: () => Actions.orders(),
   },
   {
     title: "Delivery Preference",

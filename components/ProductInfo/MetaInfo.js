@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
 import { height, heightToDp } from "rn-responsive-screen";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -9,27 +9,43 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Actions } from "react-native-router-flux";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function MetaInfo({ product }) {
+export default function MetaInfo({ product, updateProduct }) {
   const [activeSize, setActiveSize] = useState(0);
   const [isCart, setCart] = useState(false);
   const [price, setPrice] = useState(
     product.variants[0]?.prices[1]?.amount / 100
   );
+
+  const isVariantOutOfStock = () => {
+    return product.variants[activeSize]?.inventory_quantity <= 0;
+  };
+
+  const isProductOutOfStock = () => {
+    return product.variants.every((variant) => variant.inventory_quantity <= 0);
+  };
+
   const addToCart = async () => {
     const cartId = await AsyncStorage.getItem("cart_id");
+    const variantId = product.variants[activeSize].id;
+
     axios
       .post(baseURL + "/store/carts/" + cartId + "/line-items", {
-        variant_id: product.variants[0].id,
+        variant_id: variantId,
         quantity: 1,
       })
       .then(({ data }) => {
-        // alert(`Item ${product.title} added to cart`);
         setCart(true);
+
+        // Update the local state with the decreased inventory
+        const updatedVariants = [...product.variants];
+        updatedVariants[activeSize].inventory_quantity -= 1;
+        updateProduct({ ...product, variants: updatedVariants });
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
   const goToCart = () => {
     Actions.cart();
     setCart(false);
@@ -44,7 +60,6 @@ export default function MetaInfo({ product }) {
     const deliveryDate = new Date(currentDate);
     deliveryDate.setDate(currentDate.getDate() + 1);
 
-    // Format the date and time for display
     const options = {
       weekday: "long",
       year: "numeric",
@@ -72,10 +87,10 @@ export default function MetaInfo({ product }) {
             <Text style={styles.star}>⭐⭐⭐</Text>
           </View>
         </View>
-        {/* <Text style={styles.heading}>Available Sizes</Text> */}
         <View style={styles.row}>
           {product.options[0].values.map((size, index) => (
             <TouchableOpacity
+              key={index}
               onPress={() => {
                 setActiveSize(index);
                 setAmount(index);
@@ -100,7 +115,16 @@ export default function MetaInfo({ product }) {
         </View>
         <Text style={styles.heading}>Description</Text>
         <Text style={styles.description}>{product.description}</Text>
-        {isCart ? (
+        {isProductOutOfStock() ? (
+          <Text style={styles.outOfStock}>OUT OF STOCK</Text>
+        ) : isVariantOutOfStock() ? (
+          <Button
+            onPress={null}
+            title="OUT OF STOCK"
+            large={true}
+            disabled={true}
+          />
+        ) : isCart ? (
           <Button onPress={goToCart} title="Go to Cart" large={true} />
         ) : (
           <Button onPress={addToCart} title="Add to Cart" large={true} />
@@ -168,5 +192,15 @@ const styles = StyleSheet.create({
     color: "green",
     fontWeight: "bold",
     marginTop: 5,
+  },
+  outOfStock: {
+    fontSize: heightToDp(5),
+    fontWeight: "bold",
+    color: "yellow",
+    textAlign: "center",
+    marginTop: heightToDp(2),
+    backgroundColor: "darkgreen",
+    borderRadius: 10,
+    padding: 10,
   },
 });

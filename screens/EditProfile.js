@@ -373,61 +373,11 @@ const styles = StyleSheet.create({
   selectedOption: {
     backgroundColor: "green",
   },
-  rowContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  dateOfBirthContainer: {
-    flex: 1,
-    marginRight: 10,
-    marginTop: 10,
-  },
-  familyMembersContainer: {
-    flex: 1,
-    marginLeft: 10,
-    marginTop: 10,
-  },
+
   label: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 5,
-  },
-  dateInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 11,
-  },
-  calendarIcon: {
-    marginLeft: 10,
-  },
-
-  familyMembersRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-  },
-  roundedButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "green",
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-  },
-  familyMembersText: {
-    fontSize: 16,
   },
 
   container1: {

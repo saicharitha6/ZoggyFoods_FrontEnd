@@ -87,6 +87,7 @@ export default function Products() {
     });
   }
   function callbackFun(){
+    fetchCart();
     if(reloadCartBanner){
       setReloadCartBanner(false);
     } else{

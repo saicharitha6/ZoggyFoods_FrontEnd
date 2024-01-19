@@ -57,7 +57,7 @@ const WelcomeScreen = () => {
           </Text>
         </View>
         <Image
-          source={require("../assets/restaurant.jpg")}
+          source={require("../assets/vegetable.png")}
           style={styles.image}
         />
         <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
@@ -84,7 +84,7 @@ const WelcomeScreen = () => {
           </TouchableOpacity>
         </View>
         <Image
-          source={require("../assets/shopping-cart.jpg")}
+          source={require("../assets/shopping-cart.png")}
           style={styles.image}
         />
       </View>

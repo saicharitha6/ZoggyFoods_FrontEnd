@@ -148,7 +148,7 @@ export default function Products() {
             containerStyle={styles.swiperContainer}
           >
             <Image
-              source={require("../assets/cappuccino.png")}
+              source={require("../assets/coffee.png")}
               style={styles.image}
             />
             <Image
@@ -156,7 +156,7 @@ export default function Products() {
               style={styles.image}
             />
             <Image
-              source={require("../assets/southindianplatter.png")}
+              source={require("../assets/south-indian-thali.png")}
               style={styles.image}
             />
           </Swiper>

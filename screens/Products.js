@@ -19,18 +19,19 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/footer";
+import CartBanner from "../components/CartBanner";
 // import ProductCategories from "../components/Products/Categories";
 // import Swiper from "react-native-swiper";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [reloadCartBanner, setReloadCartBanner] = useState(false);
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [collections, setCollections] = useState([]);
   const [selectedCollection, setSelectedCollections] = useState(null);
   const swiperRef = useRef(null);
-
   useEffect(() => {
     const autoplayInterval = 3000; // Set the interval in milliseconds
     const autoplayTimer = setInterval(() => {
@@ -84,6 +85,14 @@ export default function Products() {
     }).then((res) => {
       setProducts(res.data.hits);
     });
+  }
+  function callbackFun(){
+    fetchCart();
+    if(reloadCartBanner){
+      setReloadCartBanner(false);
+    } else{
+      setReloadCartBanner(true);
+    }
   }
   useEffect(() => {
     fetchProducts();
@@ -169,7 +178,7 @@ export default function Products() {
                       Actions.ProductInfo({ productId: product.id })
                     }
                   >
-                    <ProductCard product={product} />
+                    <ProductCard key={product.id} product={product} callBackFun={callbackFun} CartItems={cart}/>
                   </TouchableOpacity>
                 )
               ) : (
@@ -177,13 +186,14 @@ export default function Products() {
                   key={product.id}
                   onPress={() => Actions.ProductInfo({ productId: product.id })}
                 >
-                  <ProductCard product={product} />
+                  <ProductCard key={product.id} product={product} callBackFun={callbackFun} CartItems={cart}/>
                 </TouchableOpacity>
               )
             )}
           </View>
         </ScrollView>
       </View>
+      {cart.length>0 && <CartBanner reloadCartBanner={reloadCartBanner}/>}     
       <Footer />
     </SafeAreaView>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,8 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import baseURL from "../constants/url";
 
-const DummyRegions = ["Region 1", "Region 2", "Region 3"];
-const DummyLocations = ["Location 1", "Location 2", "Location 3"];
+const DummyRegions = ["Chennai"];
 
 const SelectLocation = ({ isNumberAvailable, userDetails }) => {
   const { first_name, last_name, email, phone } = userDetails;
@@ -29,6 +28,24 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
   const [errMessage, setErrMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const [deliverableLocations, setDeliverableLocations] = useState([]);
+  const [selectedLocationId, setSelectedLocationId] = useState([]);
+  
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch(`${baseURL}/store/locations`);
+        const data = await response.json();
+        const deliverableLocations = data.locations.filter(location => location.DeliveryLocation_is_deliverable)
+
+        setDeliverableLocations(deliverableLocations);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   const authenticationHandler = async () => {
     const password = PasswordGenerator.generatePassword(
@@ -66,6 +83,9 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
   };
   const handleProceed = async () => {
     console.log("Explore clicked:", selectedRegion, selectedLocation);
+    console.log(selectedRegion)
+    console.log(selectedLocation)
+    console.log(selectedLocationId)
     setSelectedLocation("");
     setSelectedRegion("");
     try {
@@ -126,7 +146,11 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
         <Picker
           style={styles.dropdown}
           selectedValue={selectedLocation}
-          onValueChange={(itemValue) => setSelectedLocation(itemValue)}
+          onValueChange={(itemValue, itemIndex) => {
+            setSelectedLocation(itemValue);
+            const locationId = deliverableLocations[itemIndex]?.DeliveryLocation_id;
+            setSelectedLocationId(locationId)
+          }}
           dropdownIconColor="green"
         >
           <Picker.Item
@@ -135,11 +159,11 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
             color="#888888"
             style={{ height: 40 }}
           />
-          {DummyLocations.map((location, index) => (
+          {deliverableLocations.map((location, index) => (
             <Picker.Item
-              key={index}
-              label={location}
-              value={location}
+              key={location.DeliveryLocation_id}
+              label={`${location.DeliveryLocation_area} ${location.DeliveryLocation_pincode}`}
+              value={`${location.DeliveryLocation_area} ${location.DeliveryLocation_pincode}`}
               color="#000000"
               style={{ height: 40 }}
             />

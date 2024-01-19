@@ -14,7 +14,6 @@ import { Actions } from "react-native-router-flux";
 
 const Address = ({ cart }) => {
   const [shippingAddresses, setShippingAddresses] = useState({});
-  const [shippingOptions, setShippingOptions] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   const handleAddressInputChange = (address) => {
@@ -92,15 +91,14 @@ const Address = ({ cart }) => {
   const fetchShippingOptions = async () => {
     try {
       let cartId = await AsyncStorage.getItem("cart_id");
-      const response = await axios.get(
-        `${baseURL}/store/shipping-options/${cartId}`
-      );
+      axios.get(
+        `${baseURL}/store/shipping-options`
+      ).then(({data}) =>{      
+        axios.post(`${baseURL}/store/carts/${cartId}/shipping-methods`, {
+            option_id: data.shipping_options[0].id,
+          });
+      });
 
-      if (response.status === 200) {
-        setShippingOptions(response.data.shipping_options);
-      } else {
-        console.error("Unexpected status code:", response.status);
-      }
     } catch (error) {
       console.error("Error fetching shipping options:", error);
     }

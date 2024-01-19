@@ -29,12 +29,15 @@ import OTPVerification from "./components/SignIn/OTPVerification";
 import MyAddresses from "./components/Address/MyAddresses";
 import EditAddress from "./components/Address/EditAddress";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import store from "./store";
-import { loginSuccess } from "./store/authActions";
+import { store, persistor } from "./redux/store";
+import { login, logout } from "./redux/actions/authActions";
+import { PersistGate } from "redux-persist/integration/react";
+import CryptoService from "./utils/crypto";
 
 export function StackedScreen() {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
-  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const auth = useSelector((state) => state?.auth);
+  const isLoggedIn = auth?.isLoggedIn;
   const dispatch = useDispatch();
 
   const getCartId = async () => {
@@ -73,10 +76,16 @@ export function StackedScreen() {
 
   const loginState = async () => {
     try {
-      const value = await AsyncStorage.getItem("loginState");
-      console.log(value);
-      if (value.isLoggedIn) {
-        dispatch(loginSuccess(value.mobileNumber));
+      const value = JSON.parse(await AsyncStorage.getItem("loginState"));
+      const currentUser = JSON.parse(await AsyncStorage.getItem("currentUser"));
+      if (value?.isLoggedIn) {
+        // const password = await CryptoService.decryptMessage(
+        //   currentUser.password,
+        //   value.mobileNumber
+        // );
+        // dispatch(
+        //   login(value.mobileNumber, currentUser.email, password)
+        // );
         Actions.products();
       } else {
         Actions.SignIn();
@@ -92,7 +101,7 @@ export function StackedScreen() {
         const value = await AsyncStorage.getItem("firstLaunch");
         if (value === null) {
           setIsFirstLaunch(true);
-          AsyncStorage.setItem("firstLaunch", "false");
+          AsyncStorage.setItem("firstLaunch", false);
         } else {
           setIsFirstLaunch(false);
         }
@@ -116,55 +125,44 @@ export function StackedScreen() {
       <CartProvider>
         <Router>
           <Stack key="root">
-            {!isLoggedIn ? (
-              <Stack key="app" hideNavBar>
-                <Scene key="products" component={Products} hideNavBar />
-                <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
-                <Scene key="cart" component={Cart} hideNavBar />
-                <Scene key="address" component={Address} hideNavBar />
-                <Scene key="payments" component={Payments} hideNavBar />
-                <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
-                <Scene key="orders" component={Orders} hideNavBar />
-                <Scene key="search" component={Search} hideNavBar />
-                <Scene key="profile" component={Profile} hideNavBar />
-                <Scene
-                  key="DeliveryPreference"
-                  component={DeliveryPreferences}
-                  hideNavBar
-                />
-                <Scene key="EditProfile" component={EditProfile} hideNavBar />
-                <Scene key="Wallet" component={Wallet} hideNavBar />
-                <Scene
-                  key="Calendar"
-                  component={SubscriptionCalendarScreen}
-                  hideNavBar
-                />
-                <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
-                <Scene
-                  key="AddEditAddress"
-                  component={AddEditAddress}
-                  hideNavBar
-                />
-                <Scene key="EditAddress" component={EditAddress} hideNavBar />
-                {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
-              </Stack>
-            ) : (
-              <Stack key="auth" hideNavBar>
-                <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
-                <Scene key="SignIn" component={SignIn} hideNavBar />
-                <Scene
-                  key="OTPVerification"
-                  component={OTPVerification}
-                  hideNavBar
-                />
-                <Scene
-                  key="CompleteYourProfile"
-                  component={CompleteYourProfile}
-                  hideNavBar
-                />
-                <Scene key="Region" component={SelectLocation} hideNavBar />
-              </Stack>
-            )}
+            <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
+            <Scene key="SignIn" component={SignIn} hideNavBar />
+            <Scene
+              key="OTPVerification"
+              component={OTPVerification}
+              hideNavBar
+            />
+            <Scene
+              key="CompleteYourProfile"
+              component={CompleteYourProfile}
+              hideNavBar
+            />
+            <Scene key="Region" component={SelectLocation} hideNavBar />
+            <Scene key="products" component={Products} hideNavBar />
+            <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
+            <Scene key="cart" component={Cart} hideNavBar />
+            <Scene key="address" component={Address} hideNavBar />
+            <Scene key="payments" component={Payments} hideNavBar />
+            <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
+            <Scene key="orders" component={Orders} hideNavBar />
+            <Scene key="search" component={Search} hideNavBar />
+            <Scene key="profile" component={Profile} hideNavBar />
+            <Scene
+              key="DeliveryPreference"
+              component={DeliveryPreferences}
+              hideNavBar
+            />
+            <Scene key="EditProfile" component={EditProfile} hideNavBar />
+            <Scene key="Wallet" component={Wallet} hideNavBar />
+            <Scene
+              key="Calendar"
+              component={SubscriptionCalendarScreen}
+              hideNavBar
+            />
+            <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
+            <Scene key="AddEditAddress" component={AddEditAddress} hideNavBar />
+            <Scene key="EditAddress" component={EditAddress} hideNavBar />
+            {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
           </Stack>
         </Router>
       </CartProvider>
@@ -175,7 +173,9 @@ export function StackedScreen() {
 export default function App() {
   return (
     <Provider store={store}>
-      <StackedScreen />
+      <PersistGate loading={null} persistor={persistor}>
+        <StackedScreen />
+      </PersistGate>
     </Provider>
   );
 }

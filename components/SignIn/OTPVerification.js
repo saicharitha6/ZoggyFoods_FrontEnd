@@ -14,8 +14,9 @@ import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import baseURL from "../../constants/url";
-import { loginSuccess } from "../../store/authActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import CryptoService from "../../utils/crypto";
+import { login } from "../../redux/actions/authActions";
 
 const OTPVerification = ({ enteredMobileNumber }) => {
   const [otp, setOtp] = useState("");
@@ -56,30 +57,41 @@ const OTPVerification = ({ enteredMobileNumber }) => {
       );
 
       if (verifyResponse.data.status) {
-        console.log("verifyResponse", verifyResponse.data);
-        const customerResponse = await axios.get(
+        // check that the number is present or not
+        const response = await axios.get(
           `${baseURL}/store/customers/phone/${mobileNumber}`
         );
-        if (customerResponse.data.status === false) {
-          console.log("customerResponse", customerResponse.data);
-
+        const { data } = response;
+        if (!data.status) {
           const firstLaunch = await AsyncStorage.getItem("firstLaunch");
           if (firstLaunch === true) {
             Actions.Welcome();
           } else {
-            Actions.CompleteYourProfile({ mobileNumber: mobileNumber });
+            Actions.CompleteYourProfile({
+              mobileNumber,
+              isNumberAvailable: data.status,
+            });
           }
         } else {
-          dispatch(loginSuccess(mobileNumber));
+          const currentUser = JSON.parse(
+            await AsyncStorage.getItem("currentUser")
+          );
+          if (currentUser) {
+            const password = await CryptoService.decryptMessage(
+              currentUser.password,
+              mobileNumber
+            );
+            dispatch(login(mobileNumber, currentUser.email, password));
+          }
           await AsyncStorage.setItem(
             "loginState",
             JSON.stringify({
               isLoggedIn: true,
-              mobileNumber: mobileNumber,
+              mobileNumber,
             })
           );
 
-          Actions.products();
+          // Actions.products();
         }
       } else {
         throw new Error("Wrong OTP. Please enter the correct OTP.");
@@ -103,7 +115,6 @@ const OTPVerification = ({ enteredMobileNumber }) => {
         sendTo: mobileNumber,
       },
     }).then((res) => {
-      console.log(res.data);
       setOtp("");
     });
   };

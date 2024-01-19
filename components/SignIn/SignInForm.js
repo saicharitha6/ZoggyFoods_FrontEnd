@@ -76,7 +76,6 @@ const SignInForm = () => {
           //   "Content-Type": "application/json",
           // },
         }).then((res) => {
-          console.log(res.data);
           Actions.OTPVerification({
             enteredMobileNumber: selectedCountry + enteredPhoneNumber,
           });
@@ -108,8 +107,6 @@ const SignInForm = () => {
               selectedValue={selectedCountry}
               onValueChange={(value) => {
                 setSelectedCountry(value);
-                console.log(value);
-                console.log(selectedCountry);
               }}
             >
               {countryOptions.map((country) => (

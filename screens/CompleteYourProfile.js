@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,18 +6,18 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
-import Button from "../components/Button";
 import useInput from "../hooks/use-Input";
 import { Actions } from "react-native-router-flux";
 import Input from "../components/Input";
-import axios from "axios";
-import baseURL from "../constants/url";
 import ErrMessage from "../components/ErrorMessage";
+import { MaterialIcons } from "@expo/vector-icons";
 
-const CompleteYourProfile = ({ mobileNumber }) => {
+const CompleteYourProfile = ({ mobileNumber, isNumberAvailable }) => {
   const [errMessage, setErrMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [accessToken, setAccessToken] = useState("");
+  // const [accessToken, setAccessToken] = useState("");
+  // const [password, setPassword] = useState("");
+  // const dispatch = useDispatch();
 
   const {
     value: enteredFirstName,
@@ -61,88 +61,19 @@ const CompleteYourProfile = ({ mobileNumber }) => {
   function endMessage() {
     setErrMessage("");
   }
-
-  const generatePassword = (firstName, lastName, email) => {
-    const username = email.split("@")[1];
-    const dynamicValue = Math.floor(Math.random() * 1000000);
-    const uniqueString = `${firstName}${lastName}${username}${dynamicValue}`;
-    return uniqueString;
-  };
-
-  const authenticationHandler = async (userData) => {
-    const generatedPassword = generatePassword(
-      userData.first_name,
-      userData.last_name,
-      userData.email
-    );
-    userData.password = generatedPassword;
-
-    try {
-      const response = await axios({
-        method: "post",
-        url: `${baseURL}/store/customers`,
-        data: userData,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      axios({
-        method: "post",
-        url: `${baseURL}/store/auth/token`,
-        data: { email: userData.email, password: userData.password },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((res) => {
-        setAccessToken(res.data.access_token);
-      });
-
-      return response;
-    } catch (err) {
-      console.error("Error:", err);
-      throw err;
-    }
-  };
-  const handleSubmit = async () => {
+  const handleNext = async () => {
     setLoading(true);
     if (firstNameIsValid && lastNameIsValid && emailIsValid) {
       firstNameReset();
       lastNameReset();
       emailReset();
-
-      authenticationHandler({
+      const userDetails = {
         first_name: enteredFirstName,
         last_name: enteredLastName,
         email: enteredEmail,
-      })
-        .then(async (response) => {
-          setLoading(false);
-          if (response.data !== undefined) {
-            dispatch(loginSuccess(mobileNumber));
-            await AsyncStorage.setItem(
-              "loginState",
-              JSON.stringify({
-                isLoggedIn: true,
-                mobileNumber: mobileNumber,
-              })
-            );
-
-            Actions.Region();
-          } else {
-            setErrMessage("Unexpected response structure");
-          }
-        })
-        .catch((err) => {
-          setLoading(false);
-          console.log("status", err.response.data);
-          if (statusCode === 422) {
-            setErrMessage("Email Already Exists");
-          } else if (statusCode === 400) {
-            setErrMessage("Client Error");
-          } else if (statusCode === 404) {
-            setErrMessage("Not Found error");
-          }
-        });
+        phone: mobileNumber,
+      };
+      Actions.Region({ isNumberAvailable, userDetails });
     } else {
       setLoading(false);
       setErrMessage("Invalid Data Entered or Fill all Fields");
@@ -185,10 +116,11 @@ const CompleteYourProfile = ({ mobileNumber }) => {
           {loading && <ActivityIndicator size="small" color="#0000ff" />}
           <TouchableOpacity
             style={styles.touchableOpacity}
-            onPress={handleSubmit}
+            onPress={handleNext}
           >
             <View style={styles.button}>
-              <Text style={styles.buttonText}>Sign up</Text>
+              <Text style={styles.buttonText}>Next</Text>
+              <MaterialIcons name="navigate-next" size={24} color="black" />
             </View>
           </TouchableOpacity>
           <ErrMessage
@@ -243,6 +175,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+    marginRight: 0.5,
   },
   text: {
     fontSize: 20,
@@ -258,6 +191,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button: {
+    flexDirection: "row",
     width: "100%",
     backgroundColor: "green",
     borderRadius: 5,

@@ -7,18 +7,23 @@ import Header from "../Header";
 import AddressForm from "../AddressForm";
 import baseURL from "../../constants/url";
 import { Actions } from "react-native-router-flux";
+import { useSelector } from "react-redux";
 
 const AddEditAddress = ({ isEdit, address }) => {
+  const auth = useSelector((state) => state?.auth);
+  const access_token = auth?.access_token;
   const handleAddressInputChange = (updatedAddress) => {
     addOrEditAddress(updatedAddress);
   };
   const addOrEditAddress = async (addressData) => {
     try {
       const headers = {
+        Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
       };
 
       if (isEdit) {
+        // edit address
         const response = await axios.post(
           `${baseURL}/store/customers/me/addresses/${address.id}`,
           addressData,
@@ -34,6 +39,7 @@ const AddEditAddress = ({ isEdit, address }) => {
           );
         }
       } else {
+        //add address
         const addressResponse = await axios.post(
           `${baseURL}/store/customers/me/addresses`,
           {

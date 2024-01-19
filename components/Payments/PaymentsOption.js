@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   proceedButton: {
-    backgroundColor: "#C37AFF",
+    backgroundColor: "darkgreen",
     borderRadius: 5,
     padding: 10,
     marginTop: 20,

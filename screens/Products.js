@@ -19,12 +19,29 @@ import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/footer";
+import CartBanner from "../components/CartBanner";
+// import ProductCategories from "../components/Products/Categories";
+import Swiper from "react-native-swiper";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [reloadCartBanner, setReloadCartBanner] = useState(false);
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [collections, setCollections] = useState([]);
+  const [selectedCollection, setSelectedCollections] = useState(null);
+  const swiperRef = useRef(null);
+  useEffect(() => {
+    const autoplayInterval = 3000; // Set the interval in milliseconds
+    const autoplayTimer = setInterval(() => {
+      if (swiperRef.current && swiperRef.current.scrollBy) {
+        swiperRef.current.scrollBy(1);
+      }
+    }, autoplayInterval);
+
+    return () => clearInterval(autoplayTimer);
+  }, []);
 
   function fetchProducts() {
     axios.get(`${baseURL}/store/products`).then((res) => {
@@ -55,7 +72,14 @@ export default function Products() {
       setProducts(res.data.hits);
     });
   }
-
+  function callbackFun(){
+    fetchCart();
+    if(reloadCartBanner){
+      setReloadCartBanner(false);
+    } else{
+      setReloadCartBanner(true);
+    }
+  }
   useEffect(() => {
     fetchProducts();
     fetchCart();
@@ -79,47 +103,85 @@ export default function Products() {
     <SafeAreaView style={[styles.safeContainer]}>
       <View style={styles.container}>
         <Header isHome={true} count={cart.length} />
-        <View style={styles.searchBar}>
-          <Feather
+        {/* <View style={styles.searchBar}> */}
+          {/* search Icon */}
+          {/* <Feather
             name="search"
             size={20}
             color="black"
             style={{ marginLeft: 1 }}
-          />
-          <TextInput
+          /> */}
+          {/* Input field */}
+          {/* <TextInput
             style={styles.input}
             placeholder="Search"
             value={search}
             onChangeText={(text) => searchFilterFunction(text)}
-          />
-        </View>
+          /> */}
+        {/* </View> */}
 
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+          <Swiper
+            ref={swiperRef}
+            autoplay
+            loop
+            showsButtons={false}
+            showsPagination={true} // Enable pagination
+            dotStyle={styles.paginationDot} // Customize pagination dot style
+            activeDotStyle={styles.activePaginationDot} // Customize active pagination dot style
+            containerStyle={styles.swiperContainer}
+          >
+            <Image
+              source={require("../assets/cappuccino.png")}
+              style={styles.image}
+            />
+            <Image
+              source={require("../assets/curry.png")}
+              style={styles.image}
+            />
+            <Image
+              source={require("../assets/southindianplatter.png")}
+              style={styles.image}
+            />
+          </Swiper>
+
+          {/* <ProductCategories
+            categories={collections}
+            getCategorizedProducts={filterProductsBasedOnCollection}
+          /> */}
           <Text style={styles.line}>line</Text>
 
           <View style={styles.products}>
-            {products.map((product) => (
-              <TouchableOpacity
-                key={product.id}
-                onPress={() => Actions.ProductInfo({ productId: product.id })}
-                disabled={isProductOutOfStock(product)}
-                style={styles.productItem}
-              >
-                <ProductCard product={product} />
-                {isProductOutOfStock(product) && (
-                  <View style={styles.outOfStockOverlay}>
-                    <Text style={styles.outOfStockText}>OUT OF STOCK</Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            ))}
+            {products.map((product) =>
+              selectedCollection !== undefined &&
+              selectedCollection !== null ? (
+                product.collection.id === selectedCollection.id && (
+                  <TouchableOpacity
+                    key={product.id}
+                    onPress={() =>
+                      Actions.ProductInfo({ productId: product.id })
+                    }
+                  >
+                    <ProductCard product={product} />
+                  </TouchableOpacity>
+                )
+              ) : (
+                <TouchableOpacity
+                  key={product.id}
+                  onPress={() => Actions.ProductInfo({ productId: product.id })}
+                >
+                  <ProductCard product={product} />
+                </TouchableOpacity>
+              )
+            )}
           </View>
         </ScrollView>
       </View>
+      {cart.length>0 && <CartBanner reloadCartBanner={reloadCartBanner}/>}     
       <Footer />
     </SafeAreaView>
   );

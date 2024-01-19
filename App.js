@@ -24,11 +24,21 @@ import SubscriptionCalendarScreen from "./screens/Calendar";
 import SignUp from "./screens/SignUp";
 import SelectLocation from "./screens/Region";
 import DeliveryPreferences from "./screens/DeliveryPreferences";
+import CompleteYourProfile from "./screens/CompleteYourProfile";
+import OTPVerification from "./components/SignIn/OTPVerification";
 import MyAddresses from "./components/Address/MyAddresses";
 import EditAddress from "./components/Address/EditAddress";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { store, persistor } from "./redux/store";
+import { login, logout } from "./redux/actions/authActions";
+import { PersistGate } from "redux-persist/integration/react";
+import CryptoService from "./utils/crypto";
 
-export default function App() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(null); // Track if it's the first launch
+export function StackedScreen() {
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const auth = useSelector((state) => state?.auth);
+  const isLoggedIn = auth?.isLoggedIn;
+  const dispatch = useDispatch();
 
   const getCartId = async () => {
     await axios.post(`${baseURL}/store/carts`).then((res) => {
@@ -41,7 +51,7 @@ export default function App() {
 
     if (cartId) {
       await axios
-        .post(`${baseURL}/store/carts/${cartId}`)
+        .get(`${baseURL}/store/carts/${cartId}`)
         .then((res) => {
           if (res.data.cart.completed_at) {
             AsyncStorage.removeItem("cart_id");
@@ -64,13 +74,34 @@ export default function App() {
     }
   };
 
+  const loginState = async () => {
+    try {
+      const value = JSON.parse(await AsyncStorage.getItem("loginState"));
+      const currentUser = JSON.parse(await AsyncStorage.getItem("currentUser"));
+      if (value?.isLoggedIn) {
+        // const password = await CryptoService.decryptMessage(
+        //   currentUser.password,
+        //   value.mobileNumber
+        // );
+        // dispatch(
+        //   login(value.mobileNumber, currentUser.email, password)
+        // );
+        Actions.products();
+      } else {
+        Actions.SignIn();
+      }
+    } catch (error) {
+      console.error("Error checking first launch:", error);
+    }
+  };
+
   useEffect(() => {
     const checkFirstLaunch = async () => {
       try {
         const value = await AsyncStorage.getItem("firstLaunch");
         if (value === null) {
           setIsFirstLaunch(true);
-          AsyncStorage.setItem("firstLaunch", "false");
+          AsyncStorage.setItem("firstLaunch", false);
         } else {
           setIsFirstLaunch(false);
         }
@@ -78,15 +109,14 @@ export default function App() {
         console.error("Error checking first launch:", error);
       }
     };
-
+    loginState();
     checkFirstLaunch();
     checkCartId();
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
-    // Use Actions to navigate directly to OTPVerification if isFirstLaunch
     if (!isFirstLaunch) {
-      Actions.SignIn(); // Assuming the key for OTPVerification screen is "OTPVerification"
+      Actions.SignIn();
     }
   }, [isFirstLaunch]);
 
@@ -97,7 +127,16 @@ export default function App() {
           <Stack key="root">
             <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
             <Scene key="SignIn" component={SignIn} hideNavBar />
-            <Scene key="SignUp" component={SignUp} hideNavBar />
+            <Scene
+              key="OTPVerification"
+              component={OTPVerification}
+              hideNavBar
+            />
+            <Scene
+              key="CompleteYourProfile"
+              component={CompleteYourProfile}
+              hideNavBar
+            />
             <Scene key="Region" component={SelectLocation} hideNavBar />
             <Scene key="products" component={Products} hideNavBar />
             <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
@@ -128,5 +167,15 @@ export default function App() {
         </Router>
       </CartProvider>
     </PaperProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <StackedScreen />
+      </PersistGate>
+    </Provider>
   );
 }

@@ -61,7 +61,7 @@ export default function Header({
           style={styles.backButton}
           onPress={() => Actions.pop()}
         >
-          <Ionicons name="arrow-back-outline" size={24} color="black" />
+          <Ionicons name="arrow-back-outline" size={24} color="white" />
           <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
       )}

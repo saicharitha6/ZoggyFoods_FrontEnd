@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Image,
 } from "react-native";
 import Button from "../Button";
 import { Ionicons } from "@expo/vector-icons";
@@ -27,6 +28,10 @@ const Wallet = () => {
     setOriginalWalletAmount(walletAmount);
     // Add any additional logic here if needed
   };
+
+  function transactioHistory() {
+    console.log("Clicked Transaction History");
+  }
 
   return (
     <View style={styles.container}>
@@ -84,6 +89,27 @@ const Wallet = () => {
           />
         </View>
       </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.transactioHistoryButton}
+          onPress={() => transactioHistory()}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <Image
+              source={require("../../assets/wallet.png")}
+              style={styles.iconImage}
+            />
+            <Text style={styles.transactioHistoryText}>Transaction History</Text>
+            <View style={{ alignSelf: "flex-end" }}>
+              <Image
+                source={require("../../assets/right-arrow.png")}
+                style={styles.arrowImage}
+              ></Image>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -117,7 +143,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 30,
     textAlign: "center",
-    marginTop:20,
+    marginTop: 20,
   },
   addMoney: {
     fontSize: 20,
@@ -162,10 +188,34 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "100%",
     marginBottom: 20,
-    backgroundColor:"#fff"
+    backgroundColor: "#fff"
   },
   icon: {
     marginLeft: 10,
+  },
+  transactioHistoryButton: {
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 20,
+    flex: 1,
+    marginHorizontal: 5
+  },
+  transactioHistoryText: {
+    fontSize: 18,
+    color: "darkgreen",
+  },
+  iconImage: {
+    width: 30,
+    height: 30,
+    marginRight: 50,
+  },
+  arrowImage: {
+    width: 20,
+    height: 20,
+    marginLeft: 50,
+    marginBottom: 5,
   },
 });
 

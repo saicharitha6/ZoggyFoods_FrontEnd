@@ -14,6 +14,7 @@ export default function MetaInfo({ product }) {
   const [price, setPrice] = useState(
     product.variants[0]?.prices[1]?.amount / 100
   );
+  const [quantity, setQuantity] = useState(1);
 
   const isVariantOutOfStock = () => {
     return product.variants[activeSize]?.inventory_quantity <= 0;
@@ -23,14 +24,14 @@ export default function MetaInfo({ product }) {
     return product.variants.every((variant) => variant.inventory_quantity <= 0);
   };
 
-  const addToCart = async () => {
+  const addToCart = async (quantity) => {
     const cartId = await AsyncStorage.getItem("cart_id");
     const variantId = product.variants[activeSize].id;
 
     axios
       .post(baseURL + "/store/carts/" + cartId + "/line-items", {
-        variant_id: variantId,
-        quantity: 1,
+        variant_id: product.variants[0].id,
+        quantity: quantity,
       })
       .then(({ data }) => {
         setCart(true);
@@ -58,6 +59,23 @@ export default function MetaInfo({ product }) {
   function setAmount(index) {
     setPrice(product.variants[index]?.prices[1]?.amount / 100);
   }
+
+  // Function to handle increasing the quantity
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1);
+  };
+
+  // Function to handle decreasing the quantity
+  const decreaseQuantity = (productId) => {
+    // if (quantity > 1) {
+    setQuantity(quantity - 1);
+    // } else {
+    //   setQuantity(1);
+    //   setIsInCart(false); // Product is removed from cart when quantity decreases to 0 or less
+    //   removeItem(productId);
+    // }
+  };
+
 
   const calculateDeliveryTime = () => {
     const currentDate = new Date();
@@ -113,9 +131,34 @@ export default function MetaInfo({ product }) {
             </TouchableOpacity>
           ))}
         </View>
-        <View style={styles.estimatedTime}>
-          <Text style={styles.heading}>Estimated Delivery Time</Text>
-          <Text style={styles.timeText}>{calculateDeliveryTime()}</Text>
+        <View style={styles.buttonAndTimeContainer}>
+          <View style={styles.estimatedTime}>
+            <Text style={styles.heading}>Estimated Delivery Time</Text>
+            <Text style={styles.timeText}>{calculateDeliveryTime()}</Text>
+          </View>
+          <View style={styles.quantityBtnContainer}>
+            <View>
+              <TouchableOpacity
+                key={product.id}
+                onPress={() => {
+                  increaseQuantity();
+                  addToCart(1);
+                }}
+              ><Text style={styles.quantityButtonFont}>+   |</Text></TouchableOpacity>
+            </View>
+            <View>
+              <Text style={styles.quantityButtonFont}>{quantity}</Text>
+            </View>
+            <View>
+              <TouchableOpacity
+                key={product.id}
+                onPress={() => {
+                  decreaseQuantity(product.id);
+                  addToCart(-1);
+                }}
+              ><Text style={styles.quantityButtonFont}>|   -</Text></TouchableOpacity>
+            </View>
+          </View>
         </View>
         <Text style={styles.heading}>Description</Text>
         <Text style={styles.description}>{product.description}</Text>
@@ -198,6 +241,31 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 5,
   },
+  quantityBtnContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    borderRadius: 5,
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "darkgreen",
+    backgroundColor: "darkgreen",
+    height: 30,
+    width: 100,
+    margin: 20,
+    marginTop: 23,
+    // marginLeft:6,
+  },
+  quantityButtonFont: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+  },
+  buttonAndTimeContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center"
+  }
   outOfStock: {
     fontSize: heightToDp(5),
     fontWeight: "bold",

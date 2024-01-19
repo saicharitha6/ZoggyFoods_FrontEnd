@@ -26,11 +26,11 @@ const mainOptions = [
 ];
 
 const moreOptions = [
-  {
-    title: "Vacation mode",
-    image: require("../assets/vacation.png"),
-    action: () => console.log("Vacation mode pressed"),
-  },
+  // {
+  //   title: "Vacation mode",
+  //   image: require("../assets/vacation.png"),
+  //   action: () => console.log("Vacation mode pressed"),
+  // },
   {
     title: "Refer & Earn",
     image: require("../assets/refer.png"),

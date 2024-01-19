@@ -9,10 +9,23 @@ import {
   View,
 } from "react-native";
 import { Actions } from "react-native-router-flux";
+import { logout } from "../../redux/actions/authActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProfileOptions = ({ moreOptions, mainOptions }) => {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state?.auth);
+  const access_token = auth?.access_token;
+
   const logoutHandler = async () => {
-    console.log("Logout");
+    dispatch(logout(access_token));
+    await AsyncStorage.setItem(
+      "loginState",
+      JSON.stringify({
+        isLoggedIn: false,
+        mobileNumber: null,
+      })
+    );
     Actions.SignIn();
   };
 

@@ -165,6 +165,8 @@ export default function Products() {
                     onPress={() =>
                       Actions.ProductInfo({ productId: product.id })
                     }
+                    disabled={isProductOutOfStock(product)}
+                    style={styles.productItem}
                   >
                     <ProductCard
                       key={product.id}
@@ -172,12 +174,19 @@ export default function Products() {
                       callBackFun={callbackFun}
                       CartItems={cart}
                     />
+                    {isProductOutOfStock(product) && (
+                      <View style={styles.outOfStockOverlay}>
+                        <Text style={styles.outOfStockText}>OUT OF STOCK</Text>
+                      </View>
+                    )}
                   </TouchableOpacity>
                 )
               ) : (
                 <TouchableOpacity
                   key={product.id}
                   onPress={() => Actions.ProductInfo({ productId: product.id })}
+                  disabled={isProductOutOfStock(product)}
+                  style={styles.productItem}
                 >
                   <ProductCard
                     key={product.id}
@@ -185,6 +194,11 @@ export default function Products() {
                     callBackFun={callbackFun}
                     CartItems={cart}
                   />
+                  {isProductOutOfStock(product) && (
+                    <View style={styles.outOfStockOverlay}>
+                      <Text style={styles.outOfStockText}>OUT OF STOCK</Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
               )
             )}
@@ -269,5 +283,38 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     marginLeft: 10,
+  },
+  swiperContainer: {
+    height: 200, // Set a fixed height for the Swiper container
+    overflow: "hidden",
+    margin: 15,
+  },
+  paginationDotsContainer: {
+    position: "absolute",
+    bottom: 10,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // Customize dot color
+    margin: 3,
+  },
+  activePaginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#000", // Customize active dot color
+    margin: 3,
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    width: "100%",
+    borderRadius: 10,
   },
 });

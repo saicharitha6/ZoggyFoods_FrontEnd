@@ -76,7 +76,6 @@ export default function MetaInfo({ product }) {
     // }
   };
 
-
   const calculateDeliveryTime = () => {
     const currentDate = new Date();
     const deliveryDate = new Date(currentDate);
@@ -144,7 +143,9 @@ export default function MetaInfo({ product }) {
                   increaseQuantity();
                   addToCart(1);
                 }}
-              ><Text style={styles.quantityButtonFont}>+   |</Text></TouchableOpacity>
+              >
+                <Text style={styles.quantityButtonFont}>+ |</Text>
+              </TouchableOpacity>
             </View>
             <View>
               <Text style={styles.quantityButtonFont}>{quantity}</Text>
@@ -156,7 +157,9 @@ export default function MetaInfo({ product }) {
                   decreaseQuantity(product.id);
                   addToCart(-1);
                 }}
-              ><Text style={styles.quantityButtonFont}>|   -</Text></TouchableOpacity>
+              >
+                <Text style={styles.quantityButtonFont}>| -</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -254,7 +257,7 @@ const styles = StyleSheet.create({
     width: 100,
     margin: 20,
     marginTop: 23,
-    // marginLeft:6,
+    // marginRight:80,
   },
   quantityButtonFont: {
     fontSize: 18,
@@ -264,8 +267,9 @@ const styles = StyleSheet.create({
   buttonAndTimeContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    alignContent: "center"
-  },  
+    alignContent: "center",
+    marginLeft:20,
+  },
   outOfStock: {
     fontSize: heightToDp(5),
     fontWeight: "bold",
@@ -275,5 +279,5 @@ const styles = StyleSheet.create({
     backgroundColor: "darkred",
     borderRadius: 10,
     padding: 10,
-  }
+  },
 });

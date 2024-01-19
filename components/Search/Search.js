@@ -96,7 +96,7 @@ export default function Search() {
           </View>
         </View>
         <ScrollView>
-          {products.length > 0 ? (
+          {products.length > 0 ? (           
             <View style={styles.products}>
               {products.map((product) => (
                 <TouchableOpacity
@@ -106,7 +106,7 @@ export default function Search() {
                   <ProductCard product={product} />
                 </TouchableOpacity>
               ))}
-            </View>
+            </View>           
           ) : (
             <View>
               <Text style={styles.emptySearchText}>No results to show</Text>
@@ -134,22 +134,11 @@ const styles = StyleSheet.create({
     width: widthToDp(100),
     paddingHorizontal: widthToDp(4),
     justifyContent: "space-between",
-  },
-  addToCart: {
-    position: "absolute",
-    bottom: 30,
-    right: 10,
-    backgroundColor: "#C37AFF",
-    width: widthToDp(12),
-    height: widthToDp(12),
-    borderRadius: widthToDp(10),
-    alignItems: "center",
-    padding: widthToDp(2),
-    justifyContent: "center",
+    marginTop:20,
   },
   searchHeader: {
     width: widthToDp("100%"),
-    height: widthToDp(40),
+    height: 140,
     backgroundColor: "#00b33c",
     // borderBottomLeftRadius:20,
     // borderBottomRightRadius:20,
@@ -195,6 +184,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   icon: {
+    color:"#ffffff",
     marginLeft: 10,
     marginTop: 20,
     marginBottom: 20,

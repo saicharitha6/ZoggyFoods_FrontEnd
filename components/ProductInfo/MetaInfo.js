@@ -254,10 +254,9 @@ const styles = StyleSheet.create({
     borderColor: "darkgreen",
     backgroundColor: "darkgreen",
     height: 30,
-    width: 100,
-    margin: 20,
-    marginTop: 23,
-    // marginRight:80,
+    width: 60,
+    marginTop:20,
+   padding:1
   },
   quantityButtonFont: {
     fontSize: 18,
@@ -267,8 +266,7 @@ const styles = StyleSheet.create({
   buttonAndTimeContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    alignContent: "center",
-    marginLeft:20,
+    alignItems: "flex-start",
   },
   outOfStock: {
     fontSize: heightToDp(5),

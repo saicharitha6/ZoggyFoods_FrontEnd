@@ -32,16 +32,6 @@ export default function Products() {
   const [collections, setCollections] = useState([]);
   const [selectedCollection, setSelectedCollections] = useState(null);
   const swiperRef = useRef(null);
-  useEffect(() => {
-    const autoplayInterval = 3000; // Set the interval in milliseconds
-    const autoplayTimer = setInterval(() => {
-      if (swiperRef.current && swiperRef.current.scrollBy) {
-        swiperRef.current.scrollBy(1);
-      }
-    }, autoplayInterval);
-
-    return () => clearInterval(autoplayTimer);
-  }, []);
 
   function fetchProducts() {
     axios.get(`${baseURL}/store/products`).then((res) => {
@@ -55,6 +45,17 @@ export default function Products() {
       setCart(data.cart.items);
     });
   };
+
+  function fetchCollections() {
+    axios.get(`${baseURL}/store/collections`).then(({ data }) => {
+      // console.log("Here", data.collections);
+      setCollections(data.collections);
+    });
+  }
+
+  function filterProductsBasedOnCollection(category) {
+    setSelectedCollections(category);
+  }
 
   function searchFilterFunction(text) {
     let searchQuery = {
@@ -72,6 +73,7 @@ export default function Products() {
       setProducts(res.data.hits);
     });
   }
+
   function callbackFun() {
     fetchCart();
     if (reloadCartBanner) {
@@ -80,15 +82,27 @@ export default function Products() {
       setReloadCartBanner(true);
     }
   }
+
   useEffect(() => {
     fetchProducts();
     fetchCart();
+    fetchCollections();
+
+    const autoplayInterval = 3000; // Set the interval in milliseconds
+    const autoplayTimer = setInterval(() => {
+      if (swiperRef.current && swiperRef.current.scrollBy) {
+        swiperRef.current.scrollBy(1);
+      }
+    }, autoplayInterval);
+
+    return () => clearInterval(autoplayTimer);
   }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchProducts();
     fetchCart();
+    fetchCollections();
 
     setTimeout(() => {
       setRefreshing(false);

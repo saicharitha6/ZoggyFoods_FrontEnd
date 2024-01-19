@@ -21,7 +21,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/footer";
 import CartBanner from "../components/CartBanner";
 // import ProductCategories from "../components/Products/Categories";
-// import Swiper from "react-native-swiper";
+import Swiper from "react-native-swiper";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -137,7 +137,7 @@ export default function Products() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          {/* <Swiper
+          <Swiper
             ref={swiperRef}
             autoplay
             loop
@@ -148,18 +148,18 @@ export default function Products() {
             containerStyle={styles.swiperContainer}
           >
             <Image
-              source={require("../assets/img2.png")}
+              source={require("../assets/cappuccino.png")}
               style={styles.image}
             />
             <Image
-              source={require("../assets/img1.png")}
+              source={require("../assets/curry.png")}
               style={styles.image}
             />
             <Image
-              source={require("../assets/img6.png")}
+              source={require("../assets/southindianplatter.png")}
               style={styles.image}
             />
-          </Swiper> */}
+          </Swiper>
 
           {/* <ProductCategories
             categories={collections}

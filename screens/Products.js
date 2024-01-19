@@ -115,22 +115,22 @@ export default function Products() {
       <View style={styles.container}>
         {/* <Header title="Zoggy" isHome={true} count={cart.length} /> */}
         <Header isHome={true} count={cart.length} />
-        <View style={styles.searchBar}>
+        {/* <View style={styles.searchBar}> */}
           {/* search Icon */}
-          <Feather
+          {/* <Feather
             name="search"
             size={20}
             color="black"
             style={{ marginLeft: 1 }}
-          />
+          /> */}
           {/* Input field */}
-          <TextInput
+          {/* <TextInput
             style={styles.input}
             placeholder="Search"
             value={search}
             onChangeText={(text) => searchFilterFunction(text)}
-          />
-        </View>
+          /> */}
+        {/* </View> */}
 
         <ScrollView
           refreshControl={

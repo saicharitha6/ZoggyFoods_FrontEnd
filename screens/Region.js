@@ -1,17 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Button from "../components/Button";
 import WelcomeText from "../components/SignIn/WelcomeText";
 import { Actions } from "react-native-router-flux";
+import PasswordGenerator from "../utils/passwordGenerator";
+import CryptoService from "../utils/crypto";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/actions/authActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import baseURL from "../constants/url";
 import { useLocation } from "../components/LocationContext";
 import { Alert } from "react-native";
 const DummyRegions = ["Chennai"];
 
-const SelectLocation = () => {
+const SelectLocation = ({ isNumberAvailable, userDetails }) => {
+  const { first_name, last_name, email, phone } = userDetails;
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
+  const [errMessage, setErrMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const [deliverableLocations, setDeliverableLocations] = useState([]);
   const [selectedLocationId, setSelectedLocationId] = useState([]);
   const { updateLocation } = useLocation(); // Use the context hook
@@ -34,7 +51,41 @@ const SelectLocation = () => {
     fetchLocations();
   }, []);
 
-  const handleProceed = () => {
+  const authenticationHandler = async () => {
+    const password = PasswordGenerator.generatePassword(
+      `${first_name} ${last_name}`,
+      email
+    );
+    // store password user credential in async storage
+    // encrypt userCredentials
+    const encryptPassword = await CryptoService.encryptMessage(password, phone);
+    // setPassword(encryptPassword);
+    await AsyncStorage.setItem(
+      "currentUser",
+      JSON.stringify({ email, password: encryptPassword })
+    );
+
+    try {
+      if (!isNumberAvailable) {
+        //new user
+        const { data } = await axios({
+          method: "post",
+          url: `${baseURL}/store/customers`,
+          data: { ...userDetails, password },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        return { data, encryptPassword };
+      } else {
+        // add number into customer account
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      throw err;
+    }
+  };
+  const handleProceed = async () => {
     if (!selectedRegion || !selectedLocation) {
       // Display an alert or some indication that both region and location need to be selected.
       Alert.alert("Please select both region and location");
@@ -50,7 +101,31 @@ const SelectLocation = () => {
 
     setSelectedLocation("");
     setSelectedRegion("");
-    Actions.products();
+    try {
+      setLoading(true);
+      const {
+        data: { customer },
+        encryptPassword,
+      } = await authenticationHandler();
+      if (customer) {
+        const decryptPassword = await CryptoService.decryptMessage(
+          encryptPassword,
+          phone
+        );
+        dispatch(login(phone, email, decryptPassword));
+        await AsyncStorage.setItem(
+          "loginState",
+          JSON.stringify({
+            isLoggedIn: true,
+            mobileNumber: phone,
+          })
+        );
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    // Actions.products();
   };
 
   const handleLocationNotFound = () => {
@@ -109,7 +184,7 @@ const SelectLocation = () => {
           ))}
         </Picker>
       </View>
-
+      {loading && <ActivityIndicator size="small" color="#0000ff" />}
       <Button
         onPress={handleProceed}
         title="Proceed"
@@ -121,12 +196,12 @@ const SelectLocation = () => {
         <Text style={styles.link}>Could not find your location?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.loginText}>
+      {/* <TouchableOpacity style={styles.loginText}>
         <Text>Existing user? </Text>
         <Text style={styles.link} onPress={() => Actions.SignIn()}>
           LOGIN
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

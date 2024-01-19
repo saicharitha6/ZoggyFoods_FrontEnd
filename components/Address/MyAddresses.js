@@ -5,14 +5,20 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Actions } from "react-native-router-flux";
 import Icon from "react-native-vector-icons/Ionicons";
 import baseURL from "../../constants/url";
+import { useSelector } from "react-redux";
 
 const MyAddresses = () => {
   const [shippingAddresses, setShippingAddresses] = useState([]);
-
+  const auth = useSelector((state) => state?.auth);
+  const access_token = auth?.access_token;
+  const headers = {
+    Authorization: `Bearer ${access_token}`,
+    "Content-Type": "application/json",
+  };
   useEffect(() => {
     // Make the GET request to your API endpoint
     axios
-      .get(`${baseURL}/store/customers/me`)
+      .get(`${baseURL}/store/customers/me`, { headers })
       .then((response) => {
         // Use optional chaining to safely access nested property
         const addresses = response?.data?.customer?.shipping_addresses ?? [];
@@ -21,7 +27,7 @@ const MyAddresses = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []); // Empty dependency array to run the effect only once 
+  }, []); // Empty dependency array to run the effect only once
 
   const renderAddresses = () => {
     return shippingAddresses.map((address, index) => (
@@ -84,6 +90,7 @@ const MyAddresses = () => {
         const response = await axios.post(
           `${baseURL}/store/customers/me/addresses`,
           {
+            headers,
             address: {
               ...newAddress,
             },
@@ -121,7 +128,10 @@ const MyAddresses = () => {
   const handleDeleteAddress = async (addressId) => {
     try {
       const response = await axios.delete(
-        `${baseURL}/store/customers/me/addresses/${addressId}`
+        `${baseURL}/store/customers/me/addresses/${addressId}`,
+        {
+          headers,
+        }
       );
 
       if (response.status === 200) {
@@ -158,7 +168,10 @@ const MyAddresses = () => {
         <TouchableOpacity
           style={styles.addButton}
           onPress={() =>
-            Actions.AddEditAddress({ isEdit: false, onAddAddress: handleAddAddress })
+            Actions.AddEditAddress({
+              isEdit: false,
+              onAddAddress: handleAddAddress,
+            })
           }
         >
           <Text style={styles.addButtonText}>Add Address</Text>

@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { widthToDp, heightToDp } from "rn-responsive-screen";
 import Button from "./Button";
 import axios from "axios";
@@ -8,10 +8,32 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseURL from "../constants/url";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function ProductCard({ key, product }) {
+export default function ProductCard({ key, product ,callBackFun ,CartItems}) {
   const [quantity, setQuantity] = useState(1);
   const [isInCart, setIsInCart] = useState(false);
   const [itemIdMap, setItemIdMap] = useState({});
+  const [cart,setCart] = useState(CartItems);
+
+  if(cart != CartItems){
+    setCart(CartItems);
+  }
+
+  useEffect(() => {
+    CartItems.map((item) => {
+      if(item.variant.product.id === product.id){
+        setQuantity(item.quantity);
+        setIsInCart(true);
+      }
+    });
+    setItemIdMap(oldItemMap =>{
+      let idMap = {...oldItemMap}
+      CartItems.map((item)=>{
+        delete idMap[item.variant.product.id];
+        idMap[item.variant.product.id] = item.id;
+      })
+      return {...idMap};
+    } )
+  },[cart]);
 
   async function removeItem(productId) {
     const cartId = await AsyncStorage.getItem("cart_id");
@@ -25,15 +47,16 @@ export default function ProductCard({ key, product }) {
   }
 
    // Function to handle increasing the quantity
-   const increaseQuantity = () => {
+   const increaseQuantity = () => {    
     setQuantity(quantity + 1);
     if (!isInCart) {
       setIsInCart(true); // Product is added to cart when quantity increases from 1
+      callBackFun();
     }
   };
 
   // Function to handle decreasing the quantity
-  const decreaseQuantity = (productId) => {
+  const decreaseQuantity = (productId) => {   
     if (quantity > 1) {
       setQuantity(quantity - 1);
     } else {
@@ -41,6 +64,7 @@ export default function ProductCard({ key, product }) {
       setIsInCart(false); // Product is removed from cart when quantity decreases to 0 or less
       removeItem(productId);
     }
+    callBackFun();
   };
 
 
@@ -61,6 +85,7 @@ export default function ProductCard({ key, product }) {
           })
           return {...idMap};
         } )
+        callBackFun();
         // alert(`Item ${product.title} added to cart`);
       })
       .catch((err) => {
@@ -103,8 +128,8 @@ export default function ProductCard({ key, product }) {
                 <TouchableOpacity 
                  key={product.id}
                  onPress={() => {
-                        increaseQuantity();
                         addToCart(1);
+                        increaseQuantity();
                       }}
                 ><Text style={styles.quantityButtonFont}>+   |</Text></TouchableOpacity>
             </View>
@@ -115,8 +140,8 @@ export default function ProductCard({ key, product }) {
                 <TouchableOpacity        
                  key={product.id}          
                  onPress={() => {
-                  decreaseQuantity(product.id);
                   addToCart(-1);
+                  decreaseQuantity(product.id);
                 }}><Text style={styles.quantityButtonFont}>|   -</Text></TouchableOpacity>
             </View>
           </View>

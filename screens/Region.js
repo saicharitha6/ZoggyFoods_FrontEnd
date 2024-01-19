@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Button from "../components/Button";
@@ -30,13 +31,15 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
   const dispatch = useDispatch();
   const [deliverableLocations, setDeliverableLocations] = useState([]);
   const [selectedLocationId, setSelectedLocationId] = useState([]);
-  
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
         const response = await fetch(`${baseURL}/store/locations`);
         const data = await response.json();
-        const deliverableLocations = data.locations.filter(location => location.DeliveryLocation_is_deliverable)
+        const deliverableLocations = data.locations.filter(
+          (location) => location.DeliveryLocation_is_deliverable
+        );
 
         setDeliverableLocations(deliverableLocations);
       } catch (error) {
@@ -64,10 +67,15 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
     try {
       if (!isNumberAvailable) {
         //new user
+        const metaData = {
+          encryptMessage: encryptPassword,
+          isAndroid: Platform.OS === "android",
+          isIos: Platform.OS === "ios",
+        };
         const { data } = await axios({
           method: "post",
           url: `${baseURL}/store/customers`,
-          data: { ...userDetails, password },
+          data: { ...userDetails, password, metaData },
           headers: {
             "Content-Type": "application/json",
           },
@@ -83,9 +91,9 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
   };
   const handleProceed = async () => {
     console.log("Explore clicked:", selectedRegion, selectedLocation);
-    console.log(selectedRegion)
-    console.log(selectedLocation)
-    console.log(selectedLocationId)
+    console.log(selectedRegion);
+    console.log(selectedLocation);
+    console.log(selectedLocationId);
     setSelectedLocation("");
     setSelectedRegion("");
     try {
@@ -148,8 +156,9 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
           selectedValue={selectedLocation}
           onValueChange={(itemValue, itemIndex) => {
             setSelectedLocation(itemValue);
-            const locationId = deliverableLocations[itemIndex]?.DeliveryLocation_id;
-            setSelectedLocationId(locationId)
+            const locationId =
+              deliverableLocations[itemIndex]?.DeliveryLocation_id;
+            setSelectedLocationId(locationId);
           }}
           dropdownIconColor="green"
         >

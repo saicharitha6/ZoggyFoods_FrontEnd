@@ -53,10 +53,12 @@ const Address = ({ cart }) => {
       const newAddressResponse = await axios.post(
         `${baseURL}/store/customers/me/addresses`,
         {
-          headers,
           address: {
             ...selectedAddress,
           },
+        },
+        {
+          headers,
         }
       );
 
@@ -79,7 +81,9 @@ const Address = ({ cart }) => {
 
   const fetchShippingAddresses = async () => {
     try {
-      const response = await axios.get(`${baseURL}/store/customers/me`,{headers});
+      const response = await axios.get(`${baseURL}/store/customers/me`, {
+        headers,
+      });
 
       if (response.status === 200) {
         setShippingAddresses(response.data.customer.shipping_addresses);

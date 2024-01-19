@@ -8,14 +8,20 @@ import { heightToDp, widthToDp } from "rn-responsive-screen";
 import Header from "../components/Header";
 import Button from "../components/Button";
 import AddressForm from "../components/AddressForm";
-
 import baseURL from "../constants/url";
 import { Actions } from "react-native-router-flux";
+import { useSelector } from "react-redux";
 
 const Address = ({ cart }) => {
   const [shippingAddresses, setShippingAddresses] = useState({});
   const [selectedAddress, setSelectedAddress] = useState(null);
 
+  const auth = useSelector((state) => state?.auth);
+  const access_token = auth?.access_token;
+  const headers = {
+    Authorization: `Bearer ${access_token}`,
+    "Content-Type": "application/json",
+  };
   const handleAddressInputChange = (address) => {
     setSelectedAddress(address);
   };
@@ -47,6 +53,7 @@ const Address = ({ cart }) => {
       const newAddressResponse = await axios.post(
         `${baseURL}/store/customers/me/addresses`,
         {
+          headers,
           address: {
             ...selectedAddress,
           },
@@ -72,7 +79,7 @@ const Address = ({ cart }) => {
 
   const fetchShippingAddresses = async () => {
     try {
-      const response = await axios.get(`${baseURL}/store/customers/me`);
+      const response = await axios.get(`${baseURL}/store/customers/me`,{headers});
 
       if (response.status === 200) {
         setShippingAddresses(response.data.customer.shipping_addresses);
@@ -91,14 +98,11 @@ const Address = ({ cart }) => {
   const fetchShippingOptions = async () => {
     try {
       let cartId = await AsyncStorage.getItem("cart_id");
-      axios.get(
-        `${baseURL}/store/shipping-options`
-      ).then(({data}) =>{      
+      axios.get(`${baseURL}/store/shipping-options`).then(({ data }) => {
         axios.post(`${baseURL}/store/carts/${cartId}/shipping-methods`, {
-            option_id: data.shipping_options[0].id,
-          });
+          option_id: data.shipping_options[0].id,
+        });
       });
-
     } catch (error) {
       console.error("Error fetching shipping options:", error);
     }

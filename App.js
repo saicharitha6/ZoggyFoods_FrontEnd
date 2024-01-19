@@ -51,7 +51,7 @@ export function StackedScreen() {
 
     if (cartId) {
       await axios
-        .post(`${baseURL}/store/carts/${cartId}`)
+        .get(`${baseURL}/store/carts/${cartId}`)
         .then((res) => {
           if (res.data.cart.completed_at) {
             AsyncStorage.removeItem("cart_id");

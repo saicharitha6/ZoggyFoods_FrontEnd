@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignContent: "center"
-  }
+  },  
   outOfStock: {
     fontSize: heightToDp(5),
     fontWeight: "bold",
@@ -275,5 +275,5 @@ const styles = StyleSheet.create({
     backgroundColor: "darkred",
     borderRadius: 10,
     padding: 10,
-  },
+  }
 });

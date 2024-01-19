@@ -72,11 +72,11 @@ export default function Products() {
       setProducts(res.data.hits);
     });
   }
-  function callbackFun(){
+  function callbackFun() {
     fetchCart();
-    if(reloadCartBanner){
+    if (reloadCartBanner) {
       setReloadCartBanner(false);
-    } else{
+    } else {
       setReloadCartBanner(true);
     }
   }
@@ -104,15 +104,15 @@ export default function Products() {
       <View style={styles.container}>
         <Header isHome={true} count={cart.length} />
         {/* <View style={styles.searchBar}> */}
-          {/* search Icon */}
-          {/* <Feather
+        {/* search Icon */}
+        {/* <Feather
             name="search"
             size={20}
             color="black"
             style={{ marginLeft: 1 }}
           /> */}
-          {/* Input field */}
-          {/* <TextInput
+        {/* Input field */}
+        {/* <TextInput
             style={styles.input}
             placeholder="Search"
             value={search}
@@ -166,7 +166,12 @@ export default function Products() {
                       Actions.ProductInfo({ productId: product.id })
                     }
                   >
-                    <ProductCard product={product} />
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      callBackFun={callbackFun}
+                      CartItems={cart}
+                    />
                   </TouchableOpacity>
                 )
               ) : (
@@ -174,14 +179,19 @@ export default function Products() {
                   key={product.id}
                   onPress={() => Actions.ProductInfo({ productId: product.id })}
                 >
-                  <ProductCard product={product} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    callBackFun={callbackFun}
+                    CartItems={cart}
+                  />
                 </TouchableOpacity>
               )
             )}
           </View>
         </ScrollView>
       </View>
-      {cart.length>0 && <CartBanner reloadCartBanner={reloadCartBanner}/>}     
+      {cart.length > 0 && <CartBanner reloadCartBanner={reloadCartBanner} />}
       <Footer />
     </SafeAreaView>
   );

@@ -1,94 +1,124 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Actions } from "react-native-router-flux";
 import { Path, Svg } from "react-native-svg";
 import Swiper from "react-native-swiper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const WelcomeScreen = () => {
   const swiperRef = useRef(null);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
 
   const handleGetStarted = () => {
     Actions.SignIn();
+  };
+  const checkFirstLaunch = async () => {
+    try {
+      const value = await AsyncStorage.getItem("firstLaunch");
+      if (value === null) {
+        setIsFirstLaunch(true);
+        AsyncStorage.setItem("firstLaunch", "false");
+      } else {
+        setIsFirstLaunch(false);
+      }
+    } catch (error) {
+      console.error("Error checking first launch:", error);
+    }
   };
 
   const handleNext = () => {
     swiperRef.current.scrollBy(1, true);
   };
 
+  useEffect(() => {
+    checkFirstLaunch();
+  }, [isFirstLaunch]);
+
   return (
-    <Swiper
-      style={styles.wrapper}
-      loop={false}
-      showsButtons={false}
-      ref={swiperRef}
-    >
-      {/* Welcome Screen 1 */}
-      <View style={styles.slide}>
-        <Image
-          source={require("../assets/instantIdly.png")}
-          style={styles.logo}
-        />
-        <Text style={styles.welcomeText}>Welcome to Instant Idly</Text>
-        <Text style={styles.mainDescriptionText}>
-          Your one-stop solution for delicious and instant food!
-        </Text>
-        <TouchableOpacity style={styles.skipButton} onPress={handleGetStarted}>
-          <Text style={styles.button}>Skip</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-          <Text style={styles.button}>Next</Text>
-        </TouchableOpacity>
-      </View>
+    <>
+      {isFirstLaunch && (
+        <Swiper
+          style={styles.wrapper}
+          loop={false}
+          showsButtons={false}
+          ref={swiperRef}
+        >
+          {/* Welcome Screen 1 */}
+          <View style={styles.slide}>
+            <Image
+              source={require("../assets/instantIdly.png")}
+              style={styles.logo}
+            />
+            <Text style={styles.welcomeText}>Welcome to Instant Idly</Text>
+            <Text style={styles.mainDescriptionText}>
+              Your one-stop solution for delicious and instant food!
+            </Text>
+            <TouchableOpacity
+              style={styles.skipButton}
+              onPress={handleGetStarted}
+            >
+              <Text style={styles.button}>Skip</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+              <Text style={styles.button}>Next</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Welcome Screen 2 */}
-      <View style={styles.slide}>
-        {/* <SvgUri source={require("../assets/blob.svg")} style={styles.wave} /> */}
-        <Svg style={styles.wave} viewBox="0 0 200 200">
-          <Path
-            fill="#006400"
-            d="M42.6,-60.6C53.2,-50.9,58.4,-35.8,65.8,-19.8C73.2,-3.8,82.8,13.1,78.7,25.5C74.5,37.8,56.7,45.6,41.3,52.5C25.9,59.3,12.9,65.2,-2.6,68.7C-18.1,72.2,-36.1,73.4,-49,65.7C-61.9,58.1,-69.7,41.6,-72.1,25.5C-74.6,9.3,-71.8,-6.5,-64.8,-19C-57.9,-31.4,-46.9,-40.3,-35.4,-49.7C-23.9,-59.1,-11.9,-68.8,2,-71.6C16,-74.4,32,-70.2,42.6,-60.6Z"
-            transform="translate(100 100)"
-          />
-        </Svg>
-        <View style={styles.textContainer}>
-          <Text style={styles.subHeaderText}>Browse Restaurants</Text>
-          <Text style={styles.descriptionText}>
-            Explore a variety of restaurants and cuisines in your area.
-          </Text>
-        </View>
-        <Image
-          source={require("../assets/vegetable.png")}
-          style={styles.image}
-        />
-        <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-          <Text style={styles.button}>Next</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Welcome Screen 2 */}
+          <View style={styles.slide}>
+            {/* <SvgUri source={require("../assets/blob.svg")} style={styles.wave} /> */}
+            <Svg style={styles.wave} viewBox="0 0 200 200">
+              <Path
+                fill="#006400"
+                d="M42.6,-60.6C53.2,-50.9,58.4,-35.8,65.8,-19.8C73.2,-3.8,82.8,13.1,78.7,25.5C74.5,37.8,56.7,45.6,41.3,52.5C25.9,59.3,12.9,65.2,-2.6,68.7C-18.1,72.2,-36.1,73.4,-49,65.7C-61.9,58.1,-69.7,41.6,-72.1,25.5C-74.6,9.3,-71.8,-6.5,-64.8,-19C-57.9,-31.4,-46.9,-40.3,-35.4,-49.7C-23.9,-59.1,-11.9,-68.8,2,-71.6C16,-74.4,32,-70.2,42.6,-60.6Z"
+                transform="translate(100 100)"
+              />
+            </Svg>
+            <View style={styles.textContainer}>
+              <Text style={styles.subHeaderText}>Browse Restaurants</Text>
+              <Text style={styles.descriptionText}>
+                Explore a variety of restaurants and cuisines in your area.
+              </Text>
+            </View>
+            <Image
+              source={require("../assets/vegetable.png")}
+              style={styles.image}
+            />
+            <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+              <Text style={styles.button}>Next</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Welcome Screen 3 */}
-      <View style={styles.slide}>
-        <Svg style={styles.wave} viewBox="0 0 200 200">
-          <Path
-            fill="#006400"
-            d="M42.6,-60.6C53.2,-50.9,58.4,-35.8,65.8,-19.8C73.2,-3.8,82.8,13.1,78.7,25.5C74.5,37.8,56.7,45.6,41.3,52.5C25.9,59.3,12.9,65.2,-2.6,68.7C-18.1,72.2,-36.1,73.4,-49,65.7C-61.9,58.1,-69.7,41.6,-72.1,25.5C-74.6,9.3,-71.8,-6.5,-64.8,-19C-57.9,-31.4,-46.9,-40.3,-35.4,-49.7C-23.9,-59.1,-11.9,-68.8,2,-71.6C16,-74.4,32,-70.2,42.6,-60.6Z"
-            transform="translate(100 100)"
-          />
-        </Svg>
-        <View style={styles.textContainer}>
-          <Text style={styles.subHeaderText}>Add to Cart</Text>
-          <Text style={styles.descriptionText}>
-            Easily add your favorite items to the cart and proceed to checkout.
-          </Text>
-          <TouchableOpacity style={styles.button} onPress={handleGetStarted}>
-            <Text style={styles.buttonText}>Get Started</Text>
-          </TouchableOpacity>
-        </View>
-        <Image
-          source={require("../assets/shopping-cart.png")}
-          style={styles.image}
-        />
-      </View>
-    </Swiper>
+          {/* Welcome Screen 3 */}
+          <View style={styles.slide}>
+            <Svg style={styles.wave} viewBox="0 0 200 200">
+              <Path
+                fill="#006400"
+                d="M42.6,-60.6C53.2,-50.9,58.4,-35.8,65.8,-19.8C73.2,-3.8,82.8,13.1,78.7,25.5C74.5,37.8,56.7,45.6,41.3,52.5C25.9,59.3,12.9,65.2,-2.6,68.7C-18.1,72.2,-36.1,73.4,-49,65.7C-61.9,58.1,-69.7,41.6,-72.1,25.5C-74.6,9.3,-71.8,-6.5,-64.8,-19C-57.9,-31.4,-46.9,-40.3,-35.4,-49.7C-23.9,-59.1,-11.9,-68.8,2,-71.6C16,-74.4,32,-70.2,42.6,-60.6Z"
+                transform="translate(100 100)"
+              />
+            </Svg>
+            <View style={styles.textContainer}>
+              <Text style={styles.subHeaderText}>Add to Cart</Text>
+              <Text style={styles.descriptionText}>
+                Easily add your favorite items to the cart and proceed to
+                checkout.
+              </Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleGetStarted}
+              >
+                <Text style={styles.buttonText}>Get Started</Text>
+              </TouchableOpacity>
+            </View>
+            <Image
+              source={require("../assets/shopping-cart.png")}
+              style={styles.image}
+            />
+          </View>
+        </Swiper>
+      )}
+    </>
   );
 };
 

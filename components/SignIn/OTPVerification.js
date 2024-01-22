@@ -24,6 +24,7 @@ const OTPVerification = ({ enteredMobileNumber }) => {
   const [mobileNumber, setMobileNumber] = useState(enteredMobileNumber); // Initialize with an empty string
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const auth = useSelector((state) => state?.auth);
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
@@ -55,13 +56,12 @@ const OTPVerification = ({ enteredMobileNumber }) => {
           otp: otp.trim(),
         }
       );
-
-      if (verifyResponse.data.status) {
+      const { data: verifyNumber } = verifyResponse.data;
+      if (verifyNumber.status === "approved" && verifyNumber.valid) {
         // check that the number is present or not
-        const response = await axios.get(
+        const { data } = await axios.get(
           `${baseURL}/store/customers/phone/${mobileNumber}`
         );
-        const { data } = response;
         if (!data.status) {
           const firstLaunch = await AsyncStorage.getItem("firstLaunch");
           if (firstLaunch === true) {
@@ -73,24 +73,22 @@ const OTPVerification = ({ enteredMobileNumber }) => {
             });
           }
         } else {
-          const currentUser = JSON.parse(
-            await AsyncStorage.getItem("currentUser")
+          const { customer } = data;
+          const { metadata, email } = customer;
+          const password = await CryptoService.decryptMessage(
+            metadata.encryptMessage,
+            mobileNumber
           );
-          if (currentUser) {
-            const password = await CryptoService.decryptMessage(
-              currentUser.password,
-              mobileNumber
+          if (customer) {
+            dispatch(login(mobileNumber, email, password));
+            await AsyncStorage.setItem(
+              "loginState",
+              JSON.stringify({
+                isLoggedIn: true,
+                mobileNumber,
+              })
             );
-            dispatch(login(mobileNumber, currentUser.email, password));
           }
-          await AsyncStorage.setItem(
-            "loginState",
-            JSON.stringify({
-              isLoggedIn: true,
-              mobileNumber,
-            })
-          );
-
           // Actions.products();
         }
       } else {

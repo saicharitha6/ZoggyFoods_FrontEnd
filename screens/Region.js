@@ -17,7 +17,7 @@ import CryptoService from "../utils/crypto";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/actions/authActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import baseURL from "../constants/url";
 
 const DummyRegions = ["Chennai"];
@@ -59,23 +59,18 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
     // encrypt userCredentials
     const encryptPassword = await CryptoService.encryptMessage(password, phone);
     // setPassword(encryptPassword);
-    await AsyncStorage.setItem(
-      "currentUser",
-      JSON.stringify({ email, password: encryptPassword })
-    );
+    // await AsyncStorage.setItem(
+    //   "currentUser",
+    //   JSON.stringify({ email, password: encryptPassword })
+    // );
 
     try {
       if (!isNumberAvailable) {
         //new user
-        const metaData = {
-          encryptMessage: encryptPassword,
-          isAndroid: Platform.OS === "android",
-          isIos: Platform.OS === "ios",
-        };
         const { data } = await axios({
           method: "post",
           url: `${baseURL}/store/customers`,
-          data: { ...userDetails, password, metaData },
+          data: { ...userDetails, password },
           headers: {
             "Content-Type": "application/json",
           },
@@ -85,7 +80,7 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
         // add number into customer account
       }
     } catch (err) {
-      console.error("Error:", err);
+      console.error("Error:", err?.message);
       throw err;
     }
   };
@@ -107,7 +102,12 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
           encryptPassword,
           phone
         );
-        dispatch(login(phone, email, decryptPassword));
+        const metadata = {
+          encryptMessage: encryptPassword,
+          isAndroid: Platform.OS === "android",
+          isIos: Platform.OS === "ios",
+        };
+        dispatch(login(phone, email, decryptPassword, metadata));
         await AsyncStorage.setItem(
           "loginState",
           JSON.stringify({

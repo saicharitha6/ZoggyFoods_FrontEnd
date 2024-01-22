@@ -10,14 +10,26 @@ import {
   LOGOUT_INITIATED,
   LOGOUT_SUCCESS,
 } from "./action_types";
-export const login = (mobileNumber, email, password) => {
+export const login = (phone, email, password, metadata = {}) => {
   return async (dispatch) => {
     dispatch(loginInitiated());
     // create jwt token
     await axios
       .post(`${baseURL}/store/auth/token`, { email, password })
       .then((res) => {
-        dispatch(loginSuccess(res.data, mobileNumber));
+        if (res.data?.access_token && metadata?.encryptMessage) {
+          axios.post(
+            `${baseURL}/store/customers/me`,
+            { metadata },
+            {
+              headers: {
+                Authorization: `Bearer ${res.data?.access_token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        }
+        dispatch(loginSuccess(res.data, { phone, email, password }));
       })
       .catch((err) => {
         dispatch(loginFailed(err));
@@ -45,10 +57,10 @@ export const logout = (access_token) => {
 const loginInitiated = () => ({
   type: LOGIN_INITIATED,
 });
-const loginSuccess = (data, phone) => ({
+const loginSuccess = (data, currentUser) => ({
   type: LOGIN_SUCCESS,
   payload: {
-    mobileNumber: phone,
+    credentials: { ...currentUser },
     access_token: data.access_token,
   },
 });

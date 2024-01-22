@@ -21,7 +21,6 @@ import Profile from "./screens/Profile";
 import EditProfile from "./screens/EditProfile";
 import WelcomeScreen from "./screens/Welcome";
 import SubscriptionCalendarScreen from "./screens/Calendar";
-import SignUp from "./screens/SignUp";
 import SelectLocation from "./screens/Region";
 import DeliveryPreferences from "./screens/DeliveryPreferences";
 import CompleteYourProfile from "./screens/CompleteYourProfile";
@@ -30,95 +29,72 @@ import MyAddresses from "./components/Address/MyAddresses";
 import EditAddress from "./components/Address/EditAddress";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store, persistor } from "./redux/store";
-import { login, logout } from "./redux/actions/authActions";
 import { PersistGate } from "redux-persist/integration/react";
-import CryptoService from "./utils/crypto";
 
 export function StackedScreen() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const auth = useSelector((state) => state?.auth);
   const isLoggedIn = auth?.isLoggedIn;
-  const dispatch = useDispatch();
+  const access_token = auth?.access_token;
+  const headers = {
+    Authorization: `Bearer ${access_token}`,
+    "Content-Type": "application/json",
+  };
 
-  const getCartId = async () => {
-    await axios.post(`${baseURL}/store/carts`).then((res) => {
-      AsyncStorage.setItem("cart_id", res.data.cart.id);
-    });
+  const createCart = async () => {
+    try {
+      await axios
+        .post(
+          `${baseURL}/store/carts`,
+          { email: auth?.credentials?.email },
+          { headers }
+        )
+        .then((res) => {
+          AsyncStorage.setItem("cart_id", res.data.cart.id);
+        });
+    } catch (error) {
+      console.log("error-create");
+      console.log(error);
+    }
   };
 
   const checkCartId = async () => {
     const cartId = await AsyncStorage.getItem("cart_id");
-
     if (cartId) {
       await axios
-        .get(`${baseURL}/store/carts/${cartId}`)
+        .get(`${baseURL}/store/carts/${cartId}`, { headers })
         .then((res) => {
           if (res.data.cart.completed_at) {
             AsyncStorage.removeItem("cart_id");
-            getCartId();
-          } else {
-            AsyncStorage.setItem("cart_id", res.data.cart.id);
+            createCart();
           }
+          // else {
+          //   AsyncStorage.setItem("cart_id", res.data.cart.id);
+          // }
         })
         .catch((error) => {
-          console.error("Error:", error);
-          if (error.response.status == 500) {
+          const status = error.response.status;
+          if (status == 500 || status == 404) {
             AsyncStorage.removeItem("cart_id");
-            getCartId();
+            createCart();
           }
         });
-    }
-
-    if (!cartId) {
-      getCartId();
+    } else {
+      createCart();
     }
   };
 
-  const loginState = async () => {
-    try {
-      const value = JSON.parse(await AsyncStorage.getItem("loginState"));
-      const currentUser = JSON.parse(await AsyncStorage.getItem("currentUser"));
-      if (value?.isLoggedIn) {
-        // const password = await CryptoService.decryptMessage(
-        //   currentUser.password,
-        //   value.mobileNumber
-        // );
-        // dispatch(
-        //   login(value.mobileNumber, currentUser.email, password)
-        // );
-        Actions.products();
-      } else {
-        Actions.SignIn();
-      }
-    } catch (error) {
-      console.error("Error checking first launch:", error);
-    }
-  };
-
-  useEffect(() => {
-    const checkFirstLaunch = async () => {
-      try {
-        const value = await AsyncStorage.getItem("firstLaunch");
-        if (value === null) {
-          setIsFirstLaunch(true);
-          AsyncStorage.setItem("firstLaunch", false);
-        } else {
-          setIsFirstLaunch(false);
-        }
-      } catch (error) {
-        console.error("Error checking first launch:", error);
-      }
-    };
-    loginState();
-    checkFirstLaunch();
+  function checkLogin() {
     checkCartId();
-  }, [isLoggedIn]);
-
-  useEffect(() => {
-    if (!isFirstLaunch) {
+    if (isLoggedIn && access_token) {
+      Actions.products();
+    } else {
       Actions.SignIn();
     }
-  }, [isFirstLaunch]);
+  }
+
+  useEffect(() => {
+    checkLogin();
+  }, [isLoggedIn]);
 
   return (
     <PaperProvider>

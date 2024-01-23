@@ -5,3 +5,4 @@ export const LOGOUT_INITIATED = "logout_initiated";
 export const LOGOUT_SUCCESS = "logout_success";
 export const LOGOUT_FAILED = "logout_failed";
 export const ADD_TO_CART = "add_to_cart";
+export const ADD_CURRENT_CUSTOMER = "add_current_customer"

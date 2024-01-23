@@ -102,10 +102,12 @@ const SelectLocation = ({ isNumberAvailable, userDetails }) => {
           encryptPassword,
           phone
         );
+        const pushToken = await AsyncStorage.getItem("pushToken");
         const metadata = {
           encryptMessage: encryptPassword,
           isAndroid: Platform.OS === "android",
           isIos: Platform.OS === "ios",
+          pushNotificationToken: pushToken,
         };
         dispatch(login(phone, email, decryptPassword, metadata));
         await AsyncStorage.setItem(

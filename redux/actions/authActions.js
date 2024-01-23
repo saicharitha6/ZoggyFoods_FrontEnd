@@ -1,7 +1,6 @@
 // authActions.js
 import axios from "axios";
 import baseURL from "../../constants/url";
-import CryptoService from "../../utils/crypto";
 import {
   LOGIN_INITIATED,
   LOGIN_SUCCESS,
@@ -9,6 +8,7 @@ import {
   LOGOUT_FAILED,
   LOGOUT_INITIATED,
   LOGOUT_SUCCESS,
+  ADD_CURRENT_CUSTOMER,
 } from "./action_types";
 export const login = (phone, email, password, metadata = {}) => {
   return async (dispatch) => {
@@ -54,6 +54,12 @@ export const logout = (access_token) => {
   };
 };
 
+export const me = (customer) => {
+  return {
+    type: ADD_CURRENT_CUSTOMER,
+    payload: { customer },
+  };
+};
 const loginInitiated = () => ({
   type: LOGIN_INITIATED,
 });

@@ -5,7 +5,7 @@ import Cart from "./screens/Cart";
 import Checkout from "./screens/Checkout";
 import { CartProvider } from "./components/CartContext";
 import { Provider as PaperProvider } from "react-native-paper";
-import { useEffect, useState } from "react"; // Import useState
+import { useEffect, useRef, useState, useLayoutEffect } from "react"; // Import useState
 import axios from "axios";
 import baseURL from "./constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -30,15 +30,71 @@ import EditAddress from "./components/Address/EditAddress";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { Platform } from "react-native";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+import { me } from "./redux/actions/authActions";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export function StackedScreen() {
   const auth = useSelector((state) => state?.auth);
+  const currentUser = auth?.currentUser ?? null;
+  const [expoPushToken, setExpoPushToken] = useState(null);
+  const notificationListener = useRef();
+  const responseListener = useRef();
   const isLoggedIn = auth?.isLoggedIn;
   const access_token = auth?.access_token;
   const headers = {
     Authorization: `Bearer ${access_token}`,
     "Content-Type": "application/json",
   };
+  const dispatch = useDispatch();
+  async function checkPushNotificationToken() {
+    const pushToken = await AsyncStorage.getItem("pushToken");
+    setExpoPushToken(pushToken);
+  }
+  async function registerForPushNotificationsAsync() {
+    let response;
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert(
+          "Permission required",
+          "To get notification need appropriate permission!"
+        );
+        return;
+      }
+      response = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig.extra.eas.projectId,
+      });
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+    return response.data;
+  }
 
   const createCart = async () => {
     try {
@@ -83,9 +139,45 @@ export function StackedScreen() {
     }
   };
 
+  function checkExpoTokenAndUpdateMe() {
+    axios
+      .get(`${baseURL}/store/auth`, { headers })
+      .then(({ data }) => {
+        if (data.customer) {
+          const { customer } = data;
+          const { metadata } = customer;
+          if (!metadata?.pushNotificationToken && expoPushToken) {
+            axios
+              .post(
+                `${baseURL}/store/customers/me`,
+                {
+                  metadata: {
+                    ...metadata,
+                    pushNotificationToken: expoPushToken,
+                  },
+                },
+                { headers }
+              )
+              .then((res) => dispatch(me(res.data.customer)))
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            dispatch(me(customer));
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   function checkLogin() {
     checkCartId();
     if (isLoggedIn && access_token) {
+      if (!currentUser?.metadata?.pushNotificationToken) {
+        console.log("updateMe");
+        checkExpoTokenAndUpdateMe();
+      }
       Actions.products();
     } else {
       Actions.SignIn();
@@ -93,8 +185,32 @@ export function StackedScreen() {
   }
 
   useEffect(() => {
+    checkPushNotificationToken();
+    if (!expoPushToken) {
+      registerForPushNotificationsAsync().then((token) => {
+        setExpoPushToken(token);
+        AsyncStorage.setItem("pushToken", token);
+      });
+
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener(({ notification }) => {
+          setNotification(notification);
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          const { data, title, body } = response.notification.request.content;
+        });
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }
     checkLogin();
-  }, [isLoggedIn]);
+  }, [isLoggedIn, currentUser]);
 
   return (
     <PaperProvider>

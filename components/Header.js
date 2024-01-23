@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseURL from "../constants/url";
 import axios from "axios";
 import user from "../assets/user.png";
+import { useSelector } from "react-redux";
 
 export default function Header({
   title,
@@ -23,23 +24,8 @@ export default function Header({
   isOrder = false,
   count = 0,
 }) {
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible);
-  };
-
-  const handleLogout = () => {
-    axios.delete(`${baseURL}/store/auth`).then((res) => {
-      Actions.SignIn();
-    });
-    setIsDropdownVisible(false);
-  };
-
-  const handleOrders = () => {
-    // Implement your logic to navigate to orders screen
-    setIsDropdownVisible(false);
-  };
+  const auth = useSelector((state) => state?.auth);
+  const currentUser = auth?.currentUser ?? null;
 
   return (
     <View style={styles.container}>
@@ -49,7 +35,7 @@ export default function Header({
             <Image source={user} style={styles.logo} />
           </TouchableOpacity>
           <View style={styles.user}>
-            <Text style={styles.title}>Hi Guest</Text>
+            <Text style={styles.title}>Hi {currentUser?.first_name ?? Guest}</Text>
             <View style={styles.location}>
               <EvilIcons name="location" size={24} color="white" />
               <Text style={styles.title}>, West Bengal</Text>
@@ -68,14 +54,14 @@ export default function Header({
       <View style={styles.sideBar}>
         {isVisible ? (
           <>
-            <View>
+            {/* <View>
               <EvilIcons
                 name="search"
                 size={35}
                 color="white"
                 onPress={() => Actions.search()}
               />
-            </View>
+            </View> */}
             <View style={styles.addCart}>
               <Feather
                 name="shopping-cart"

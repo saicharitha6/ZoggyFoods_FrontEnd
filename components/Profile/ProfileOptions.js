@@ -26,7 +26,7 @@ const ProfileOptions = ({ moreOptions, mainOptions }) => {
         mobileNumber: null,
       })
     );
-    Actions.SignIn();
+    // Actions.SignIn();
   };
 
   const renderOptions = (options) => {

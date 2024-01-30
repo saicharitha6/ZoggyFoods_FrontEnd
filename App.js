@@ -5,7 +5,7 @@ import Cart from "./screens/Cart";
 import Checkout from "./screens/Checkout";
 import { CartProvider } from "./components/CartContext";
 import { Provider as PaperProvider } from "react-native-paper";
-import { useEffect, useState } from "react"; // Import useState
+import { useEffect, useRef, useState, useLayoutEffect } from "react"; // Import useState
 import axios from "axios";
 import baseURL from "./constants/url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,7 +21,6 @@ import Profile from "./screens/Profile";
 import EditProfile from "./screens/EditProfile";
 import WelcomeScreen from "./screens/Welcome";
 import SubscriptionCalendarScreen from "./screens/Calendar";
-import SignUp from "./screens/SignUp";
 import SelectLocation from "./screens/Region";
 import DeliveryPreferences from "./screens/DeliveryPreferences";
 import CompleteYourProfile from "./screens/CompleteYourProfile";
@@ -30,95 +29,188 @@ import MyAddresses from "./components/Address/MyAddresses";
 import EditAddress from "./components/Address/EditAddress";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store, persistor } from "./redux/store";
-import { login, logout } from "./redux/actions/authActions";
 import { PersistGate } from "redux-persist/integration/react";
-import CryptoService from "./utils/crypto";
+import { Platform } from "react-native";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+import { me } from "./redux/actions/authActions";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export function StackedScreen() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const auth = useSelector((state) => state?.auth);
+  const currentUser = auth?.currentUser ?? null;
+  const [expoPushToken, setExpoPushToken] = useState(null);
+  const notificationListener = useRef();
+  const responseListener = useRef();
   const isLoggedIn = auth?.isLoggedIn;
+  const access_token = auth?.access_token;
+  const headers = {
+    Authorization: `Bearer ${access_token}`,
+    "Content-Type": "application/json",
+  };
   const dispatch = useDispatch();
+  async function checkPushNotificationToken() {
+    const pushToken = await AsyncStorage.getItem("pushToken");
+    setExpoPushToken(pushToken);
+  }
+  async function registerForPushNotificationsAsync() {
+    let response;
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
 
-  const getCartId = async () => {
-    await axios.post(`${baseURL}/store/carts`).then((res) => {
-      AsyncStorage.setItem("cart_id", res.data.cart.id);
-    });
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert(
+          "Permission required",
+          "To get notification need appropriate permission!"
+        );
+        return;
+      }
+      response = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig.extra.eas.projectId,
+      });
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+    return response.data;
+  }
+
+  const createCart = async () => {
+    try {
+      await axios
+        .post(
+          `${baseURL}/store/carts`,
+          { email: auth?.credentials?.email },
+          { headers }
+        )
+        .then((res) => {
+          AsyncStorage.setItem("cart_id", res.data.cart.id);
+        });
+    } catch (error) {
+      console.log("error-create");
+      console.log(error);
+    }
   };
 
   const checkCartId = async () => {
     const cartId = await AsyncStorage.getItem("cart_id");
-
     if (cartId) {
       await axios
-        .get(`${baseURL}/store/carts/${cartId}`)
+        .get(`${baseURL}/store/carts/${cartId}`, { headers })
         .then((res) => {
           if (res.data.cart.completed_at) {
             AsyncStorage.removeItem("cart_id");
-            getCartId();
-          } else {
-            AsyncStorage.setItem("cart_id", res.data.cart.id);
+            createCart();
           }
+          // else {
+          //   AsyncStorage.setItem("cart_id", res.data.cart.id);
+          // }
         })
         .catch((error) => {
-          console.error("Error:", error);
-          if (error.response.status == 500) {
+          const status = error.response.status;
+          if (status == 500 || status == 404) {
             AsyncStorage.removeItem("cart_id");
-            getCartId();
+            createCart();
           }
         });
-    }
-
-    if (!cartId) {
-      getCartId();
+    } else {
+      createCart();
     }
   };
 
-  const loginState = async () => {
-    try {
-      const value = JSON.parse(await AsyncStorage.getItem("loginState"));
-      const currentUser = JSON.parse(await AsyncStorage.getItem("currentUser"));
-      if (value?.isLoggedIn) {
-        // const password = await CryptoService.decryptMessage(
-        //   currentUser.password,
-        //   value.mobileNumber
-        // );
-        // dispatch(
-        //   login(value.mobileNumber, currentUser.email, password)
-        // );
-        Actions.products();
-      } else {
-        Actions.SignIn();
-      }
-    } catch (error) {
-      console.error("Error checking first launch:", error);
-    }
-  };
-
-  useEffect(() => {
-    const checkFirstLaunch = async () => {
-      try {
-        const value = await AsyncStorage.getItem("firstLaunch");
-        if (value === null) {
-          setIsFirstLaunch(true);
-          AsyncStorage.setItem("firstLaunch", false);
-        } else {
-          setIsFirstLaunch(false);
+  function checkExpoTokenAndUpdateMe() {
+    axios
+      .get(`${baseURL}/store/auth`, { headers })
+      .then(({ data }) => {
+        if (data.customer) {
+          const { customer } = data;
+          const { metadata } = customer;
+          if (!metadata?.pushNotificationToken && expoPushToken) {
+            axios
+              .post(
+                `${baseURL}/store/customers/me`,
+                {
+                  metadata: {
+                    ...metadata,
+                    pushNotificationToken: expoPushToken,
+                  },
+                },
+                { headers }
+              )
+              .then((res) => dispatch(me(res.data.customer)))
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            dispatch(me(customer));
+          }
         }
-      } catch (error) {
-        console.error("Error checking first launch:", error);
-      }
-    };
-    loginState();
-    checkFirstLaunch();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  function checkLogin() {
     checkCartId();
-  }, [isLoggedIn]);
-
-  useEffect(() => {
-    if (!isFirstLaunch) {
+    if (isLoggedIn && access_token) {
+      if (!currentUser?.metadata?.pushNotificationToken) {
+        console.log("updateMe");
+        checkExpoTokenAndUpdateMe();
+      }
+      Actions.products();
+    } else {
       Actions.SignIn();
     }
-  }, [isFirstLaunch]);
+  }
+
+  useEffect(() => {
+    checkPushNotificationToken();
+    if (!expoPushToken) {
+      registerForPushNotificationsAsync().then((token) => {
+        setExpoPushToken(token);
+        AsyncStorage.setItem("pushToken", token);
+      });
+
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener(({ notification }) => {
+          setNotification(notification);
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          const { data, title, body } = response.notification.request.content;
+        });
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }
+    checkLogin();
+  }, [isLoggedIn, currentUser]);
 
   return (
     <PaperProvider>

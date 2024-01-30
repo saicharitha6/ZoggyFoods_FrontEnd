@@ -2,8 +2,11 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import Button from "../Button";
 import Wallet from "./Wallet";
 import { Actions } from "react-native-router-flux";
+import { useSelector } from "react-redux";
 
 export default function Head() {
+  const auth = useSelector((state) => state?.auth);
+  const currentUser = auth?.currentUser ?? null;
   return (
     <View style={styles.header}>
       <View style={{ flexDirection: "row" }}>
@@ -12,8 +15,14 @@ export default function Head() {
           style={styles.profileImage}
         />
         <View style={styles.profileInfo}>
-          <Text style={styles.username}>John Doe</Text>
-          <Text style={styles.number}>982358239</Text>
+          <Text style={styles.username}>
+            {currentUser
+              ? `${currentUser?.first_name} ${currentUser?.last_name}`
+              : "John Doe"}
+          </Text>
+          <Text style={styles.number}>
+            {currentUser ? currentUser?.phone : "+91982358239"}
+          </Text>
           <Button
             title="Edit Profile"
             onPress={() => Actions.EditProfile()}

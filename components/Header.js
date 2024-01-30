@@ -14,6 +14,7 @@ import { Actions } from "react-native-router-flux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseURL from "../constants/url";
 import axios from "axios";
+import { useLocation } from "../components/LocationContext";
 import user from "../assets/user.png";
 import { useSelector } from "react-redux";
 
@@ -37,8 +38,13 @@ export default function Header({
           <View style={styles.user}>
             <Text style={styles.title}>Hi {currentUser?.first_name ?? Guest}</Text>
             <View style={styles.location}>
-              <EvilIcons name="location" size={24} color="white" />
-              <Text style={styles.title}>, West Bengal</Text>
+              <EvilIcons
+                name="location"
+                size={23}
+                paddingTop={3}
+                color="white"
+              />
+              <Text style={styles.title}>{selectedLocation}</Text>
             </View>
           </View>
         </View>
@@ -112,10 +118,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: widthToDp(50),
+    width: widthToDp(45),
   },
   title: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "400",
     color: "white",
   },
@@ -188,7 +194,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   user: {
-    flexDirection: "column",
+    flexDirection: "column"
   },
   location: {
     flexDirection: "row",

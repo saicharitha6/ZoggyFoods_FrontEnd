@@ -4,6 +4,7 @@ import ProductInfo from "./screens/ProductInfo";
 import Cart from "./screens/Cart";
 import Checkout from "./screens/Checkout";
 import { CartProvider } from "./components/CartContext";
+import { LocationProvider } from "./components/LocationContext";
 import { Provider as PaperProvider } from "react-native-paper";
 import { useEffect, useRef, useState, useLayoutEffect } from "react"; // Import useState
 import axios from "axios";
@@ -215,48 +216,54 @@ export function StackedScreen() {
   return (
     <PaperProvider>
       <CartProvider>
-        <Router>
-          <Stack key="root">
-            <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
-            <Scene key="SignIn" component={SignIn} hideNavBar />
-            <Scene
-              key="OTPVerification"
-              component={OTPVerification}
-              hideNavBar
-            />
-            <Scene
-              key="CompleteYourProfile"
-              component={CompleteYourProfile}
-              hideNavBar
-            />
-            <Scene key="Region" component={SelectLocation} hideNavBar />
-            <Scene key="products" component={Products} hideNavBar />
-            <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
-            <Scene key="cart" component={Cart} hideNavBar />
-            <Scene key="address" component={Address} hideNavBar />
-            <Scene key="payments" component={Payments} hideNavBar />
-            <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
-            <Scene key="orders" component={Orders} hideNavBar />
-            <Scene key="search" component={Search} hideNavBar />
-            <Scene key="profile" component={Profile} hideNavBar />
-            <Scene
-              key="DeliveryPreference"
-              component={DeliveryPreferences}
-              hideNavBar
-            />
-            <Scene key="EditProfile" component={EditProfile} hideNavBar />
-            <Scene key="Wallet" component={Wallet} hideNavBar />
-            <Scene
-              key="Calendar"
-              component={SubscriptionCalendarScreen}
-              hideNavBar
-            />
-            <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
-            <Scene key="AddEditAddress" component={AddEditAddress} hideNavBar />
-            <Scene key="EditAddress" component={EditAddress} hideNavBar />
-            {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
-          </Stack>
-        </Router>
+        <LocationProvider>
+          <Router>
+            <Stack key="root">
+              <Scene key="Welcome" component={WelcomeScreen} hideNavBar />
+              <Scene key="SignIn" component={SignIn} hideNavBar />
+              <Scene
+                key="OTPVerification"
+                component={OTPVerification}
+                hideNavBar
+              />
+              <Scene
+                key="CompleteYourProfile"
+                component={CompleteYourProfile}
+                hideNavBar
+              />
+              <Scene key="Region" component={SelectLocation} hideNavBar />
+              <Scene key="products" component={Products} hideNavBar />
+              <Scene key="ProductInfo" component={ProductInfo} hideNavBar />
+              <Scene key="cart" component={Cart} hideNavBar />
+              <Scene key="address" component={Address} hideNavBar />
+              <Scene key="payments" component={Payments} hideNavBar />
+              <Scene key="PlaceOrder" component={PlaceOrder} hideNavBar />
+              <Scene key="orders" component={Orders} hideNavBar />
+              <Scene key="search" component={Search} hideNavBar />
+              <Scene key="profile" component={Profile} hideNavBar />
+              <Scene
+                key="DeliveryPreference"
+                component={DeliveryPreferences}
+                hideNavBar
+              />
+              <Scene key="EditProfile" component={EditProfile} hideNavBar />
+              <Scene key="Wallet" component={Wallet} hideNavBar />
+              <Scene
+                key="Calendar"
+                component={SubscriptionCalendarScreen}
+                hideNavBar
+              />
+              <Scene key="MyAddresses" component={MyAddresses} hideNavBar />
+              <Scene
+                key="AddEditAddress"
+                component={AddEditAddress}
+                hideNavBar
+              />
+              <Scene key="EditAddress" component={EditAddress} hideNavBar />
+              {/* <Scene key="checkout" component={Checkout} hideNavBar /> */}
+            </Stack>
+          </Router>
+        </LocationProvider>
       </CartProvider>
     </PaperProvider>
   );
